@@ -3,7 +3,9 @@
     streamlit run app.py
 """
 import calendar
+import hmac
 import html
+import os
 from collections import Counter
 from datetime import date
 from urllib.parse import urlparse
@@ -12,6 +14,7 @@ import pandas as pd
 import streamlit as st
 
 import custom_events
+import snapshot
 from agents.reasoner import CATEGORIES
 from agents.synthesizer import MERGED, PICK, PUBLISH, REVIEW, SHEET_COLUMNS
 from pipeline import build_graph
@@ -28,7 +31,7 @@ st.markdown("""
       --green:#72CA9B;--green-bg:rgba(35,133,81,.25);--red:#FA999C;--red-bg:rgba(205,66,70,.25);
       --orange:#F0B726;--mono:'JetBrains Mono',Menlo,monospace}
 html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family:'Inter',-apple-system,'Segoe UI',sans-serif}
-.block-container{padding-top:1.6rem;max-width:1240px}
+.block-container{padding-top:3.2rem;max-width:1240px}
 .ob, .ob *, .stTabs [data-baseweb="tab"] p, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label{font-family:'Inter',-apple-system,'Segoe UI',sans-serif !important}
 [data-testid="stSidebar"]{background:#111418;border-right:1px solid var(--line)}
 [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span{color:var(--dim)}
@@ -87,6 +90,8 @@ html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family
                 padding:2px 8px;border-radius:3px;color:var(--dim)}
 .src-chips b{color:var(--text);font-weight:500;margin-left:6px}
 .empty{color:var(--muted);font-size:13px;padding:14px 12px;border:1px solid var(--line);border-top:none;background:#20252B}
+.ob-note{font-size:12px;color:var(--orange);background:rgba(240,183,38,.12);border:1px solid rgba(240,183,38,.3);
+         border-radius:3px;padding:6px 10px;margin-bottom:10px;display:inline-block}
 @media (max-width:900px){.ob-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 """, unsafe_allow_html=True)
@@ -98,12 +103,19 @@ CATEGORY_OPTIONS = ["Auto"] + list(CATEGORIES) + ["Community"]
 
 
 # ---------- data ----------
-@st.cache_data(ttl=900, show_spinner=False)
-def fetch_pages(mode: str, query: str) -> dict:
-    """Steps 1 to 2: the slow, paid part. Cached, and only rerun from the button."""
-    if mode == "sample":
-        return sample_state()
-    return build_graph(stop_after="extractor").invoke({"query": query})
+def fetch_live(query: str) -> dict:
+    """Steps 1 to 2: the slow, paid part. Team only, and it saves a new snapshot."""
+    raw = build_graph(stop_after="extractor").invoke({"query": query})
+    if raw.get("events_raw"):
+        snapshot.save(raw)
+    return raw
+
+
+def team_password() -> str:
+    try:
+        return str(st.secrets.get("TEAM_PASSWORD", "")) or os.getenv("TEAM_PASSWORD", "")
+    except Exception:  # no secrets file locally
+        return os.getenv("TEAM_PASSWORD", "")
 
 
 def finish(raw: dict, custom: list[dict], end: date, picks: int, include_paid: bool) -> dict:
@@ -153,34 +165,42 @@ def add_event_dialog() -> None:
 
 
 # ---------- sidebar ----------
+team = st.session_state.get("team", False)
+snap = snapshot.load()
+
 with st.sidebar:
     st.markdown("<div class='ob ob-brand'><i></i>Seattle Unlocked</div>", unsafe_allow_html=True)
     st.caption("Event desk")
-    mode_label = st.radio("Data", ["Sample events", "Live search"])
-    mode = "sample" if mode_label == "Sample events" else "live"
-    query = st.text_input("Search", "free events in Seattle", disabled=mode == "sample")
-    n_months = st.select_slider("Months", options=[1, 2, 3, 4], value=3)
-    picks = st.slider("Picks per month", 0, 12, 6)
-    include_paid = st.checkbox("Include paid events")
-    go = st.button("Run pipeline", type="primary", width="stretch")
-    if st.button("Add an event", width="stretch"):
-        add_event_dialog()
 
-if go or (mode == "sample" and st.session_state.get("raw_mode") != "sample"):
+    if team:
+        use_sample = st.checkbox("Show sample data", value=snap is None)
+        query = st.text_input("Search", "free events in Seattle")
+        n_months = st.select_slider("Months", options=[1, 2, 3, 4], value=3)
+        picks = st.slider("Picks per month", 0, 12, 6)
+        include_paid = st.checkbox("Include paid events")
+        go = st.button("Run live search", type="primary", width="stretch")
+        if st.button("Add an event", width="stretch"):
+            add_event_dialog()
+    else:
+        use_sample, query, n_months, picks, include_paid, go = snap is None, "", 3, 6, False, False
+
+if go:
     with st.spinner("Reading listing pages..."):
         try:
-            st.session_state.raw = fetch_pages(mode, query)
-            st.session_state.raw_mode = mode
-        except RuntimeError as err:  # missing keys and similar setup problems
+            fetched = fetch_live(query)
+        except RuntimeError as err:  # missing keys, no credits, and similar setup problems
             st.error(str(err))
             st.stop()
+    if not fetched.get("events_raw"):
+        st.warning("That run found no events, so the last snapshot is still showing.")
+    snap, use_sample = snapshot.load(), False
 
-raw = st.session_state.get("raw")
-if not raw:
-    st.info("Press Run pipeline to start.")
-    st.stop()
+if use_sample or snap is None:
+    raw, as_of, is_sample = sample_state(), None, True
+else:
+    raw, as_of, is_sample = snap, snapshot.fetched_on(snap), False
 
-today = raw.get("today") or date.today()
+today = raw.get("today") if is_sample else date.today()
 months = [add_months(today.replace(day=1), i) for i in range(n_months)]
 last = months[-1]
 end = last.replace(day=calendar.monthrange(last.year, last.month)[1])
@@ -198,6 +218,26 @@ with st.sidebar:
     with st.expander(f"Pages read · {ok}/{len(pages)}"):
         for p in pages:
             st.write(f"{site(p['url'])} · {p['events'] if p['status'] == 'read' else p['status']}")
+    st.caption("Sample data" if is_sample else f"Updated {as_of:%b} {as_of.day}, {as_of.year}" if as_of else "")
+
+    st.divider()
+    if team:
+        if st.button("Sign out", width="stretch"):
+            st.session_state.team = False
+            st.rerun()
+    else:
+        with st.expander("Team sign in"):
+            pw = st.text_input("Password", type="password", key="pw")
+            if st.button("Sign in", width="stretch"):
+                expected = team_password()
+                if expected and hmac.compare_digest(pw, expected):
+                    st.session_state.team = True
+                    st.rerun()
+                st.error("That password didn't work." if expected else "Sign in isn't set up yet.")
+
+if is_sample:
+    st.markdown("<div class='ob ob-note'>Sample data. These are example events, not live listings.</div>",
+                unsafe_allow_html=True)
 
 
 # ---------- pieces ----------
@@ -329,7 +369,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
     if body:
         st.markdown(f"<div class='ob ob-list'>{body}</div>", unsafe_allow_html=True)
 
-    if file_label and not available.empty:
+    if team and file_label and not available.empty:
         with st.expander("Sheet rows"):
             edited = st.data_editor(
                 sheet_rows(available), hide_index=True, width="stretch", key=f"edit-{file_label}",
@@ -390,6 +430,6 @@ if mine:
             if t is not None:
                 a.markdown(f"<div class='ob ob-list'>{event_row(t['status'], t, held=t['status'] == REVIEW)}</div>",
                            unsafe_allow_html=True)
-            if b.button("Remove", key=f"rm-{e['custom_id']}", width="stretch"):
+            if team and b.button("Remove", key=f"rm-{e['custom_id']}", width="stretch"):
                 custom_events.remove(e["custom_id"])
                 st.rerun()

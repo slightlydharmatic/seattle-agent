@@ -52,3 +52,27 @@ tests/        offline tests and sample data
 
 - Keys live only in `.env`, which git ignores. Nothing prints or logs them.
 - If one page fails to load or the model returns something unreadable, that page is skipped and counted in the report. The rest of the run continues.
+
+## Public page and team sign-in
+
+The app has two views:
+
+- **Public:** read-only. Anyone can browse the month tabs, available events, held events with their checks, and the full record. It shows the latest saved snapshot (`snapshots/latest.json`), so visitors never trigger API calls.
+- **Team:** sign in with the team password (sidebar, "Team sign in") to run a live search, add events, edit picks, and download sheet rows. A live run also saves a new snapshot.
+
+Until the first live run is saved, the public page shows sample events with a "Sample data" label.
+
+## Deploy to Streamlit Community Cloud
+
+1. Push this repo to GitHub (it can stay private).
+2. At share.streamlit.io, sign in with GitHub and click **Create app**. Pick this repo, branch `main`, main file `app.py`. Under Advanced settings, choose Python 3.11.
+3. In the app's **Settings > Secrets**, paste the values from `secrets.example.toml` with your real keys and a long team password.
+4. Deploy. Share the app URL; give the team password only to people who should run and publish.
+
+## Weekly refresh
+
+`.github/workflows/refresh.yml` runs `refresh.py` every Monday, saves `snapshots/latest.json`, and commits it. Streamlit redeploys on the new commit, so the public page updates on its own.
+
+Set it up once: in the GitHub repo, **Settings > Secrets and variables > Actions**, add `OPENAI_API_KEY` and `TAVILY_API_KEY`. To run it right away, open the **Actions** tab, pick "Weekly event refresh", and click **Run workflow**.
+
+Note: events added in the app are saved on the server and reset when Streamlit restarts the app. Connecting the Google Sheet will make them permanent.

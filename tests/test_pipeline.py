@@ -109,3 +109,17 @@ def test_custom_events_go_through_the_same_steps():
     assert scraped["status"] == "Duplicate"
     assert sum(t["status"] == "Pick" and t["date"].month == 11 for t in result["trace"]) == 3
     assert len(result["trace"]) == len(SAMPLE_EVENTS_RAW) + 3
+
+
+def test_snapshot_round_trip(tmp_path, monkeypatch):
+    import snapshot
+    monkeypatch.setattr(snapshot, "PATH", tmp_path / "latest.json")
+    assert snapshot.load() is None
+    state = sample_state()
+    snapshot.save(state)
+    loaded = snapshot.load()
+    assert len(loaded["events_raw"]) == len(SAMPLE_EVENTS_RAW)
+    assert snapshot.fetched_on(loaded) is not None
+    # A loaded snapshot runs through the rest of the pipeline like a fresh fetch.
+    result = build_graph(skip_until="normalizer").invoke({**loaded, "today": state["today"]})
+    assert len(result["trace"]) == len(SAMPLE_EVENTS_RAW)
