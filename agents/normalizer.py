@@ -8,7 +8,9 @@ import re
 from datetime import date, datetime
 
 DATE_FORMATS = ["%Y-%m-%d", "%B %d, %Y", "%b %d, %Y", "%m/%d/%Y", "%A, %B %d, %Y"]
-FREE_WORDS = {"free", "$0", "0", "no cover", "free admission", "free entry"}
+FREE_WORDS = {"free", "$0", "0", "no cover", "free admission", "free entry", "free to attend",
+              "free event", "free, rsvp", "free with rsvp", "free (rsvp)", "free with registration"}
+UNKNOWN = "Not listed"
 
 
 def parse_date(value) -> date | None:
@@ -29,7 +31,9 @@ def title_key(title: str) -> str:
 
 def clean_cost(cost: str) -> str:
     text = (cost or "").strip()
-    return "Free" if text.lower() in FREE_WORDS or not text else text
+    if not text:
+        return UNKNOWN  # never assume free
+    return "Free" if text.lower() in FREE_WORDS else text
 
 
 def _richness(e: dict) -> int:

@@ -9,3 +9,4 @@ output/
 .DS_Store
 data/
 .streamlit/secrets.toml
+Claude outputs/

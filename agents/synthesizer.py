@@ -15,8 +15,8 @@ from pathlib import Path
 SHEET_COLUMNS = ["title", "date", "time", "spot", "hood", "cat", "desc", "cost", "link", "pick"]
 
 # Statuses, in the order the UI shows them.
-PICK, PUBLISH, REVIEW, MERGED = "Pick", "Publish", "Needs review", "Duplicate"
-STATUSES = [PICK, PUBLISH, REVIEW, MERGED]
+PICK, PUBLISH, REVIEW, MERGED, FILTERED = "Pick", "Publish", "Needs review", "Duplicate", "Filtered"
+STATUSES = [PICK, PUBLISH, REVIEW, MERGED, FILTERED]
 
 
 def to_row(e: dict) -> dict:
@@ -70,6 +70,8 @@ def build_trace(state: dict) -> list[dict]:
     titles = {t["id"]: t["title"] for t in trace}
     for e in state.get("duplicates", []):
         trace.append(_trace_entry(e, MERGED, f"same as {titles.get(e['merged_into'], e['merged_into'])}"))
+    for e in state.get("events_filtered", []):
+        trace.append(_trace_entry(e, FILTERED, e["filter_reason"]))
     order = {s: i for i, s in enumerate(STATUSES)}
     trace.sort(key=lambda t: (order[t["status"]], t["date"] or date.max, t["title"]))
     return trace

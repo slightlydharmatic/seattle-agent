@@ -24,7 +24,10 @@ Today is {today}. Return JSON: {{"events": [ ... ]}}. Each event has:
   time         start time like "7pm", or "" if not listed
   venue        where it happens
   neighborhood Seattle neighborhood or nearby city, or ""
-  cost         "Free" or the price as written
+  cost         the price exactly as listed ("Free", "$15", "$10-25", "Donation"),
+               or "" if the listing doesn't say
+  ticketed     true if the listing shows a price or says to buy tickets,
+               false only if it clearly says the event is free
   description  one sentence, in plain words
   link         the event's own URL if the page shows one, else ""
 Only include real events in the Seattle area. Do not invent details.

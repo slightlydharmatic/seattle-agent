@@ -16,7 +16,7 @@ import streamlit as st
 import custom_events
 import snapshot
 from agents.reasoner import CATEGORIES
-from agents.synthesizer import MERGED, PICK, PUBLISH, REVIEW, SHEET_COLUMNS
+from agents.synthesizer import FILTERED, MERGED, PICK, PUBLISH, REVIEW, SHEET_COLUMNS
 from pipeline import build_graph
 from tests.sample_events import sample_state
 
@@ -50,7 +50,7 @@ html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family
 .ob-head{display:flex;align-items:center;gap:12px;margin:6px 0 16px}
 .ob-head h2{font-size:24px;font-weight:600;color:var(--text);margin:0;padding:0}
 .ob-type{font-family:var(--mono) !important;font-size:11px;color:var(--blue);background:var(--blue-bg);padding:2px 8px;border-radius:3px}
-.ob-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.ob-stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
 .ob-stat{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 12px}
 .ob-stat span{display:block;font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 .ob-stat b{display:block;font-size:22px;font-weight:600;color:var(--text);margin-top:2px;font-variant-numeric:tabular-nums}
@@ -335,7 +335,7 @@ def record_table(df: pd.DataFrame, key: str) -> None:
 
 
 def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
-    order = {PICK: 0, PUBLISH: 0, REVIEW: 1, MERGED: 2}
+    order = {PICK: 0, PUBLISH: 0, REVIEW: 1, MERGED: 2, FILTERED: 3}
     df = df.assign(_o=df["status"].map(order),
                    _d=df["date"].map(lambda d: d if isinstance(d, date) else date.max))
     df = df.sort_values(["_o", "_d", "title"])
@@ -352,6 +352,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
         f"<div class='ob-stat blue'><span>Picks</span><b>{c[PICK]}</b></div>"
         f"<div class='ob-stat red'><span>Held</span><b>{c[REVIEW]}</b></div>"
         f"<div class='ob-stat'><span>Duplicates</span><b>{c[MERGED]}</b></div>"
+        f"<div class='ob-stat'><span>Filtered</span><b>{c[FILTERED]}</b></div>"
         f"<div class='ob-stat'><span>Sources</span><b>{len(sources)}</b></div>"
         f"</div></div>", unsafe_allow_html=True)
 

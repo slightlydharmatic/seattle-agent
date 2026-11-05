@@ -38,11 +38,13 @@ def test_duplicates_merge_and_keep_the_detailed_copy():
 def test_every_event_is_published_or_reviewed_with_a_reason():
     result = run_offline()
     reasons = {e["title"]: e["review_reasons"] for e in result["events_review"]}
-    assert reasons["Seattle Symphony Open Rehearsal"] == ["not free ($15)"]
+    filtered = {e["title"]: e["filter_reason"] for e in result["events_filtered"]}
+    assert filtered["Seattle Symphony Open Rehearsal"] == "not free ($15)"
     assert reasons["Halloween Pumpkin Walk"] == ["already happened"]
     assert reasons["Ballard Night Market"] == ["missing venue"]
     assert reasons["Winter Lights Preview"] == ["date not understood"]
-    assert len(result["events_valid"]) + len(result["events_review"]) == len(SAMPLE_EVENTS_RAW) - 1
+    total = len(result["events_valid"]) + len(result["events_review"]) + len(result["events_filtered"])
+    assert total == len(SAMPLE_EVENTS_RAW) - 1
 
 
 def test_include_paid_keeps_paid_events():
@@ -132,3 +134,56 @@ def test_long_pages_are_read_in_overlapping_chunks():
     assert len(parts) == 3 and all(len(p) <= CHUNK_CHARS for p in parts)
     assert parts[0][-CHUNK_OVERLAP:] == parts[1][:CHUNK_OVERLAP]
     assert chunks("") == []
+
+
+def test_real_estate_events_are_filtered_out_but_recorded():
+    from agents.validator import blocked_topic
+    assert blocked_topic({"title": "Bellevue Real Estate Seminar"}).startswith("real estate")
+    assert blocked_topic({"title": "DADU 101: Unlock Your Backyard's Potential"})
+    assert blocked_topic({"title": "Free class", "description": "Talk with a local Realtor about escrow"})
+    assert blocked_topic({"title": "Fremont Vintage Market"}) is None
+    assert blocked_topic({"title": "Readers' book club"}) is None  # "read" is not "realty"
+
+    extra = [{"title": "First-Time Homebuyer Workshop", "date": "2026-11-10", "venue": "Library",
+              "cost": "Free", "source": "https://x.com"}]
+    state = sample_state()
+    state["events_raw"] = state["events_raw"] + [{**extra[0], "id": "e999"}]
+    result = build_graph(skip_until="normalizer").invoke(state)
+    t = [t for t in result["trace"] if t["id"] == "e999"][0]
+    assert t["status"] == "Filtered" and "real estate" in t["why"]
+    assert "First-Time Homebuyer Workshop" not in {r["title"] for r in result["rows"]}
+
+    # Events you add yourself are never filtered.
+    mine = build_graph(skip_until="normalizer").invoke(
+        sample_state(custom_events=[{**extra[0], "custom_id": "c-9"}]))
+    assert [t for t in mine["trace"] if t["id"] == "c-9"][0]["status"] != "Filtered"
+
+
+def test_monthly_pages_roll_over_the_year():
+    from config import month_pages
+    assert month_pages(date(2026, 11, 5)) == [
+        "https://www.events12.com/seattle/november/",
+        "https://www.events12.com/seattle/december/",
+        "https://www.events12.com/seattle/january/",
+    ]
+
+
+def test_paid_or_ticketed_events_never_reach_the_list():
+    from agents.validator import paid_reason
+    assert paid_reason({"cost": "$45"}) == "not free ($45)"
+    assert paid_reason({"cost": "Free", "ticketed": True}) == "tickets required"
+    assert paid_reason({"cost": "Not listed", "description": "Buy tickets at the door"})
+    assert paid_reason({"cost": "Free", "description": "Tickets from $20"})
+    assert paid_reason({"cost": "Free", "description": "Free, RSVP required"}) is None
+
+    base = {"date": "2026-11-10", "venue": "Hall", "source": "https://x.com"}
+    state = sample_state()
+    state["events_raw"] = state["events_raw"] + [
+        {**base, "id": "p1", "title": "Big Concert", "cost": "", "description": "Get tickets now"},
+        {**base, "id": "p2", "title": "Mystery Show", "cost": ""},
+    ]
+    result = build_graph(skip_until="normalizer").invoke(state)
+    by = {t["id"]: t for t in result["trace"]}
+    assert by["p1"]["status"] == "Filtered"
+    assert by["p2"]["status"] == "Needs review" and "cost not listed" in by["p2"]["why"]
+    assert not {"Big Concert", "Mystery Show"} & {r["title"] for r in result["rows"]}

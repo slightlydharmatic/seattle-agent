@@ -3,7 +3,9 @@ import logging
 from urllib.parse import urlparse
 
 from agents import clients
-from config import SOURCE_PAGES
+from datetime import date
+
+from config import SOURCE_PAGES, month_pages
 
 log = logging.getLogger(__name__)
 
@@ -16,7 +18,7 @@ def retrieve(state: dict) -> dict:
     query = state.get("query", "free events in Seattle this week")
     max_pages = state.get("max_pages", 20)
 
-    urls = list(SOURCE_PAGES)
+    urls = month_pages(state.get("today") or date.today()) + list(SOURCE_PAGES)
     try:
         results = clients.tavily().search(
             query=query,
