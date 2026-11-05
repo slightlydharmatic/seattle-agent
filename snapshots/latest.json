@@ -7,6 +7,7 @@
    "venue": "Tacoma Dome",
    "neighborhood": "",
    "cost": "",
+   "ticketed": "True",
    "description": "Pentatonix performs live at the Tacoma Dome.",
    "link": "https://www.tacomadome.org/events/detail/pentatonix-2026",
    "source": "https://www.events12.com/seattle/november/",
@@ -19,6 +20,7 @@
    "venue": "Climate Pledge",
    "neighborhood": "",
    "cost": "",
+   "ticketed": "True",
    "description": "Teddy Swims brings his soulful performance to Climate Pledge Arena.",
    "link": "https://stubhub.prf.hn/l/A3mvYDd/",
    "source": "https://www.events12.com/seattle/november/",
@@ -31,6 +33,7 @@
    "venue": "Green Lake",
    "neighborhood": "",
    "cost": "",
+   "ticketed": "True",
    "description": "A road trip comedy featuring a family from India.",
    "link": "https://app.arts-people.com/?show=326697",
    "source": "https://www.events12.com/seattle/november/",
@@ -43,7 +46,8 @@
    "venue": "Seattle Art Museum",
    "neighborhood": "",
    "cost": "Free",
-   "description": "Celebrate Day of the Dead with food, costumes, and entertainment.",
+   "ticketed": "False",
+   "description": "Celebrate the Day of the Dead with food, costumes, and entertainment.",
    "link": "https://seattleartmuseum.org/whats-on/events/d-a-de-los-muertos-community-celebration-nov-5-26",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e004"
@@ -55,7 +59,8 @@
    "venue": "12th Avenue Arts",
    "neighborhood": "Capitol Hill",
    "cost": "",
-   "description": "An immersive physical theater experience featuring acrobatic performances.",
+   "ticketed": "True",
+   "description": "An immersive physical theater experience featuring acrobatic and aerial performances.",
    "link": "https://collections.humanitix.com/queen-of-the-sky-events",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e005"
@@ -67,7 +72,8 @@
    "venue": "Georgetown",
    "neighborhood": "",
    "cost": "",
-   "description": "Visit the Georgetown Morgue for a spooky experience.",
+   "ticketed": "True",
+   "description": "A haunted house experience recommended for ages 12 and up.",
    "link": "https://seattlehaunts.com",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e006"
@@ -78,19 +84,21 @@
    "time": "",
    "venue": "Belltown & Pioneer Square",
    "neighborhood": "",
-   "cost": "",
+   "cost": "$53 - $291",
+   "ticketed": "True",
    "description": "A music festival featuring acts on six stages at four locations.",
    "link": "https://babaobscura.com",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e007"
   },
   {
-   "title": "Seattle Art Walks",
+   "title": "Seattle Art Walk",
    "date": "2026-11-05",
-   "time": "5:00 PM",
+   "time": "5:00 PM - 8:00 PM",
    "venue": "Pioneer Square",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Walk between venues displaying artwork during the Pioneer Square Art Walk.",
    "link": "https://pioneersquare.org/art-walks/november-first-thursday-art-walk-11-5/",
    "source": "https://www.events12.com/seattle/november/",
@@ -103,6 +111,7 @@
    "venue": "Hotel Andra",
    "neighborhood": "Seattle",
    "cost": "$130",
+   "ticketed": "True",
    "description": "Enjoy a date night dinner featuring Coq au Vin chicken with Chef Bridget Charters.",
    "link": "https://www.hotstovesociety.com/store/event/date-night-coq-au-vin-dinner-with-chef-bridget-charters/",
    "source": "https://www.events12.com/seattle/november/",
@@ -115,7 +124,8 @@
    "venue": "Hotel Andra",
    "neighborhood": "Seattle",
    "cost": "$110",
-   "description": "Join for a brunch featuring Eastern European dishes with Chef Annie Elmore.",
+   "ticketed": "True",
+   "description": "Join Chef Annie Elmore for a delicious Eastern European brunch.",
    "link": "https://www.hotstovesociety.com/store/event/brunch-club-bialy-with-chef-annie-elmore-1/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e010"
@@ -126,8 +136,9 @@
    "time": "",
    "venue": "Elliott\u2019s Oyster House",
    "neighborhood": "Waterfront",
-   "cost": "Sold Out",
-   "description": "Enjoy 25 varieties of oysters along with a seafood buffet and live music.",
+   "cost": "",
+   "ticketed": "True",
+   "description": "Savor 25 varieties of oysters along with a seafood buffet and live music.",
    "link": "https://elliottsoysterhouse.com/oyster-new-year/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e011"
@@ -137,9 +148,10 @@
    "date": "2026-11-07",
    "time": "12:00 PM",
    "venue": "Seattle Center Armory",
-   "neighborhood": "Seattle Center",
+   "neighborhood": "Seattle",
    "cost": "Free",
-   "description": "Celebrate Diwali with dances, food, and crafts at the Seattle Center.",
+   "ticketed": "False",
+   "description": "Celebrate Diwali with dances, food, and crafts at Seattle Center.",
    "link": "https://seattlecenter.com/events/featured-events/festal/diwali-lights-of-india",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e012"
@@ -151,6 +163,7 @@
    "venue": "Lumen Field",
    "neighborhood": "Pioneer Square",
    "cost": "",
+   "ticketed": "True",
    "description": "Watch the Seattle Sounders play a home game against LAFC.",
    "link": "https://www.soundersfc.com/schedule/",
    "source": "https://www.events12.com/seattle/november/",
@@ -163,6 +176,7 @@
    "venue": "Polish Cultural Center",
    "neighborhood": "Capitol Hill",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Enjoy Polish food and crafts at the Polish Fall Bazaar.",
    "link": "https://www.facebook.com/events/1102933015706358",
    "source": "https://www.events12.com/seattle/november/",
@@ -175,7 +189,8 @@
    "venue": "Pacific Tower",
    "neighborhood": "Beacon Hill",
    "cost": "",
-   "description": "Attend a series of short lectures by innovative architects and builders.",
+   "ticketed": "True",
+   "description": "Attend a series of short lectures on innovative green building practices.",
    "link": "https://ecobuilding.org/slam_pages/home/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e015"
@@ -187,7 +202,8 @@
    "venue": "Seattle Design Center",
    "neighborhood": "Georgetown",
    "cost": "Free",
-   "description": "Showcase of comics, zines, and animation creators.",
+   "ticketed": "False",
+   "description": "Explore comics, zines, and animation at this festival showcasing local creators.",
    "link": "https://shortrun.org/category/home-page/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e016"
@@ -199,7 +215,8 @@
    "venue": "Latvian Community Center",
    "neighborhood": "Pinehurst",
    "cost": "$38",
-   "description": "An evening of Scottish music, dancing, and a silent auction.",
+   "ticketed": "True",
+   "description": "Enjoy an evening of Scottish music, dancing, and a silent auction.",
    "link": "https://www.sshga.org/heather-tartan-ball/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e017"
@@ -211,7 +228,8 @@
    "venue": "The Museum of Flight",
    "neighborhood": "Georgetown",
    "cost": "$60",
-   "description": "A fashion show featuring a live DJ and designer booths.",
+   "ticketed": "True",
+   "description": "Attend a fashion show with a live DJ and designer booths.",
    "link": "https://www.fashioninflight.org",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e018"
@@ -223,7 +241,8 @@
    "venue": "Bellevue Square",
    "neighborhood": "Bellevue",
    "cost": "Free",
-   "description": "Celebrate Diwali with performances and art displays.",
+   "ticketed": "False",
+   "description": "Celebrate Diwali with performances, art displays, and henna at Bellevue Square.",
    "link": "https://bellevuecollection.com/diwali/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e019"
@@ -235,7 +254,8 @@
    "venue": "Hyatt House",
    "neighborhood": "Redmond",
    "cost": "$95",
-   "description": "A charity event with dinner and auctions to support children in Tanzania.",
+   "ticketed": "True",
+   "description": "Join a charity event with dinner and auctions to support children in Tanzania.",
    "link": "https://songeaskids.ejoinme.org/Soiree2026",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e020"
@@ -247,7 +267,8 @@
    "venue": "St. Stephen the Martyr",
    "neighborhood": "Renton",
    "cost": "$40",
-   "description": "Wine tasting and silent auction for charity.",
+   "ticketed": "True",
+   "description": "Enjoy wine tasting and food at this charity fundraiser.",
    "link": "https://www.facebook.com/events/1998088947529717",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e021"
@@ -259,7 +280,8 @@
    "venue": "Thomas Family Farm",
    "neighborhood": "Snohomish",
    "cost": "",
-   "description": "Enjoy tastings from various breweries and live music.",
+   "ticketed": "True",
+   "description": "Taste local beers and enjoy live music at the Snohomish Brewfest.",
    "link": "https://www.snohomishbrewfest.com/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e022"
@@ -271,7 +293,8 @@
    "venue": "Auburn Downtown Association",
    "neighborhood": "Auburn",
    "cost": "Free",
-   "description": "A parade honoring veterans with marching bands and floats.",
+   "ticketed": "False",
+   "description": "Join the Veterans Parade featuring military units and marching bands.",
    "link": "https://www.auburnwa.gov/workspaces/One.aspx?objectId=13559504",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e023"
@@ -283,7 +306,8 @@
    "venue": "Tacoma Convention Center",
    "neighborhood": "Tacoma",
    "cost": "$12",
-   "description": "Meet comics creators and enjoy panels and games.",
+   "ticketed": "True",
+   "description": "Meet comics creators and enjoy panels at the Grit City Comic Show.",
    "link": "https://gritcitycomicshow.com/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e024"
@@ -295,7 +319,8 @@
    "venue": "Asia Pacific Cultural Center",
    "neighborhood": "Tacoma",
    "cost": "$29",
-   "description": "Learn to prepare Tokelau cuisine in this cooking class.",
+   "ticketed": "True",
+   "description": "Learn to cook Tokelau cuisine in this exotic cooking class.",
    "link": "https://experienceapcc.org/product/3758DC8/tokelau-november-7th",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e025"
@@ -307,7 +332,8 @@
    "venue": "Agriplex",
    "neighborhood": "Puyallup",
    "cost": "$45",
-   "description": "Sample local beers and enjoy live music and a car show.",
+   "ticketed": "True",
+   "description": "Sample local beers and enjoy live music at the Brewallup Craft Beer Festival.",
    "link": "https://www.puyallupsumnerchamber.com/brewallup2026",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e026"
@@ -319,8 +345,9 @@
    "venue": "Canterwood Golf and Country Club",
    "neighborhood": "Gig Harbor",
    "cost": "$109",
-   "description": "An evening of culinary creations and live music to benefit seniors.",
-   "link": "https://www.gigharborfoundation.org/indulge",
+   "ticketed": "True",
+   "description": "Enjoy a culinary experience with local dishes and drinks at Indulge.",
+   "link": "https://www.eventbrite.com/e/indulge-a-sip-savor-experience-tickets-1998440539450",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e027"
   },
@@ -329,21 +356,23 @@
    "date": "2026-11-07",
    "time": "10:00 AM",
    "venue": "Seattle Center Exhibition Hall",
-   "neighborhood": "Seattle Center",
+   "neighborhood": "Seattle",
    "cost": "",
-   "description": "A convention for cat lovers featuring vendors and workshops.",
+   "ticketed": "True",
+   "description": "Shop for cat-related items and enjoy workshops at the Sea-Meow Convention.",
    "link": "https://www.seameowconvention.com/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e028"
   },
   {
-   "title": "Seattle Turkish Film Festival",
+   "title": "Seattle Turkish Film Festival (STFF)",
    "date": "2026-11-07",
    "time": "",
    "venue": "SIFF Cinema Uptown",
    "neighborhood": "Lower Queen Anne",
    "cost": "",
-   "description": "Watch feature-length and short films from Turkey.",
+   "ticketed": "True",
+   "description": "Watch feature-length and short films at the Seattle Turkish Film Festival.",
    "link": "https://www.stff.org",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e029"
@@ -355,7 +384,8 @@
    "venue": "Rhododendron Species Botanical Garden",
    "neighborhood": "Federal Way",
    "cost": "Free",
-   "description": "Enjoy tours, crafts, and food trucks at this fall festival.",
+   "ticketed": "False",
+   "description": "Enjoy tours, crafts, and food trucks at the Fall Foliage Festival.",
    "link": "https://rhodygarden.org/events/fall-foliage-festival/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e030"
@@ -367,7 +397,8 @@
    "venue": "Spanaway Lake High School",
    "neighborhood": "Spanaway",
    "cost": "Free",
-   "description": "A craft fair featuring 150 local vendors.",
+   "ticketed": "False",
+   "description": "Browse handmade items from local vendors at the Spanaway Lake Craft Fair.",
    "link": "https://www.facebook.com/events/1427139242698908",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e031"
@@ -379,6 +410,7 @@
    "venue": "Capitol Hill",
    "neighborhood": "Seattle area",
    "cost": "$32",
+   "ticketed": "True",
    "description": "Join a walking tour of upscale residences in Capitol Hill.",
    "link": "https://seattlearchitecture.org/tours/",
    "source": "https://www.events12.com/seattle/november/",
@@ -391,7 +423,8 @@
    "venue": "Husky Stadium",
    "neighborhood": "University District",
    "cost": "",
-   "description": "Watch the Huskies play a home football game.",
+   "ticketed": "True",
+   "description": "Watch the Huskies play a home game against Penn State.",
    "link": "https://gohuskies.com/sports/football/schedule/2026",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e033"
@@ -403,7 +436,8 @@
    "venue": "Washington State Fair Events Center",
    "neighborhood": "Puyallup",
    "cost": "$10",
-   "description": "Watch motorcycle and quad racing on an indoor track.",
+   "ticketed": "True",
+   "description": "Enjoy indoor motorcycle and quad racing at the Puyallup Flat Track.",
    "link": "https://www.facebook.com/puyallupflattrack",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e034"
@@ -415,7 +449,8 @@
    "venue": "Hotel Sorrento",
    "neighborhood": "First Hill",
    "cost": "$81",
-   "description": "Enjoy a cozy holiday tea with sandwiches and sweets.",
+   "ticketed": "True",
+   "description": "Enjoy a cozy holiday tea experience with sandwiches and sweets.",
    "link": "https://events.humanitix.com/holiday-tea-2026-at-the-sorrento",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e035"
@@ -424,9 +459,10 @@
    "title": "Weekend brunch cruise",
    "date": "2026-11-08",
    "time": "11am",
-   "venue": "Waterways Cruises, Dock 9",
+   "venue": "Waterways Cruises, Dock 9 at Fishermen's Terminal",
    "neighborhood": "Interbay",
    "cost": "$99",
+   "ticketed": "True",
    "description": "Enjoy a buffet and two hours of lake views from your private table aboard a Seattle Brunch Cruise.",
    "link": "https://www.viator.com/tours/Seattle/Seattle-Brunch-Cruise/d704-5616947P2?pid=P00051759&mcid=42383&medium=link&campaign=108756",
    "source": "https://www.events12.com/seattle/november/",
@@ -439,6 +475,7 @@
    "venue": "Lumen Field",
    "neighborhood": "Pioneer Square",
    "cost": "",
+   "ticketed": "True",
    "description": "Watch the Seahawks play an exciting home game against the Arizona Cardinals.",
    "link": "https://www.seahawks.com",
    "source": "https://www.events12.com/seattle/november/",
@@ -451,6 +488,7 @@
    "venue": "Alaska Airlines Arena at Hec Edmundson Pavilion",
    "neighborhood": "University District",
    "cost": "",
+   "ticketed": "True",
    "description": "Watch the Washington Huskies play an exciting exhibition game with the UNLV Rebels.",
    "link": "https://gohuskies.com/sports/mens-basketball/schedule",
    "source": "https://www.events12.com/seattle/november/",
@@ -463,34 +501,11 @@
    "venue": "Village Theatre",
    "neighborhood": "Issaquah",
    "cost": "",
+   "ticketed": "True",
    "description": "Come from Away is a musical that changes you, heals old wounds, and lifts the spirit.",
    "link": "https://villagetheatre.org/mainstage/come-from-away-iss/",
    "source": "https://www.events12.com/seattle/november/",
    "id": "e039"
-  },
-  {
-   "title": "Veterans Day events",
-   "date": "2026-11-11",
-   "time": "",
-   "venue": "multiple locations",
-   "neighborhood": "",
-   "cost": "",
-   "description": "Various events honoring Veterans Day across multiple locations including Seattle, Tacoma, and Olympia.",
-   "link": "https://www.events12.com/seattle/november/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e040"
-  },
-  {
-   "title": "Veterans Day parade FREE",
-   "date": "2026-11-11",
-   "time": "9am",
-   "venue": "Library Park",
-   "neighborhood": "Mill Creek",
-   "cost": "Free",
-   "description": "A one-hour Veterans Day Parade featuring military and high school bands, color guards, and community organizations.",
-   "link": "https://millcreekwa.gov/events/veterans-day",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e041"
   },
   {
    "title": "Aquarium happy hour",
@@ -499,10 +514,11 @@
    "venue": "Seattle Aquarium",
    "neighborhood": "Waterfront",
    "cost": "",
-   "description": "Enjoy animal-themed activities, a scavenger hunt, aquarium exhibits, and a no-host bar.",
+   "ticketed": "True",
+   "description": "After Hours: Gill & Chill features animal-themed activities, a scavenger hunt, aquarium exhibits, and a no-host bar.",
    "link": "https://www.seattleaquarium.org/events/after-hours-gill-and-chill/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e042"
+   "id": "e040"
   },
   {
    "title": "Wine tasting dinner",
@@ -511,10 +527,11 @@
    "venue": "The Restaurant at DeLille Cellars",
    "neighborhood": "Woodinville",
    "cost": "$56 + $110 plus tax and tip",
-   "description": "Includes five courses paired with wines from Washington State\u2019s most prestigious vineyards.",
+   "ticketed": "True",
+   "description": "Enjoy a five-course dinner paired with wines from Washington State\u2019s most prestigious vineyards.",
    "link": "https://delillecellars.com/events/delille-winemaker-dinner-with-nick-bernstein/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e043"
+   "id": "e041"
   },
   {
    "title": "Spooky cabaret",
@@ -523,10 +540,11 @@
    "venue": "The Triple Door",
    "neighborhood": "Downtown",
    "cost": "",
+   "ticketed": "True",
    "description": "Kat Robichaud\u2019s Misfit Cabaret: Ghosted is a variety show featuring spirits of the drag burlesque & circus underworld.",
    "link": "https://tickets.thetripledoor.net/eventperformances.asp?evt=2243",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e044"
+   "id": "e042"
   },
   {
    "title": "Classical concert",
@@ -535,10 +553,11 @@
    "venue": "Emerald City Music",
    "neighborhood": "South Lake Union",
    "cost": "",
+   "ticketed": "True",
    "description": "A skilled pianist performs five of Ludwig van Beethoven\u2019s piano sonatas.",
    "link": "https://www.emeraldcitymusic.org/concerts/beethovens-piano-sonatas-sea",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e045"
+   "id": "e043"
   },
   {
    "title": "Ballet party",
@@ -547,10 +566,11 @@
    "venue": "Seattle Golf Club",
    "neighborhood": "Shoreline",
    "cost": "$225",
-   "description": "Includes wine, a plated dinner, short ballet performances, and a lively auction to support Olympic Ballet Theatre.",
+   "ticketed": "True",
+   "description": "The Annual Gala to support Olympic Ballet Theatre includes wine, a plated dinner, and short ballet performances.",
    "link": "https://www.olympicballet.org/performance-season/annual-gala/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e046"
+   "id": "e044"
   },
   {
    "title": "Food fair",
@@ -559,10 +579,11 @@
    "venue": "Hangar 30 at Magnuson Park",
    "neighborhood": "Sand Point",
    "cost": "$11",
-   "description": "Shop from 80 local crafty food and beverage vendors.",
+   "ticketed": "True",
+   "description": "Shop from 80 local crafty food and beverage vendors at Gobble Up by Urban Craft Uprising.",
    "link": "https://gobbleupnorthwest.com/seattle/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e047"
+   "id": "e045"
   },
   {
    "title": "Auto show",
@@ -571,10 +592,11 @@
    "venue": "Lumen Field Event Center",
    "neighborhood": "SoDo",
    "cost": "",
+   "ticketed": "True",
    "description": "See 300 of the latest cars and trucks, including electric and hybrid, and take test drives.",
    "link": "https://www.seattleautoshow.com",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e048"
+   "id": "e046"
   },
   {
    "title": "Films from Romania",
@@ -583,58 +605,24 @@
    "venue": "SIFF Cinema Uptown",
    "neighborhood": "Lower Queen Anne",
    "cost": "",
-   "description": "Watch films from Romania with English subtitles at the Romanian Film Festival.",
+   "ticketed": "True",
+   "description": "Watch films from Romania at the Romanian Film Festival, with actors and directors attending some screenings.",
    "link": "https://arcsproject.org/event/romanian-film-festival-seattle-13th-edition/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e049"
+   "id": "e047"
   },
   {
-   "title": "Lights at Seattle zoo",
-   "date": "2026-11-13",
-   "time": "",
-   "venue": "Woodland Park Zoo",
-   "neighborhood": "Phinney Ridge",
-   "cost": "",
-   "description": "WildLanterns features large-scale animal and nature scape lanterns representing wild places from around the globe.",
-   "link": "https://zoo.org/wildlanterns/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e050"
-  },
-  {
-   "title": "Phinney beer tasting",
-   "date": "2026-11-14",
-   "time": "7 p.m.",
-   "venue": "Phinney Center",
-   "neighborhood": "Phinney Ridge",
-   "cost": "$65",
-   "description": "Enjoy 10 tastes from 25 breweries and cideries plus pub snacks and DJ music.",
-   "link": "https://www.phinneycenter.org/events/beer-taste-winter/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e051"
-  },
-  {
-   "title": "Farm dinner",
-   "date": "2026-11-14",
-   "time": "5 to 8 p.m.",
-   "venue": "Carnation Farms",
-   "neighborhood": "Carnation",
-   "cost": "$245",
-   "description": "Includes a welcome cocktail and appetizers, plus a multi-course, chef-driven dinner inspired by the vibrant flavors of Peru.",
-   "link": "https://events.carnationfarms.org/event/farmview-dinner-4/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e052"
-  },
-  {
-   "title": "Children\u2019s Business Fair FREE",
+   "title": "Children\u2019s Business Fair",
    "date": "2026-11-14",
    "time": "12 to 3 p.m.",
    "venue": "Waterfront Market at Ruston",
    "neighborhood": "Tacoma",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "Shop at 61 booths run by young entrepreneurs ages 5 to 17 selling food, art, toys, and more.",
    "link": "https://www.childrensbusinessfair.org/66532",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e053"
+   "id": "e048"
   },
   {
    "title": "Wine tasting",
@@ -643,10 +631,11 @@
    "venue": "Enumclaw Chamber of Commerce",
    "neighborhood": "Enumclaw",
    "cost": "$48",
-   "description": "Includes a glass and 10 tasting tickets to redeem in downtown shops.",
+   "ticketed": "True",
+   "description": "Enjoy a wine walk with a glass and 10 tasting tickets in downtown shops.",
    "link": "https://www.enumclawchamber.com/wine-walk",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e054"
+   "id": "e049"
   },
   {
    "title": "Asian dance festival",
@@ -655,58 +644,37 @@
    "venue": "Broadway Performance Hall",
    "neighborhood": "Capitol Hill",
    "cost": "$53",
+   "ticketed": "True",
    "description": "O-Jak Bridge Festival weaves together Korean and Chinese traditions alongside Taekwondo, K-pop, ballet, and contemporary dance.",
    "link": "https://www.ojakfestival.org/ojak-26-once-upon-a-time",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e055"
-  },
-  {
-   "title": "Santa train",
-   "date": "2026-11-14",
-   "time": "",
-   "venue": "Chehalis-Central Railroad & Museum",
-   "neighborhood": "Chehalis",
-   "cost": "Varies",
-   "description": "Take a 75-minute round trip to the North Pole on the Polar Express Train Ride, which includes cocoa, cookies, and a visit from Santa.",
-   "link": "https://steamtrainride.com/the-polar-express/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e056"
+   "id": "e050"
   },
   {
    "title": "Dinner for farmers\u2019 markets",
    "date": "2026-11-15",
-   "time": "5:30 p.m.",
+   "time": "5:30pm",
    "venue": "Terra Plata",
    "neighborhood": "Capitol Hill",
    "cost": "$150",
-   "description": "Enjoy a four-course family-style dinner featuring local, seasonal ingredients to support Seattle farmers\u2019 markets.",
+   "ticketed": "True",
+   "description": "A four-course family-style dinner featuring local, seasonal ingredients to support Seattle farmers\u2019 markets.",
    "link": "https://givebutter.com/neighborhood-harvest-dinner",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e057"
+   "id": "e051"
   },
   {
    "title": "Antique dolls",
    "date": "2026-11-15",
-   "time": "11 a.m. to 4 p.m.",
+   "time": "11am to 4pm",
    "venue": "Embassy Suites",
    "neighborhood": "Lynnwood",
    "cost": "$10",
-   "description": "Explore 50 vendors of antique to mid-century-modern dolls, toys, and more at the Antique Doll & Toy Market.",
+   "ticketed": "True",
+   "description": "An event featuring 50 vendors of antique to mid-century-modern dolls, toys, books, clothing, furniture, and teddy bears.",
    "link": "https://www.facebook.com/events/1794617071790678",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e058"
-  },
-  {
-   "title": "Thanksgiving run or walk",
-   "date": "2026-11-15",
-   "time": "",
-   "venue": "Multiple locations",
-   "neighborhood": "",
-   "cost": "Varies",
-   "description": "Participate in various Thanksgiving-themed runs and walks across multiple locations.",
-   "link": "https://www.events12.com/seattle/november/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e059"
+   "id": "e052"
   },
   {
    "title": "Italian film festival",
@@ -714,95 +682,77 @@
    "time": "",
    "venue": "SIFF Cinema Uptown",
    "neighborhood": "Lower Queen Anne",
-   "cost": "Varies",
-   "description": "Watch 12 films in Italian with English subtitles during the Cinema Italian Style festival.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Cinema Italian Style screens 12 films in Italian with English subtitles.",
    "link": "https://www.cinemaitalianstyleseattle.org/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e060"
+   "id": "e053"
   },
   {
-   "title": "Christmas trees in Auburn FREE",
+   "title": "Christmas trees in Auburn",
    "date": "2026-11-18",
    "time": "",
    "venue": "White River Valley Museum",
    "neighborhood": "Auburn",
    "cost": "Free",
-   "description": "See a dozen Christmas trees decorated by local businesses at the Festival of Trees.",
+   "ticketed": "False",
+   "description": "See a dozen Christmas trees decorated by local businesses during the Festival of Trees.",
    "link": "https://www.wrvmuseum.org/tree-registration",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e061"
+   "id": "e054"
   },
   {
    "title": "1980s sing along",
    "date": "2026-11-19",
-   "time": "8 to 10:45 p.m.",
+   "time": "8pm",
    "venue": "Central Cinema",
    "neighborhood": "Central District",
    "cost": "$17",
-   "description": "Sing along to classic 80s music videos at The Totally \u201880s Sing Along.",
+   "ticketed": "True",
+   "description": "Sing along to 30 music videos from the '80s at this fun event.",
    "link": "https://central-cinema.com/movie/totally-80s-sing-along/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e062"
-  },
-  {
-   "title": "Tacoma museum night FREE",
-   "date": "2026-11-19",
-   "time": "",
-   "venue": "Multiple locations in Tacoma",
-   "neighborhood": "Tacoma",
-   "cost": "Free",
-   "description": "Enjoy free admission to various museums in Tacoma on the third Thursday of the month.",
-   "link": "https://www.events12.com/seattle/november/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e063"
+   "id": "e055"
   },
   {
    "title": "Odd Japanese dance",
    "date": "2026-11-19",
-   "time": "8 p.m.",
+   "time": "8pm",
    "venue": "Yaw Theater",
    "neighborhood": "Georgetown",
-   "cost": "Varies",
-   "description": "Experience the Seattle Butoh Festival featuring unique dance performances.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "The Seattle Butoh Festival features dancers performing in unique styles.",
    "link": "https://www.daipanbutohcollective.com/seattle-butoh-festival-2026",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e064"
+   "id": "e056"
   },
   {
-   "title": "Gingerbread Village FREE",
+   "title": "Gingerbread Village",
    "date": "2026-11-19",
-   "time": "9 a.m. to 9 p.m.",
+   "time": "",
    "venue": "Sheraton Grand Seattle",
    "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "See four displays made mostly of food at Gingerbread Village.",
+   "ticketed": "False",
+   "description": "See four displays made mostly of food at this festive event.",
    "link": "https://www.breakthrought1d.org/greaternorthwest/events/gingerbread-village-november-19-january-1/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e065"
-  },
-  {
-   "title": "Fun holiday plays",
-   "date": "2026-11-19",
-   "time": "",
-   "venue": "Multiple locations",
-   "neighborhood": "",
-   "cost": "Varies",
-   "description": "Enjoy various holiday-themed plays across multiple venues.",
-   "link": "https://www.events12.com/seattle/november/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e066"
+   "id": "e057"
   },
   {
    "title": "Zoo lights for adults",
    "date": "2026-11-20",
-   "time": "",
+   "time": "7pm",
    "venue": "Woodland Park Zoo",
    "neighborhood": "Phinney Ridge",
-   "cost": "Varies",
-   "description": "Experience WildLanterns with luminary displays and holiday-themed lounges at the zoo.",
+   "cost": "",
+   "ticketed": "True",
+   "description": "Enjoy luminary displays and holiday-themed lounges at the zoo for ages 21+.",
    "link": "https://tickets.zoo.org/events/019843c7-af07-bcec-a003-532e9eefc0e6",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e067"
+   "id": "e058"
   },
   {
    "title": "Scandinavian Christmas",
@@ -810,335 +760,194 @@
    "time": "",
    "venue": "National Nordic Museum",
    "neighborhood": "Ballard",
-   "cost": "Varies",
-   "description": "Enjoy Nordic food, crafts, and activities at the popular outdoor Christmas event.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "An outdoor Christmas event featuring Nordic food vendors and craft booths.",
    "link": "https://nordicmuseum.org/events/julefest",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e068"
+   "id": "e059"
   },
   {
-   "title": "Indoor craft fair",
-   "date": "2026-11-20",
-   "time": "",
-   "venue": "Hangar 30 at Magnuson Park",
-   "neighborhood": "Sand Point",
-   "cost": "Suggested donation",
-   "description": "Shop from 180 vendors of indie crafts at the Renegade Craft Fair.",
-   "link": "https://www.renegadecraft.com/event/seattle-winter/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e069"
-  },
-  {
-   "title": "Sumo wrestling",
-   "date": "2026-11-20",
-   "time": "",
-   "venue": "Meydenbauer Center",
-   "neighborhood": "Bellevue",
-   "cost": "Varies",
-   "description": "Watch live sumo matches with optional sushi and a bar.",
-   "link": "https://www.sumoandsushi.com/seattle",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e070"
-  },
-  {
-   "title": "German Christmas market",
-   "date": "2026-11-20",
-   "time": "",
-   "venue": "Seattle Center",
-   "neighborhood": "Seattle Center",
-   "cost": "Varies",
-   "description": "Explore colorful d\u00e9cor, gifts, food, and family entertainment at the Seattle Christmas Market.",
-   "link": "https://seattlechristmasmarket.com/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e071"
-  },
-  {
-   "title": "Beer at the science center",
+   "title": "Native craft market",
    "date": "2026-11-21",
-   "time": "7 to 10 p.m.",
-   "venue": "Pacific Science Center",
-   "neighborhood": "Seattle Center",
-   "cost": "$65",
-   "description": "Enjoy beer tastings and explore the museum after hours at Brewology.",
-   "link": "https://pacificsciencecenter.org/events/brewology/",
+   "time": "10am to 5pm",
+   "venue": "Daybreak Star Indian Cultural Center",
+   "neighborhood": "Magnolia",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Shop for clothing, jewelry, woodworking, and art prints at this market.",
+   "link": "https://unitedindians.org/event/november-native-art-market-2/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e072"
+   "id": "e060"
   },
   {
-   "title": "Thanksgiving scavenger hunt",
+   "title": "Night market",
    "date": "2026-11-21",
-   "time": "9 a.m. to 3 p.m.",
-   "venue": "Byrd Barr Place",
-   "neighborhood": "Central District",
-   "cost": "Varies",
-   "description": "Participate in a scavenger hunt on your bicycle for Thanksgiving food donations.",
-   "link": "https://cascade.org/cranksgiving-2026",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e073"
-  },
-  {
-   "title": "Night market FREE",
-   "date": "2026-11-21",
-   "time": "6 to 10 p.m.",
+   "time": "6 to 10pm",
    "venue": "Columbia City Night Market",
    "neighborhood": "Columbia City",
    "cost": "Free",
-   "description": "Enjoy food trucks, vendors, and live music at the monthly Columbia City Night Market.",
+   "ticketed": "False",
+   "description": "Enjoy food trucks, makers, vendors, and live music at this monthly market.",
    "link": "https://www.peacepeloton.com/night-market",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e074"
+   "id": "e061"
   },
   {
    "title": "Roller derby",
    "date": "2026-11-21",
-   "time": "4:45 p.m.",
+   "time": "4:45pm",
    "venue": "Southgate Roller Rink",
    "neighborhood": "White Center",
-   "cost": "Varies",
-   "description": "Watch Rat City Roller Derby play an exciting game with snacks for sale.",
+   "cost": "",
+   "ticketed": "True",
+   "description": "Watch an exciting roller derby game with snacks for sale.",
    "link": "https://ratcityrollerderby.com/events/season-21-home-team-season-opener-ship-wreckers-v-derby-liberation-front-november-21-2026/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e075"
-  },
-  {
-   "title": "Wine tasting",
-   "date": "2026-11-21",
-   "time": "2 p.m., VIP 1 p.m.",
-   "venue": "Rain City Market",
-   "neighborhood": "Renton",
-   "cost": "$50",
-   "description": "Sample wines from local businesses during the Renton Wine Walk.",
-   "link": "https://www.rentondowntown.com/events/gobble-wobble-wine-walk-1",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e076"
-  },
-  {
-   "title": "Films about fashion",
-   "date": "2026-11-21",
-   "time": "",
-   "venue": "PUD Auditorium Theater",
-   "neighborhood": "Everett",
-   "cost": "Varies",
-   "description": "Attend the Seattle International Fashion Film Festival with screenings and awards.",
-   "link": "https://filmfreeway.com/SeattleFashionFilmFestival",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e077"
-  },
-  {
-   "title": "Native craft market FREE",
-   "date": "2026-11-21",
-   "time": "10 a.m. to 5 p.m.",
-   "venue": "Daybreak Star Indian Cultural Center",
-   "neighborhood": "Magnolia",
-   "cost": "Free",
-   "description": "Shop for Native American crafts at the United Indians Native Art Market.",
-   "link": "https://unitedindians.org/event/november-native-art-market-2/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e078"
-  },
-  {
-   "title": "Weird arts & crafts show FREE",
-   "date": "2026-11-21",
-   "time": "",
-   "venue": "Evergreen State Fairgrounds",
-   "neighborhood": "Monroe",
-   "cost": "Free",
-   "description": "See unusual creations by 170 artists at the Oddmall Emporium of the Weird.",
-   "link": "https://www.facebook.com/events/930272106435319",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e079"
-  },
-  {
-   "title": "Walk through lights (south)",
-   "date": "2026-11-21",
-   "time": "",
-   "venue": "Spanaway Park",
-   "neighborhood": "Tacoma",
-   "cost": "Varies",
-   "description": "Walk through two miles of animated displays at the Fantasy Lights Walk.",
-   "link": "https://www.piercecountywa.gov/1254/Fantasy-Lights-Walk",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e080"
-  },
-  {
-   "title": "Casino lights FREE",
-   "date": "2026-11-21",
-   "time": "",
-   "venue": "Tulalip",
-   "neighborhood": "Tulalip",
-   "cost": "Free",
-   "description": "Enjoy 9.7 million lights at Tulalip Lights & Ice, with ice skating and food for sale.",
-   "link": "https://www.quilcedavillage.com/TulalipLightsAndIce",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e081"
+   "id": "e062"
   },
   {
    "title": "UFO talk",
    "date": "2026-11-24",
-   "time": "7 p.m.",
+   "time": "7pm",
    "venue": "McMenamins Anderson School",
    "neighborhood": "Bothell",
    "cost": "$5",
-   "description": "Attend a talk about Northwest UFO sightings.",
+   "ticketed": "True",
+   "description": "A talk about Northwest UFO sightings.",
    "link": "https://www.mcmenamins.com/events/274822-ufo-northwest-how-washington-state-spawned-the-men-in-black",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e082"
+   "id": "e063"
   },
   {
-   "title": "Open on Thanksgiving Day",
+   "title": "Thanksgiving Day Cruise",
    "date": "2026-11-26",
-   "time": "",
-   "venue": "Multiple locations",
-   "neighborhood": "",
-   "cost": "Varies",
-   "description": "Various locations open for dining or activities on Thanksgiving Day.",
-   "link": "https://www.events12.com/seattle/november/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e083"
-  },
-  {
-   "title": "Thanksgiving dinner",
-   "date": "2026-11-26",
-   "time": "",
-   "venue": "Multiple locations",
-   "neighborhood": "",
-   "cost": "Varies",
-   "description": "Restaurants open for dining or takeout on Thanksgiving Day.",
-   "link": "https://www.events12.com/seattle/november/",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e084"
-  },
-  {
-   "title": "Thanksgiving dinner",
-   "date": "2026-11-26",
-   "time": "",
-   "venue": "multiple locations",
-   "neighborhood": "",
-   "cost": "",
-   "description": "Restaurants open for dining or takeout on Thanksgiving.",
-   "link": "https://www.gayot.com/restaurants/best-seattle-wa-top10-thanksgiving-dining_25se.html",
-   "source": "https://www.events12.com/seattle/november/",
-   "id": "e085"
-  },
-  {
-   "title": "Thanksgiving cruise",
-   "date": "2026-11-26",
-   "time": "12:30 & 6 p.m.",
+   "time": "12:30 & 6pm",
    "venue": "Waterways Cruises, Dock 9 at Fishermen's Terminal",
    "neighborhood": "Interbay",
    "cost": "",
-   "description": "Includes a buffet, a no-host bar, and a 2.5-hour narrated cruise of Lake Union and Lake Washington.",
+   "ticketed": "True",
+   "description": "Enjoy a buffet and a narrated cruise of Lake Union and Lake Washington.",
    "link": "https://waterwayscruises.com/thanksgiving-day-cruise/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e086"
+   "id": "e064"
   },
   {
-   "title": "Westlake tree lighting",
+   "title": "Westlake Tree Lighting",
    "date": "2026-11-27",
-   "time": "5 p.m.",
+   "time": "",
    "venue": "Westlake Park",
    "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "Watch the Tree-Lighting Celebration with family-friendly activities and fireworks.",
+   "ticketed": "False",
+   "description": "Join the celebration with craft making, costumed characters, and fireworks.",
    "link": "https://downtownseattle.org/event/tree-lighting-celebration-at-westlake-park/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e087"
+   "id": "e065"
   },
   {
-   "title": "Native craft market",
+   "title": "Native Craft Market",
    "date": "2026-11-27",
-   "time": "10 a.m. to 5 p.m.",
+   "time": "10am to 5pm",
    "venue": "Duwamish Longhouse",
    "neighborhood": "North Delridge",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Shop for fine art, native crafts, and food from 21 vendors.",
    "link": "https://www.duwamishtribe.org/eventcalendar/2026/11/27/november-art-market",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e088"
+   "id": "e066"
   },
   {
-   "title": "Country holiday market",
+   "title": "Country Holiday Market",
    "date": "2026-11-27",
-   "time": "10 a.m. to 4 p.m.",
+   "time": "10am to 4pm",
    "venue": "Thomas Family Farm",
    "neighborhood": "Snohomish",
    "cost": "Free",
-   "description": "Browse 120 craft tables and shop from food trucks during the Holly Jolly Holiday Market.",
+   "ticketed": "False",
+   "description": "Browse craft tables and shop from food trucks during the Holly Jolly Holiday Market.",
    "link": "https://www.facebook.com/events/931300399796132/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e089"
+   "id": "e067"
   },
   {
-   "title": "Nerdy holiday market",
+   "title": "Nerdy Holiday Market",
    "date": "2026-11-27",
    "time": "",
    "venue": "Hangar 30 at Magnuson Park",
    "neighborhood": "Sand Point",
    "cost": "",
-   "description": "Handmade gifts for the geeks on your holiday shopping list from 100 vendors.",
+   "ticketed": "True",
+   "description": "Find handmade gifts from 100 vendors at the GeekCraft Expo Seattle Holiday Market.",
    "link": "https://www.geekcraftexpo.com/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e090"
+   "id": "e068"
   },
   {
-   "title": "Christmas trees downtown",
+   "title": "Christmas Trees Downtown",
    "date": "2026-11-27",
    "time": "",
    "venue": "Fairmont Olympic Hotel",
    "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "Admire 20 designer trees during the Festival of Trees Display.",
+   "ticketed": "False",
+   "description": "Admire designer trees and visit the Teddy Bear Suite.",
    "link": "https://www.fairmontolympic.com/happenings-at-fairmont-olympic/festive-season-at-fairmont-olympic/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e091"
+   "id": "e069"
   },
   {
-   "title": "Christmas tree lighting",
+   "title": "Christmas Tree Lighting",
    "date": "2026-11-27",
    "time": "",
-   "venue": "multiple locations",
-   "neighborhood": "",
+   "venue": "Westlake Park",
+   "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "Watch tree-lighting ceremonies across various locations.",
-   "link": "https://www.events12.com/seattle/november/",
+   "ticketed": "False",
+   "description": "Watch the tree-lighting ceremony with music and festivities.",
+   "link": "https://downtownseattle.org/event/tree-lighting-celebration-at-westlake-park/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e092"
+   "id": "e070"
   },
   {
-   "title": "Christmas ships",
+   "title": "Christmas Ships",
    "date": "2026-11-27",
    "time": "",
    "venue": "Seattle, Renton, Kirkland",
    "neighborhood": "",
    "cost": "",
-   "description": "Ride on the main ship with the choir or watch for free at onshore events.",
+   "ticketed": "False",
+   "description": "Enjoy the Christmas Ship Festival with onshore events and performances.",
    "link": "https://www.argosycruises.com/cruises/christmas-ship-festival/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e093"
+   "id": "e071"
   },
   {
-   "title": "Christmas improv",
+   "title": "Christmas Improv",
    "date": "2026-11-27",
    "time": "",
    "venue": "Unexpected Productions Improv",
    "neighborhood": "Downtown",
-   "cost": "Free",
-   "description": "Audience suggestions add funny twists to the story of Ebenezer Scrooge.",
+   "cost": "",
+   "ticketed": "True",
+   "description": "Experience a funny twist on the story of Ebenezer Scrooge.",
    "link": "https://www.eventbrite.com/e/an-improvised-christmas-carol-tickets-1984491097293",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e094"
+   "id": "e072"
   },
   {
-   "title": "Bellevue street show",
+   "title": "Bellevue Street Show",
    "date": "2026-11-27",
-   "time": "7 p.m.",
+   "time": "7pm",
    "venue": "Bellevue Way",
    "neighborhood": "Bellevue",
    "cost": "Free",
-   "description": "Snowflake Lane is a 25-minute outdoor show with music, lights, and dancers.",
+   "ticketed": "False",
+   "description": "Enjoy an outdoor show with music, lights, and falling snow.",
    "link": "https://bellevuecollection.com/snowflakelane/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e095"
+   "id": "e073"
   },
   {
    "title": "Bavarian Christmas",
@@ -1147,10 +956,11 @@
    "venue": "Village of Lights",
    "neighborhood": "Leavenworth",
    "cost": "Free",
-   "description": "Lights twinkle on snow with various holiday activities.",
+   "ticketed": "False",
+   "description": "Experience twinkling lights and festive activities in Leavenworth.",
    "link": "https://leavenworth.org/christmastown",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e096"
+   "id": "e074"
   },
   {
    "title": "The Wizard of Oz",
@@ -1159,22 +969,24 @@
    "venue": "The 5th Avenue Theatre",
    "neighborhood": "Downtown",
    "cost": "",
-   "description": "Dorothy flies over the rainbow in the original version of The Wonderful Wizard of Oz.",
+   "ticketed": "True",
+   "description": "Watch the original version of The Wonderful Wizard of Oz performed live.",
    "link": "https://www.5thavenue.org/shows/2026-27/the-wizard-of-oz/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e097"
+   "id": "e075"
   },
   {
-   "title": "Christmas play",
+   "title": "A Christmas Carol",
    "date": "2026-11-27",
    "time": "",
    "venue": "Union Arts Center",
    "neighborhood": "Downtown",
    "cost": "",
-   "description": "A Christmas Carol is performed with surprising special effects.",
+   "ticketed": "True",
+   "description": "Enjoy a performance of Charles Dickens\u2019 holiday classic.",
    "link": "https://www.unionartscenter.org/a-christmas-carol-2026/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e098"
+   "id": "e076"
   },
   {
    "title": "Winter at Seattle Center",
@@ -1183,94 +995,102 @@
    "venue": "Seattle Center",
    "neighborhood": "Lower Queen Anne",
    "cost": "Free",
-   "description": "Winterfest features holiday lights, bands, carolers, and more.",
+   "ticketed": "False",
+   "description": "Experience holiday lights, entertainment, and activities at Winterfest.",
    "link": "https://www.seattlecenter.com/events/featured-events/winterfest",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e099"
+   "id": "e077"
   },
   {
-   "title": "Nutcracker ballet",
+   "title": "Nutcracker Ballet",
    "date": "2026-11-27",
    "time": "",
    "venue": "McCaw Hall",
    "neighborhood": "Seattle Center",
    "cost": "",
-   "description": "Pacific Northwest Ballet performs The Nutcracker with a live orchestra.",
+   "ticketed": "True",
+   "description": "Watch the Pacific Northwest Ballet perform The Nutcracker.",
    "link": "https://www.pnb.org/nutcracker/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e100"
+   "id": "e078"
   },
   {
-   "title": "Pike Place holiday",
+   "title": "Pike Place Holiday",
    "date": "2026-11-28",
-   "time": "11 a.m. to 6 p.m.",
+   "time": "11am to 6pm",
    "venue": "Pike Place Market",
    "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "Magic in the Market includes holiday choirs, crafts, and a lighting ceremony.",
+   "ticketed": "False",
+   "description": "Join holiday festivities with choirs, crafts, and a lighting ceremony.",
    "link": "https://www.pikeplacemarket.org/events-calendar/31st-annual-magic-in-the-market/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e101"
+   "id": "e079"
   },
   {
-   "title": "1970s concert",
+   "title": "1970s Concert",
    "date": "2026-11-28",
-   "time": "8 p.m.",
+   "time": "8pm",
    "venue": "Neptune Theatre",
    "neighborhood": "University District",
    "cost": "",
-   "description": "Seattle\u2019s Tribute to The Last Waltz features dozens of musicians.",
+   "ticketed": "True",
+   "description": "Enjoy a charity concert featuring Seattle musicians performing classic rock.",
    "link": "https://www.thelastwaltztribute.com",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e102"
+   "id": "e080"
   },
   {
    "title": "Mimosa Walk",
    "date": "2026-11-28",
-   "time": "11 a.m. to 4 p.m.",
+   "time": "11am to 4pm",
    "venue": "Discover Burien",
    "neighborhood": "Burien",
    "cost": "$53",
-   "description": "Enjoy delightful mimosa-inspired drinks while visiting local shops.",
+   "ticketed": "True",
+   "description": "Enjoy mimosa-inspired drinks while visiting local shops.",
    "link": "https://www.discoverburien.org/calendar/2026/mimosa-walk",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e103"
+   "id": "e081"
   },
   {
-   "title": "Holiday concert in Tacoma",
+   "title": "Holiday Concert in Tacoma",
    "date": "2026-11-28",
-   "time": "3 p.m.",
+   "time": "3pm",
    "venue": "Pantages Theater",
    "neighborhood": "Tacoma",
    "cost": "",
-   "description": "The Tacoma Concert Band plays family-friendly holiday music.",
+   "ticketed": "True",
+   "description": "Listen to family-friendly holiday music performed by the Tacoma Concert Band.",
    "link": "https://www.tacomaconcertband.org/upcoming-season",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e104"
+   "id": "e082"
   },
   {
    "title": "Tacoma Tree Lighting",
    "date": "2026-11-28",
-   "time": "5 p.m.",
+   "time": "",
    "venue": "Pantages Theater",
    "neighborhood": "Tacoma",
    "cost": "Free",
-   "description": "Includes Santa, free refreshments, and music by a brass quartet.",
+   "ticketed": "False",
+   "description": "Enjoy Santa, refreshments, and music at the tree lighting ceremony.",
    "link": "https://tacomairl.com/events/tacoma-holiday-tree-lighting-2026/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e105"
+   "id": "e083"
   },
   {
-   "title": "Christmas trees in Tacoma",
+   "title": "Christmas Trees in Tacoma",
    "date": "2026-11-28",
    "time": "",
    "venue": "University of Puget Sound",
    "neighborhood": "Tacoma",
-   "cost": "",
-   "description": "Festival of Trees offers children\u2019s activities and visits with Santa.",
+   "cost": "Donation",
+   "ticketed": "True",
+   "description": "Visit beautifully decorated trees and enjoy children's activities.",
    "link": "https://www.multicare.org/festival/join-us/public-hours/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e106"
+   "id": "e084"
   },
   {
    "title": "Seattle Marathon",
@@ -1279,10 +1099,11 @@
    "venue": "Museum of Pop Culture",
    "neighborhood": "Seattle Center",
    "cost": "",
+   "ticketed": "False",
    "description": "Join 15,000 people burning off Thanksgiving calories at the morning Seattle Marathon and Half Marathon.",
    "link": "https://www.seattlemarathon.org/marathon-and-half-marathon",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e107"
+   "id": "e085"
   },
   {
    "title": "The Ghosts of Christmas Eve",
@@ -1291,10 +1112,11 @@
    "venue": "Climate Pledge Arena",
    "neighborhood": "Seattle Center",
    "cost": "",
+   "ticketed": "True",
    "description": "With a laser-light show backdrop, this concert features driving, thundering beats of guitars and electric violins.",
    "link": "https://climatepledgearena.com/event/trans-siberian-orchestra-26/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e108"
+   "id": "e086"
   },
   {
    "title": "The Ghosts of Christmas Eve",
@@ -1303,22 +1125,24 @@
    "venue": "Climate Pledge Arena",
    "neighborhood": "Seattle Center",
    "cost": "",
+   "ticketed": "True",
    "description": "With a laser-light show backdrop, this concert features driving, thundering beats of guitars and electric violins.",
    "link": "https://climatepledgearena.com/event/trans-siberian-orchestra-26/",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e109"
+   "id": "e087"
   },
   {
    "title": "Family Preview",
    "date": "2026-11-30",
-   "time": "4pm",
+   "time": "4 to 7pm",
    "venue": "The Westin Seattle",
    "neighborhood": "Downtown",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Vote for your favorite of 12 designer-decorated Christmas trees with Santa, festive entertainment, and free arts & crafts for kids.",
    "link": "https://providencewa.ejoinme.org/26FP",
    "source": "https://www.events12.com/seattle/november/",
-   "id": "e110"
+   "id": "e088"
   },
   {
    "title": "Christmas trees downtown",
@@ -1327,10 +1151,11 @@
    "venue": "Fairmont Olympic Hotel",
    "neighborhood": "Downtown",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Admire 20 designer trees during the annual Festival of Trees Display in the main lobby and down the escalator.",
    "link": "https://www.fairmontolympic.com/happenings-at-fairmont-olympic/festive-season-at-fairmont-olympic/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e111"
+   "id": "e089"
   },
   {
    "title": "Gingerbread houses",
@@ -1339,10 +1164,11 @@
    "venue": "Auburn Community & Event Center",
    "neighborhood": "Auburn",
    "cost": "Free",
+   "ticketed": "False",
    "description": "See 15 gingerbread houses entered in the Gingerbread Contest and vote for your favorite.",
    "link": "https://www.auburnwa.gov/workspaces/one.aspx?objectid=20626783&contextId=13102510",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e112"
+   "id": "e090"
   },
   {
    "title": "Bellevue street show",
@@ -1351,10 +1177,11 @@
    "venue": "Bellevue Way",
    "neighborhood": "Bellevue",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Snowflake Lane is a 25-minute outdoor show with music, lights, falling snow, dancers, and drummers.",
    "link": "https://bellevuecollection.com/snowflakelane/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e113"
+   "id": "e091"
   },
   {
    "title": "German Christmas market",
@@ -1362,11 +1189,12 @@
    "time": "",
    "venue": "Seattle Center",
    "neighborhood": "Seattle Center",
-   "cost": "Free for children age 6 and younger",
+   "cost": "",
+   "ticketed": "False",
    "description": "Seattle Christmas Market combines colorful d\u00e9cor, gifts from artisans, food & drink, and family entertainment.",
    "link": "https://seattlechristmasmarket.com/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e114"
+   "id": "e092"
   },
   {
    "title": "Santa & reindeer",
@@ -1375,10 +1203,11 @@
    "venue": "Cougar Mountain Zoo",
    "neighborhood": "Issaquah",
    "cost": "",
-   "description": "Visit the zoo decorated like the North Pole to welcome Santa with his reindeer and sleigh.",
+   "ticketed": "False",
+   "description": "Visit Cougar Mountain Zoo decorated like the North Pole to welcome Santa with his reindeer.",
    "link": "https://www.cougarmountainzoo.org/issaquah-reindeer-festival-offseason/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e115"
+   "id": "e093"
   },
   {
    "title": "Lights in Bellevue",
@@ -1386,11 +1215,12 @@
    "time": "",
    "venue": "Bellevue Botanical Garden",
    "neighborhood": "Bellevue",
-   "cost": "Timed tickets required",
+   "cost": "",
+   "ticketed": "True",
    "description": "Enjoy half a million colorful lights with displays at Garden d\u2019Lights.",
    "link": "https://bellevuebotanical.org/garden-dlights/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e116"
+   "id": "e094"
   },
   {
    "title": "Gingerbread Village",
@@ -1398,11 +1228,12 @@
    "time": "",
    "venue": "Sheraton Grand Seattle",
    "neighborhood": "Downtown",
-   "cost": "Free (donation box)",
+   "cost": "Donation",
+   "ticketed": "True",
    "description": "See four displays made mostly of food at Gingerbread Village.",
    "link": "https://www.breakthrought1d.org/greaternorthwest/2026/10/09/sheraton-grand-seattle-gingerbread-village/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e117"
+   "id": "e095"
   },
   {
    "title": "Lights at Tacoma zoo",
@@ -1411,22 +1242,24 @@
    "venue": "Point Defiance Zoo",
    "neighborhood": "Tacoma",
    "cost": "",
+   "ticketed": "True",
    "description": "Admire 1.5 million holiday lights and displays at Zoolights.",
    "link": "https://www.pdza.org/event/zoolights/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e118"
+   "id": "e096"
   },
   {
    "title": "Drive through lights (south)",
    "date": "2026-12-01",
-   "time": "5:30 to 9pm",
+   "time": "5:30pm",
    "venue": "Spanaway Park",
    "neighborhood": "Spanaway",
-   "cost": "Ticket required",
+   "cost": "",
+   "ticketed": "True",
    "description": "Drive two miles past 300 illuminated holiday displays while listening to holiday music.",
    "link": "https://www.piercecountywa.gov/1253/Fantasy-Lights",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e119"
+   "id": "e097"
   },
   {
    "title": "Casino lights",
@@ -1434,11 +1267,12 @@
    "time": "",
    "venue": "Tulalip",
    "neighborhood": "Tulalip",
-   "cost": "",
-   "description": "Tulalip Lights & Ice features 9.7 million lights and ice skating.",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Tulalip Lights & Ice features 9.7 million lights on plants surrounding the casino entrance ponds.",
    "link": "https://www.quilcedavillage.com/TulalipLightsAndIce",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e120"
+   "id": "e098"
   },
   {
    "title": "Lights at Seattle zoo",
@@ -1447,10 +1281,11 @@
    "venue": "Woodland Park Zoo",
    "neighborhood": "Phinney Ridge",
    "cost": "",
-   "description": "WildLanterns features large-scale animal and nature scape lanterns.",
+   "ticketed": "True",
+   "description": "WildLanterns features large-scale animal and nature scape lanterns representing wild places from around the globe.",
    "link": "https://zoo.org/wildlanterns/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e121"
+   "id": "e099"
   },
   {
    "title": "Hockey",
@@ -1459,10 +1294,11 @@
    "venue": "Climate Pledge Arena",
    "neighborhood": "Seattle Center",
    "cost": "",
+   "ticketed": "True",
    "description": "Watch Seattle Kraken play a home game against the Dallas Stars.",
    "link": "https://www.nhl.com/kraken/schedule/2026-12-01",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e122"
+   "id": "e100"
   },
   {
    "title": "Tacoma races",
@@ -1471,10 +1307,11 @@
    "venue": "Dune Peninsula at Point Defiance Park",
    "neighborhood": "Tacoma",
    "cost": "",
-   "description": "Tacoma City Marathon includes multiple races ending at Dune Peninsula.",
+   "ticketed": "True",
+   "description": "Tacoma City Marathon includes multiple races: 5K, 10K, half marathon, marathon, and marathon relay.",
    "link": "https://tcmaevents.com/tacoma-city-marathon/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e123"
+   "id": "e101"
   },
   {
    "title": "Holiday concert with Feinstein",
@@ -1483,10 +1320,11 @@
    "venue": "Meany Center for the Performing Arts",
    "neighborhood": "University District",
    "cost": "",
+   "ticketed": "True",
    "description": "Michael Feinstein sings beloved holiday classics and timeless standards.",
    "link": "https://meanycenter.org/tickets/2026-12/production/michael-feinstein",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e124"
+   "id": "e102"
   },
   {
    "title": "Appalachian Christmas",
@@ -1495,10 +1333,11 @@
    "venue": "Edmonds Center for the Arts",
    "neighborhood": "Edmonds",
    "cost": "",
+   "ticketed": "True",
    "description": "Mark O\u2019Connor and his wife Maggie play Appalachian music.",
    "link": "https://www.edmondscenterforthearts.org/events/mark-oconnor-christmas/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e125"
+   "id": "e103"
   },
   {
    "title": "The Wizard of Oz",
@@ -1507,10 +1346,11 @@
    "venue": "The 5th Avenue Theatre",
    "neighborhood": "Downtown",
    "cost": "",
+   "ticketed": "True",
    "description": "The Wonderful Wizard of Oz is performed live for age 4+.",
    "link": "https://www.5thavenue.org/shows/2026-27/the-wizard-of-oz/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e126"
+   "id": "e104"
   },
   {
    "title": "Christmas play",
@@ -1519,10 +1359,11 @@
    "venue": "Union Arts Center",
    "neighborhood": "Downtown",
    "cost": "",
-   "description": "A Christmas Carol is performed with surprising special effects.",
+   "ticketed": "True",
+   "description": "A Christmas Carol is performed by talented actors with surprising special effects.",
    "link": "https://www.unionartscenter.org/a-christmas-carol-2026/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e127"
+   "id": "e105"
   },
   {
    "title": "Uplifting musical",
@@ -1531,10 +1372,11 @@
    "venue": "Village Theatre",
    "neighborhood": "Issaquah",
    "cost": "",
-   "description": "Come from Away is a musical that changes you and lifts the spirit.",
+   "ticketed": "True",
+   "description": "Come from Away is a musical that changes you, heals old wounds, and lifts the spirit.",
    "link": "https://villagetheatre.org/mainstage/come-from-away-iss/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e128"
+   "id": "e106"
   },
   {
    "title": "Christmas trees in Auburn",
@@ -1543,10 +1385,11 @@
    "venue": "White River Valley Museum",
    "neighborhood": "Auburn",
    "cost": "Free",
+   "ticketed": "False",
    "description": "See a dozen Christmas trees decorated by local businesses during Festival of Trees.",
    "link": "https://www.facebook.com/wrvmuseum/posts/pfbid09NAASMGwkuLE7uY96dNs2LN7YhLhXNsgEqLcmTCTPDBvcqNQoSLjcbkepDhWNwhol",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e129"
+   "id": "e107"
   },
   {
    "title": "Holiday in the Park",
@@ -1555,10 +1398,11 @@
    "venue": "Volunteer Park",
    "neighborhood": "Capitol Hill",
    "cost": "Free",
-   "description": "Holiday in the Park offers live music, free kids\u2019 activities, and complimentary hot chocolate.",
+   "ticketed": "False",
+   "description": "Holiday in the Park offers live music, free kids\u2019 activities, and complimentary hot chocolate and cookies.",
    "link": "https://www.volunteerparktrust.org/events/vpt-holiday-in-the-park",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e130"
+   "id": "e108"
   },
   {
    "title": "Celtic Christmas music",
@@ -1567,34 +1411,11 @@
    "venue": "Edmonds Center for the Arts",
    "neighborhood": "Edmonds",
    "cost": "",
-   "description": "The Gothard Sisters present a festive evening of Christmas carols and Irish dancing.",
+   "ticketed": "True",
+   "description": "The Gothard Sisters present a high-energy, festive evening weaving together Christmas carols, Celtic tunes and songs.",
    "link": "https://www.edmondscenterforthearts.org/events/a-celtic-christmas/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e131"
-  },
-  {
-   "title": "Christmas tree lighting",
-   "date": "2026-12-03",
-   "time": "",
-   "venue": "Multiple locations",
-   "neighborhood": "",
-   "cost": "",
-   "description": "Watch a tree-lighting ceremony, usually with music at various locations.",
-   "link": "https://www.events12.com/seattle/december/",
-   "source": "https://www.events12.com/seattle/december/",
-   "id": "e132"
-  },
-  {
-   "title": "Holiday fair (north)",
-   "date": "2026-12-03",
-   "time": "",
-   "venue": "Evergreen State Fairgrounds",
-   "neighborhood": "Monroe",
-   "cost": "Free",
-   "description": "Holiday Spark promises music, carolers, fire pits, and holiday fun.",
-   "link": "https://wa-evergreenstatefairgrounds2.civicplus.com/Calendar.aspx?EID=2449",
-   "source": "https://www.events12.com/seattle/december/",
-   "id": "e133"
+   "id": "e109"
   },
   {
    "title": "Holiday Spark",
@@ -1603,10 +1424,11 @@
    "venue": "Evergreen State Fairgrounds",
    "neighborhood": "Monroe",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Holiday Spark promises music, carolers, fire pits, a holiday bazaar, food vendors, and Santa Claus.",
    "link": "https://wa-evergreenstatefairgrounds2.civicplus.com/Calendar.aspx?EID=2449",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e134"
+   "id": "e110"
   },
   {
    "title": "Victorian Christmas Festival",
@@ -1615,10 +1437,11 @@
    "venue": "Washington State Fair Events Center",
    "neighborhood": "Puyallup",
    "cost": "Free",
-   "description": "The Victorian Christmas Festival features musicians, Santa Claus, and 420 vendors in Victorian costumes selling various items.",
+   "ticketed": "False",
+   "description": "Victorian Christmas Festival has musicians, Santa Claus, and 420 vendors in Victorian costumes selling art, jewelry, decorations, clothing, and toys.",
    "link": "https://www.victorianchristmasfestival.com",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e135"
+   "id": "e111"
   },
   {
    "title": "Holiday Pops",
@@ -1627,10 +1450,11 @@
    "venue": "Benaroya Hall",
    "neighborhood": "Seattle",
    "cost": "",
-   "description": "Enjoy a festive concert featuring holiday music performed by the Seattle Symphony.",
+   "ticketed": "False",
+   "description": "Holiday Pops is a festive concert featuring holiday music.",
    "link": "https://benaroyahall.org/pdps/concertstickets/calendar/2026-2027/27-pops-2/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e136"
+   "id": "e112"
   },
   {
    "title": "Cirque Musica Holiday Wonderland",
@@ -1639,10 +1463,11 @@
    "venue": "Angel of the Winds Arena",
    "neighborhood": "Everett",
    "cost": "",
-   "description": "A brand-new production that blends world-class circus artistry with your favorite holiday music.",
+   "ticketed": "False",
+   "description": "Cirque Musica Holiday Wonderland blends world-class circus artistry with your favorite holiday music.",
    "link": "https://www.angelofthewindsarena.com/events/detail/cirque-muscia-holiday-wonderland-1",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e137"
+   "id": "e113"
   },
   {
    "title": "Urban Craft Uprising Winter Show",
@@ -1651,10 +1476,11 @@
    "venue": "Seattle Center Exhibition Hall",
    "neighborhood": "Seattle",
    "cost": "Free",
-   "description": "Shop 150 vendors for hand-crafted items at this winter craft show.",
+   "ticketed": "False",
+   "description": "Shop 150 vendors for hand-crafted items at Urban Craft Uprising Winter Show.",
    "link": "https://urbancraftuprising.com/ucu-winter-show/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e138"
+   "id": "e114"
   },
   {
    "title": "PhinneyWood Winter Festival",
@@ -1663,10 +1489,11 @@
    "venue": "Phinney Center",
    "neighborhood": "Phinney Ridge",
    "cost": "Free",
-   "description": "A winter festival featuring arts & crafts vendors, musicians, dancers, and food booths.",
+   "ticketed": "False",
+   "description": "PhinneyWood Winter Festival features 140 arts & crafts vendors, musicians, dancers, food booths, and a bake sale.",
    "link": "https://www.phinneycenter.org/events/winter-festival/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e139"
+   "id": "e115"
   },
   {
    "title": "Great Figgy Pudding Caroling Competition",
@@ -1675,10 +1502,11 @@
    "venue": "Pike Place Market",
    "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "Enjoy dozens of caroling teams and vote for your favorite at this festive competition.",
+   "ticketed": "False",
+   "description": "Hear dozens of caroling teams sing and vote for your favorite at the Great Figgy Pudding Caroling Competition.",
    "link": "https://www.pmsc-fb.org/figgy",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e140"
+   "id": "e116"
   },
   {
    "title": "The Snowman with Live Orchestra",
@@ -1687,22 +1515,24 @@
    "venue": "Benaroya Hall",
    "neighborhood": "Downtown",
    "cost": "",
-   "description": "Watch *The Snowman* onscreen while the Seattle Symphony plays the score live.",
+   "ticketed": "False",
+   "description": "Watch The Snowman onscreen while Seattle Symphony plays the score live.",
    "link": "https://benaroyahall.org/en/concerttickets/calendar/2026-2027/26fam2",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e141"
+   "id": "e117"
   },
   {
    "title": "Mount Baker Home Tour",
    "date": "2026-12-05",
    "time": "10am to 4pm",
-   "venue": "Mount Baker",
-   "neighborhood": "",
+   "venue": "",
+   "neighborhood": "Mount Baker",
    "cost": "",
-   "description": "Tour six homes decorated for the holidays in the Mount Baker neighborhood.",
+   "ticketed": "False",
+   "description": "See six homes decorated for the holidays in the Mount Baker neighborhood.",
    "link": "https://www.events12.com/seattle/december/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e142"
+   "id": "e118"
   },
   {
    "title": "Family movie + live music",
@@ -1710,11 +1540,12 @@
    "time": "11am",
    "venue": "Benaroya Hall",
    "neighborhood": "Downtown",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "True",
    "description": "Watch *The Snowman* onscreen while Seattle Symphony plays the score live.",
    "link": "https://benaroyahall.org/en/concerttickets/calendar/2026-2027/26fam2",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e143"
+   "id": "e119"
   },
   {
    "title": "Mount Baker Home Tour",
@@ -1722,11 +1553,12 @@
    "time": "10am to 4pm",
    "venue": "Mount Baker Community Club",
    "neighborhood": "Mount Baker",
-   "cost": "Tickets required",
+   "cost": "",
+   "ticketed": "True",
    "description": "See six homes decorated for the holidays on the Mount Baker Home Tour.",
    "link": "https://www.mountbaker.org/events/mount-baker-home-tour-2026",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e144"
+   "id": "e120"
   },
   {
    "title": "Run for cookies",
@@ -1734,11 +1566,12 @@
    "time": "5pm",
    "venue": "Green Lake Park",
    "neighborhood": "Green Lake",
-   "cost": "Registration fee",
-   "description": "Run around Green Lake and enjoy cookies at the Electric Cookie Run.",
+   "cost": "",
+   "ticketed": "True",
+   "description": "Run a 5K/10K and enjoy cookies at The Electric Cookie Run.",
    "link": "https://www.orcarunning.com/race/the-electric-cookie-run/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e145"
+   "id": "e121"
   },
   {
    "title": "Cookies in Burien",
@@ -1746,23 +1579,25 @@
    "time": "12 to 4pm",
    "venue": "Discover Burien",
    "neighborhood": "Burien",
-   "cost": "Tickets required",
+   "cost": "",
+   "ticketed": "True",
    "description": "Walk to different shops and collect cookies on the Holiday Cookie Crawl.",
    "link": "https://www.discoverburien.org/calendar/2026/cookie-crawl",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e146"
+   "id": "e122"
   },
   {
-   "title": "Eastside lights festival",
+   "title": "Eastside lights festival  FREE",
    "date": "2026-12-05",
    "time": "4 to 8pm",
    "venue": "Downtown Park",
    "neighborhood": "Redmond",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Enjoy live music, glowing art, and a family lights parade at Redmond Lights.",
    "link": "https://www.redmond.gov/1139/Redmond-Lights",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e147"
+   "id": "e123"
   },
   {
    "title": "Holiday run",
@@ -1770,47 +1605,51 @@
    "time": "9:30am",
    "venue": "Bear Creek Park & Ride",
    "neighborhood": "Redmond",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "True",
    "description": "Run a half marathon or 5 miles in beautiful Redmond Watershed Preserve.",
    "link": "https://nwtrailruns.com/events/redmond-reindeer-romp/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e148"
+   "id": "e124"
   },
   {
-   "title": "Scandinavian Christmas",
+   "title": "Scandinavian Christmas  FREE",
    "date": "2026-12-05",
    "time": "",
    "venue": "Sons of Norway",
    "neighborhood": "Poulsbo",
    "cost": "Free",
-   "description": "Enjoy a market of Scandinavian arts & crafts and a giant bonfire.",
+   "ticketed": "False",
+   "description": "Enjoy a market of Scandinavian arts & crafts and food vendors at JuleFest.",
    "link": "https://www.poulsbosonsofnorway.com/julefest.html",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e149"
+   "id": "e125"
   },
   {
-   "title": "Santa Parade in Auburn",
+   "title": "Santa Parade in Auburn  FREE",
    "date": "2026-12-05",
    "time": "4:30 to 5:30pm",
-   "venue": "Auburn High School",
+   "venue": "Auburn Downtown Association",
    "neighborhood": "Auburn",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Watch lighted vehicles and floats go down Main Street during the Santa Parade.",
    "link": "https://www.auburnwa.gov/workspaces/One.aspx?objectId=13593698",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e150"
+   "id": "e126"
   },
   {
-   "title": "Santa Parade in Puyallup",
+   "title": "Santa Parade in Puyallup  FREE",
    "date": "2026-12-05",
    "time": "",
    "venue": "Pioneer Park Pavilion",
    "neighborhood": "Puyallup",
    "cost": "Free",
-   "description": "Watch bands, floats, and walking units during the Santa Parade.",
+   "ticketed": "False",
+   "description": "Watch bands and floats during the Santa Parade in Puyallup.",
    "link": "https://www.puyallupmainstreet.com/signature-events/lighted-santa-parade/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e151"
+   "id": "e127"
   },
   {
    "title": "Old-fashioned Christmas",
@@ -1818,35 +1657,38 @@
    "time": "11am to 4pm",
    "venue": "Fort Nisqually Living History Museum",
    "neighborhood": "Tacoma",
-   "cost": "Tickets required",
-   "description": "Play games, make ornaments, and browse a holiday market at Christmas Regale.",
+   "cost": "",
+   "ticketed": "True",
+   "description": "Enjoy parlor games, a holiday market, and meet Father Christmas.",
    "link": "https://www.parkstacoma.gov/event/christmas-regale/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e152"
+   "id": "e128"
   },
   {
-   "title": "Nativities on display",
+   "title": "Nativities on display  FREE",
    "date": "2026-12-05",
    "time": "",
-   "venue": "The Mormon Church of Jesus Christ of Latter-day Saints",
+   "venue": "The Church of Jesus Christ of Latter-day Saints",
    "neighborhood": "Bellevue",
    "cost": "Free",
-   "description": "Enjoy the beauty of 500 cr\u00e8ches from around the world during the Festival of the Nativity.",
+   "ticketed": "False",
+   "description": "Enjoy the beauty of 500 cr\u00e8ches from around the world at the Festival of the Nativity.",
    "link": "https://www.bellevuefestivalofthenativity.com",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e153"
+   "id": "e129"
   },
   {
-   "title": "Tour art studios on Vashon",
+   "title": "Tour art studios on Vashon  FREE",
    "date": "2026-12-05",
    "time": "",
-   "venue": "Vashon Island",
-   "neighborhood": "",
+   "venue": "",
+   "neighborhood": "Vashon Island",
    "cost": "Free",
-   "description": "Visit 40 studios and galleries representing 140 artists during the holiday studio tour.",
+   "ticketed": "False",
+   "description": "Visit 40 studios and galleries representing 140 artists during the Vashon Island Visual Artists Holiday Studio Tour.",
    "link": "https://vivartists.com/viva/holiday-tour-2025/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e154"
+   "id": "e130"
   },
   {
    "title": "International music",
@@ -1855,10 +1697,11 @@
    "venue": "multiple locations",
    "neighborhood": "",
    "cost": "",
-   "description": "Enjoy various international music performances including an Italian Christmas concert.",
-   "link": "https://www.seattlechoralcompany.org/portfolio/buon-natale/",
+   "ticketed": "True",
+   "description": "Enjoy various international music performances including Italian, French, and Mexican themes.",
+   "link": "https://www.events12.com/seattle/december/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e155"
+   "id": "e131"
   },
   {
    "title": "Santa bar crawl",
@@ -1866,11 +1709,12 @@
    "time": "",
    "venue": "Westlake Park",
    "neighborhood": "Downtown",
-   "cost": "Tickets required",
-   "description": "Dress in a Santa suit and visit a dozen city bars during SantaCon.",
+   "cost": "",
+   "ticketed": "True",
+   "description": "Dress in a Santa suit or holiday costume and visit a dozen city bars.",
    "link": "https://seattlesantacon.org/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e156"
+   "id": "e132"
   },
   {
    "title": "Holiday tea",
@@ -1878,11 +1722,12 @@
    "time": "",
    "venue": "Hotel Sorrento",
    "neighborhood": "First Hill",
-   "cost": "Tickets required",
+   "cost": "",
+   "ticketed": "True",
    "description": "Enjoy a cozy holiday tea with sandwiches and sweets.",
    "link": "https://events.humanitix.com/holiday-tea-2026-at-the-sorrento",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e157"
+   "id": "e133"
   },
   {
    "title": "Santa Train (North Bend)",
@@ -1890,23 +1735,25 @@
    "time": "",
    "venue": "Northwest Railway Museum",
    "neighborhood": "North Bend",
-   "cost": "Tickets required",
+   "cost": "",
+   "ticketed": "True",
    "description": "Enjoy a two-hour ride with Santa, cookies, and crafts.",
    "link": "https://trainmuseum.org/upcoming-events/santa/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e158"
+   "id": "e134"
   },
   {
-   "title": "Winter at Seattle Center",
+   "title": "Winter at Seattle Center  FREE",
    "date": "2026-12-05",
    "time": "",
    "venue": "Seattle Center",
    "neighborhood": "Lower Queen Anne",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Experience holiday lights, bands, and ice sculptures at Winterfest.",
    "link": "https://www.seattlecenter.com/events/featured-events/winterfest",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e159"
+   "id": "e135"
   },
   {
    "title": "Christmas boats on Lake Union",
@@ -1915,10 +1762,11 @@
    "venue": "Lake Union",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Boats decorated with Christmas lights begin lining up from Aurora Bridge to Gas Works Park at 6:30 p.m.",
    "link": "https://saltydogboatingnews.com/seattle-christmas-boat-parade-december-2026-judges-location-at-morrisons-north-star-fuel-dock-the-parade-ends-at-morrisons-dock-fremont-bridge/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e160"
+   "id": "e136"
   },
   {
    "title": "Cool Yule Holiday Party and Concert",
@@ -1927,10 +1775,11 @@
    "venue": "Good Shepherd Center",
    "neighborhood": "Wallingford",
    "cost": "",
+   "ticketed": "True",
    "description": "A ticket includes snazzy, jazzy holiday tunes and standards by BlueStreet Voices and a jazz pianist.",
    "link": "https://www.bluestreetvoices.com/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e161"
+   "id": "e137"
   },
   {
    "title": "Pathway of Lights",
@@ -1939,10 +1788,11 @@
    "venue": "Green Lake Park",
    "neighborhood": "Green Lake",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Take a walk following glowing luminaries with warm drinks, sweet treats, sponsor giveaways, and musical performances.",
    "link": "https://arcseattle.org/events/pathway-of-lights/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e162"
+   "id": "e138"
   },
   {
    "title": "Battle of the Badges: Holiday Lights",
@@ -1950,11 +1800,12 @@
    "time": "5:30 to 8pm",
    "venue": "Renton Technical College",
    "neighborhood": "Renton",
-   "cost": "Free",
+   "cost": "Donation",
+   "ticketed": "True",
    "description": "Wave to police, medics, and fire fighters as you walk by their decorated vehicles and tents.",
    "link": "https://www.rentonwa.gov/Government/Departments-and-Offices/Police/Community-Engagement/Battle-of-the-Badges",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e163"
+   "id": "e139"
   },
   {
    "title": "Holiday Wine, Beer & Spirits Walk",
@@ -1963,10 +1814,11 @@
    "venue": "Bothell Kenmore Chamber of Commerce",
    "neighborhood": "Bothell",
    "cost": "",
-   "description": "Bring your own glass to get 10 tastes of wines, beers, ciders, and spirits in shops.",
+   "ticketed": "True",
+   "description": "Bring your own glass to taste wines, beers, ciders, and spirits in shops.",
    "link": "https://cm.bothellkenmorechamber.org/chamber-calendar/Details/santa-s-after-dark-holiday-wine-walk-1857607",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e164"
+   "id": "e140"
   },
   {
    "title": "Winter Bonsai Solstice",
@@ -1975,10 +1827,11 @@
    "venue": "Pacific Bonsai Museum",
    "neighborhood": "Federal Way",
    "cost": "Free",
+   "ticketed": "False",
    "description": "See lit Bonsai trees with holiday lights, music, free hot chocolate, and a gift shop.",
    "link": "https://pacificbonsaimuseum.org/events/a-bonsai-solstice-2026-2/?occurrence=2026-12-12",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e165"
+   "id": "e141"
   },
   {
    "title": "Snohomish Wine Walk",
@@ -1987,10 +1840,11 @@
    "venue": "Velvet & Oak Boutique",
    "neighborhood": "Snohomish",
    "cost": "$40",
+   "ticketed": "True",
    "description": "Includes a glass and 10 tastes of wine in the shops of charming Snohomish.",
    "link": "https://www.historicdowntownsnohomish.org/winewalk",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e166"
+   "id": "e142"
   },
   {
    "title": "The Midwinter Revels",
@@ -1999,10 +1853,11 @@
    "venue": "Rialto Theater",
    "neighborhood": "Tacoma",
    "cost": "",
+   "ticketed": "True",
    "description": "A family-oriented celebration of the winter solstice with music, dance, theater, song, and storytelling.",
    "link": "https://www.pugetsoundrevels.org",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e167"
+   "id": "e143"
   },
   {
    "title": "Seattle Indies Holiday Party",
@@ -2011,10 +1866,11 @@
    "venue": "GameWorks",
    "neighborhood": "Downtown",
    "cost": "$45",
+   "ticketed": "True",
    "description": "Includes an all-you-can-eat Latin buffet, pizza & pasta bar, and unlimited arcade games.",
    "link": "https://www.eventbrite.com/e/seattle-indies-holiday-party-2026-tickets-2003628232981",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e168"
+   "id": "e144"
   },
   {
    "title": "Jingle Bell Run",
@@ -2023,10 +1879,11 @@
    "venue": "Gas Works Park",
    "neighborhood": "Northlake",
    "cost": "",
+   "ticketed": "False",
    "description": "Wear a costume or tie on bells for the morning 12K, 5K, 1 mile, or kids\u2019 run.",
    "link": "https://events.arthritis.org/jbrseattle",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e169"
+   "id": "e145"
   },
   {
    "title": "Year in Review",
@@ -2035,10 +1892,11 @@
    "venue": "Town Hall Seattle",
    "neighborhood": "First Hill",
    "cost": "",
+   "ticketed": "True",
    "description": "Bill Radke of KUOW shares highlights and lowlights of 2026, plus surprises.",
    "link": "https://townhallseattle.org/event/year-in-review-2026/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e170"
+   "id": "e146"
   },
   {
    "title": "Night Owls",
@@ -2047,10 +1905,11 @@
    "venue": "Woodland Park Zoo",
    "neighborhood": "Phinney Ridge",
    "cost": "",
-   "description": "See WildLanterns\u2019 amazing luminary displays and enjoy holiday-themed lounges.",
+   "ticketed": "True",
+   "description": "See WildLanterns\u2019 amazing luminary displays and enjoy animal encounters and holiday-themed lounges.",
    "link": "https://tickets.zoo.org/events/019843c7-af07-bcec-a003-532e9eefc0e6",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e171"
+   "id": "e147"
   },
   {
    "title": "Winter Luminary Walk",
@@ -2059,10 +1918,11 @@
    "venue": "Washington Park Arboretum",
    "neighborhood": "Montlake",
    "cost": "",
+   "ticketed": "True",
    "description": "Includes two drinks, live acoustic guitar, and a self-guided walk along the pathways.",
    "link": "https://www.facebook.com/events/803817599322789/803817612656121/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e172"
+   "id": "e148"
   },
   {
    "title": "Winter Beer Fest",
@@ -2071,10 +1931,11 @@
    "venue": "The Boxyard",
    "neighborhood": "SoDo",
    "cost": "",
+   "ticketed": "True",
    "description": "Includes unlimited tastes of over 40 breweries and 150 beers with food for sale.",
    "link": "https://washingtonbrewersguild.org/events/winter-beer-fest",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e173"
+   "id": "e149"
   },
   {
    "title": "Columbia City Night Market",
@@ -2083,10 +1944,11 @@
    "venue": "Columbia City Night Market",
    "neighborhood": "Columbia City",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Monthly night market with food trucks, makers, vendors, live music, and a beer garden.",
    "link": "https://www.peacepeloton.com/night-market",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e174"
+   "id": "e150"
   },
   {
    "title": "Holiday Fun Run",
@@ -2095,22 +1957,24 @@
    "venue": "Magnuson Park",
    "neighborhood": "Sand Point",
    "cost": "",
-   "description": "Join the fun run (5K, 10K, 15K, kids\u2019 dash) followed by hot chocolate.",
+   "ticketed": "False",
+   "description": "Dress for the holidays when you join the fun run followed by hot chocolate.",
    "link": "https://magnusonseries.com/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e175"
+   "id": "e151"
   },
   {
    "title": "Lighted Boat Parade",
    "date": "2026-12-19",
    "time": "5:30pm",
-   "venue": "Tacoma waterfront",
+   "venue": "Cummings Park",
    "neighborhood": "Tacoma",
    "cost": "Free",
-   "description": "Boats with lights and decorations travel south along the Tacoma waterfront.",
+   "ticketed": "False",
+   "description": "Boats with lights and decorations travel along the Tacoma waterfront.",
    "link": "https://www.facebook.com/events/3337174819765730",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e176"
+   "id": "e152"
   },
   {
    "title": "Model Train Festival",
@@ -2119,10 +1983,11 @@
    "venue": "Washington State History Museum",
    "neighborhood": "Tacoma",
    "cost": "",
+   "ticketed": "True",
    "description": "Watch model trains run through detailed scenes of the Pacific Northwest.",
    "link": "https://www.washingtonhistory.org/event/mtf-event-30/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e177"
+   "id": "e153"
   },
   {
    "title": "Beauty and The Beast",
@@ -2131,10 +1996,11 @@
    "venue": "Paramount Theatre",
    "neighborhood": "Downtown",
    "cost": "",
-   "description": "A colorful musical about transformation and tolerance based on the Disney film.",
+   "ticketed": "True",
+   "description": "A colorful musical about transformation and tolerance, featuring a girl and a prince under a witch\u2019s spell.",
    "link": "https://www.stgpresents.org/events/beauty-and-the-beast/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e178"
+   "id": "e154"
   },
   {
    "title": "Jingle Bell Run",
@@ -2143,10 +2009,11 @@
    "venue": "Wright Park",
    "neighborhood": "Tacoma",
    "cost": "",
+   "ticketed": "False",
    "description": "Run or walk 3 miles and enjoy hot cocoa at the park.",
    "link": "https://www.parkstacoma.gov/event/jingle-bell-run/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e179"
+   "id": "e155"
   },
   {
    "title": "Fiddler on the Roof Sing Along",
@@ -2155,10 +2022,11 @@
    "venue": "SIFF Cinema Uptown",
    "neighborhood": "Lower Queen Anne",
    "cost": "",
-   "description": "See a film about Jewish tradition with live klezmer music and free vegetarian noodle take-out.",
+   "ticketed": "False",
+   "description": "See a film about Jewish tradition, hear live klezmer music, and enjoy free vegetarian noodle take-out.",
    "link": "https://www.siff.net/programs-and-events/holiday-favorites/fiddler-on-the-roof",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e180"
+   "id": "e156"
   },
   {
    "title": "Amazing Bubble Man",
@@ -2167,10 +2035,11 @@
    "venue": "Kirkland Performance Center",
    "neighborhood": "Kirkland",
    "cost": "",
+   "ticketed": "True",
    "description": "Explores the dynamics of bubbles with comedy and artistry.",
    "link": "https://www.kpcenter.org/event/amazing-bubble-man-2026-2/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e181"
+   "id": "e157"
   },
   {
    "title": "Scope Screenings: Season Finale",
@@ -2179,10 +2048,11 @@
    "venue": "Langston Hughes Performing Arts Institute",
    "neighborhood": "Central District",
    "cost": "",
+   "ticketed": "True",
    "description": "Discover bold short films and connect with the artists who bring them to life.",
    "link": "https://www.lexscopefilms.com/event-details/scope-screenings-s5-e6-december-29-2026",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e182"
+   "id": "e158"
   },
   {
    "title": "New Year\u2019s Eve with Kenny G",
@@ -2191,10 +2061,11 @@
    "venue": "Dimitriou's Jazz Alley",
    "neighborhood": "Downtown",
    "cost": "",
+   "ticketed": "True",
    "description": "Grammy award winning saxophonist plays a mix of holiday hits and jazz standards.",
    "link": "https://www.jazzalley.com/www-home/artist.jsp?shownum=8841",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e183"
+   "id": "e159"
   },
   {
    "title": "New Year's Eve with Storm Large",
@@ -2203,10 +2074,11 @@
    "venue": "Benaroya Hall",
    "neighborhood": "Downtown",
    "cost": "",
+   "ticketed": "True",
    "description": "Includes a DJ dance party with dancing, champagne, and revelry.",
    "link": "https://benaroyahall.org/en/concerttickets/calendar/2026-2027/26nye",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e184"
+   "id": "e160"
   },
   {
    "title": "New Year\u2019s Eve with The Long Winters",
@@ -2214,11 +2086,12 @@
    "time": "7 & 10pm",
    "venue": "The Triple Door",
    "neighborhood": "Downtown",
-   "cost": "$142",
+   "cost": "$142 with dinner / $96 with appetizers",
+   "ticketed": "True",
    "description": "Features a Seattle indies band with champagne and party favors.",
    "link": "https://tickets.thetripledoor.net/eventperformances.asp?evt=2296",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e185"
+   "id": "e161"
   },
   {
    "title": "Xtreme Theatresports New Year\u2019s Eve Party",
@@ -2227,10 +2100,11 @@
    "venue": "Unexpected Productions Improv",
    "neighborhood": "Downtown",
    "cost": "",
-   "description": "An epic battle of 20 comedy improvisers with gifts, hats, streamers, and a champagne toast.",
+   "ticketed": "True",
+   "description": "An epic battle of comedy improvisers with gifts, hats, streamers, and a champagne toast.",
    "link": "https://www.eventbrite.com/e/xtreme-theatresports-new-years-eve-party-tickets-1988251218918",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e186"
+   "id": "e162"
   },
   {
    "title": "Posh New Year's Eve Party",
@@ -2239,22 +2113,24 @@
    "venue": "W Seattle",
    "neighborhood": "Downtown",
    "cost": "",
+   "ticketed": "True",
    "description": "Includes DJ dance music, party favors, and midnight champagne.",
    "link": "https://vipnightlife.com/events/2027-posh-w-seattle-new-years-eve-party/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e187"
+   "id": "e163"
   },
   {
-   "title": "Posh New Year's Eve",
+   "title": "Posh New Year's Eve Party",
    "date": "2026-12-31",
    "time": "9pm",
    "venue": "W Seattle",
    "neighborhood": "Downtown",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "True",
    "description": "Includes DJ dance music, party favors, and midnight champagne.",
    "link": "https://vipnightlife.com/events/2027-posh-w-seattle-new-years-eve-party/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e188"
+   "id": "e164"
   },
   {
    "title": "Jackpot at the Top",
@@ -2263,10 +2139,11 @@
    "venue": "Columbia Center",
    "neighborhood": "Downtown",
    "cost": "$161",
+   "ticketed": "True",
    "description": "Watch the Space Needle\u2019s fireworks through the windows of the city\u2019s tallest building with classic casino games.",
    "link": "https://skyviewobservatory.com/tickets/?promocode=NYE2025",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e189"
+   "id": "e165"
   },
   {
    "title": "Fireworks Viewing Cruise",
@@ -2274,23 +2151,25 @@
    "time": "",
    "venue": "Argosy Cruises at Pier 55",
    "neighborhood": "Seattle",
-   "cost": "Varies",
+   "cost": "",
+   "ticketed": "False",
    "description": "Watch the Space Needle fireworks from the water with DJ dance music.",
    "link": "https://www.argosycruises.com/cruises/new-years-eve-cruises/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e190"
+   "id": "e166"
   },
   {
    "title": "New Year\u2019s Eve at Seattle Center",
    "date": "2026-12-31",
    "time": "",
    "venue": "Seattle Center",
-   "neighborhood": "Seattle",
+   "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Celebrate with live music, a DJ dance party, and a laser and fireworks show.",
    "link": "https://www.seattlecenter.com/events/featured-events/new-years-eve",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e191"
+   "id": "e167"
   },
   {
    "title": "New Year\u2019s Eve pARTy",
@@ -2299,10 +2178,11 @@
    "venue": "Chihuly Garden and Glass",
    "neighborhood": "Seattle Center",
    "cost": "",
+   "ticketed": "True",
    "description": "Includes appetizers, drinks, live music, and a champagne toast with a view of the fireworks.",
    "link": "https://www.facebook.com/events/2132608950187637/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e192"
+   "id": "e168"
   },
   {
    "title": "Indulgence",
@@ -2311,10 +2191,11 @@
    "venue": "Museum of Pop Culture",
    "neighborhood": "Seattle Center",
    "cost": "",
+   "ticketed": "True",
    "description": "Seattle\u2019s biggest New Year\u2019s Eve bash with comedy, dance music, and access to exhibits.",
    "link": "https://www.facebook.com/events/museum-of-pop-culture/indulgence-new-years-eve-bash-at-mopop/501001010401462/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e193"
+   "id": "e169"
   },
   {
    "title": "New Year\u2019s Eve at Smith Tower",
@@ -2323,10 +2204,11 @@
    "venue": "Smith Tower",
    "neighborhood": "Downtown",
    "cost": "",
+   "ticketed": "True",
    "description": "Includes welcome champagne, light bites, desserts, and city views.",
    "link": "https://www.facebook.com/events/1158229483184506",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e194"
+   "id": "e170"
   },
   {
    "title": "Resolution",
@@ -2335,10 +2217,11 @@
    "venue": "WaMu Theater",
    "neighborhood": "Pioneer Square",
    "cost": "",
-   "description": "A massive concert with 13 DJs playing dance music.",
+   "ticketed": "True",
+   "description": "A massive concert with 13 DJs playing dance music on two stages.",
    "link": "https://www.facebook.com/events/637877720079671/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e195"
+   "id": "e171"
   },
   {
    "title": "Moulin Rouge: New Year\u2019s Eve Sing-Along",
@@ -2347,10 +2230,11 @@
    "venue": "SIFF Cinema Uptown",
    "neighborhood": "Lower Queen Anne",
    "cost": "",
-   "description": "Watch the film with a sing-along before midnight.",
+   "ticketed": "True",
+   "description": "Watch the glamorous film with a sing-along.",
    "link": "https://www.siff.net/programs-and-events/holiday-favorites/moulin-rouge-new-years-eve-sing-along",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e196"
+   "id": "e172"
   },
   {
    "title": "New Year's Eve Tango Ball",
@@ -2359,10 +2243,11 @@
    "venue": "Dance Underground",
    "neighborhood": "Capitol Hill",
    "cost": "",
+   "ticketed": "True",
    "description": "Includes a dance lesson, tango performance, and buffet.",
    "link": "https://www.seattletango.com/event/event.htm",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e197"
+   "id": "e173"
   },
   {
    "title": "Cirque Du Bollywood New Year\u2019s Eve",
@@ -2371,10 +2256,11 @@
    "venue": "Emerald City Trapeze Arts",
    "neighborhood": "SoDo",
    "cost": "",
+   "ticketed": "True",
    "description": "Features aerial circus performances and Bollywood music.",
    "link": "https://www.facebook.com/events/4779304985459098",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e198"
+   "id": "e174"
   },
   {
    "title": "Artist Home\u2019s New Year\u2019s Eve Celebration",
@@ -2383,10 +2269,11 @@
    "venue": "Tractor Tavern",
    "neighborhood": "Ballard",
    "cost": "",
-   "description": "Local artists sing holiday cover songs.",
+   "ticketed": "True",
+   "description": "Local artists sing holiday cover songs backed by a band.",
    "link": "https://www.facebook.com/events/1124548936334732",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e199"
+   "id": "e175"
   },
   {
    "title": "Burning Boat Festival",
@@ -2394,11 +2281,12 @@
    "time": "6 to 9pm",
    "venue": "Des Moines Marina Pier",
    "neighborhood": "Des Moines",
-   "cost": "Free",
-   "description": "Write a New Year\u2019s message and enjoy fire pits and activities.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Write a New Year\u2019s message and drop it into a boat with fire pits and activities.",
    "link": "https://www.facebook.com/burningboatfestival/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e200"
+   "id": "e176"
   },
   {
    "title": "Souled Out Funk",
@@ -2407,22 +2295,24 @@
    "venue": "McMenamins Anderson School",
    "neighborhood": "Bothell",
    "cost": "",
-   "description": "A funk band performance with a high-powered rhythm section.",
+   "ticketed": "True",
+   "description": "Features a 10-member funk band with soulful vocals.",
    "link": "https://souledoutsuperfunk.com/event/6636064/768978423/mcmenamins-new-years-eve-party-anderson-school-haynes-hall",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e201"
+   "id": "e177"
   },
   {
    "title": "New Year\u2019s Eve Party",
    "date": "2026-12-31",
-   "time": "9pm",
+   "time": "",
    "venue": "Emerald Downs",
    "neighborhood": "Auburn",
    "cost": "",
+   "ticketed": "True",
    "description": "Features the Sonic Funk Orchestra and a casino.",
    "link": "https://www.facebook.com/EmeraldDownsRacetrack/posts/10156729490198038",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e202"
+   "id": "e178"
   },
   {
    "title": "Disco by the Bay",
@@ -2431,10 +2321,11 @@
    "venue": "Hotel Indigo",
    "neighborhood": "Everett",
    "cost": "$82",
+   "ticketed": "True",
    "description": "Includes small bites, a drink ticket, and DJ music.",
    "link": "https://www.eventbrite.com/e/disco-by-the-bay-new-years-eve-2027-at-hotel-indigo-everett-waterfront-tickets-2003729643302",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e203"
+   "id": "e179"
   },
   {
    "title": "Tacoma Light Trail",
@@ -2443,34 +2334,24 @@
    "venue": "Tollefson Plaza",
    "neighborhood": "Tacoma",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Features a dragon parade, performances, and craft activities.",
    "link": "https://www.tacomalighttrail.org/events/new-years-eve-kick-off-celebration-7zeen",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e204"
+   "id": "e180"
   },
   {
-   "title": "Floater",
+   "title": "Rocking New Year\u2019s Eve",
    "date": "2026-12-31",
    "time": "9:30pm",
    "venue": "McMenamins Elks Temple",
    "neighborhood": "Tacoma",
    "cost": "",
-   "description": "Portland rock band performs in the ballroom.",
+   "ticketed": "True",
+   "description": "Portland rock band Floater performs in the ballroom.",
    "link": "https://www.mcmenamins.com/events/278528-new-years-eve-with-floater",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e205"
-  },
-  {
-   "title": "Ballard Cocktail Trail",
-   "date": "2026-12-01",
-   "time": "",
-   "venue": "Umpqua Bank",
-   "neighborhood": "Ballard",
-   "cost": "Free",
-   "description": "Enjoy tastes of 10 unique hand-crafted cocktails in boutique shops starting at Umpqua Bank.",
-   "link": "https://www.visitballard.com/event/ballard-cocktail-trail/",
-   "source": "https://www.events12.com/seattle/december/",
-   "id": "e206"
+   "id": "e181"
   },
   {
    "title": "Holiday Jingle Jam",
@@ -2479,10 +2360,11 @@
    "venue": "Amazing Grace Spiritual Center",
    "neighborhood": "Ballard",
    "cost": "Free",
-   "description": "A family-friendly event featuring choirs, soloists, and singalongs for various winter holidays.",
+   "ticketed": "False",
+   "description": "Family-friendly event with choirs, soloists, and singalongs of sacred and secular music for Christmas, Hanukkah, Kwanzaa, and winter solstice.",
    "link": "https://www.facebook.com/events/871432438876650",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e207"
+   "id": "e182"
   },
   {
    "title": "New Year\u2019s Eve Night Market",
@@ -2491,10 +2373,11 @@
    "venue": "Bellevue Downtown Park",
    "neighborhood": "Bellevue",
    "cost": "Free",
-   "description": "Shop from craft and food vendors, enjoy live music, and partake in free cocoa and cookies.",
+   "ticketed": "False",
+   "description": "Shop from 50 craft and food vendors, visit a wine and beer garden, hear live music, enjoy free cocoa and cookies.",
    "link": "https://www.ascendhg.com/bellevue-nye-night-market",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e208"
+   "id": "e183"
   },
   {
    "title": "New Year\u2019s Eve Dance",
@@ -2503,10 +2386,11 @@
    "venue": "OmCulture",
    "neighborhood": "Wallingford",
    "cost": "",
-   "description": "Join a dance party with a live blues band, DJ, and a feast of food and drinks.",
+   "ticketed": "True",
+   "description": "Dance party featuring a live blues band and DJ, along with a sumptuous finger-food feast and drinks.",
    "link": "https://nwdance.net/events/dance-template-504/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e209"
+   "id": "e184"
   },
   {
    "title": "Cinema: A New Year's Eve Celebration",
@@ -2515,10 +2399,11 @@
    "venue": "W Bellevue",
    "neighborhood": "Bellevue",
    "cost": "",
-   "description": "Celebrate New Year's Eve with live entertainment, gourmet food, and a midnight countdown.",
+   "ticketed": "True",
+   "description": "Inspired by the golden age of Hollywood, this event features live entertainment, food, and a midnight countdown.",
    "link": "https://www.eventbrite.com/e/cinema-a-new-years-eve-celebration-tickets-1969972463669",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e210"
+   "id": "e185"
   },
   {
    "title": "Havana Nights",
@@ -2527,10 +2412,11 @@
    "venue": "Ascend Prime Steak & Sushi",
    "neighborhood": "Bellevue",
    "cost": "",
-   "description": "Experience a Cuban nightclub theme with dining, cocktails, and a view of fireworks.",
+   "ticketed": "True",
+   "description": "Cuban nightclub themed event with unlimited dining, cocktails, DJ music, and a view of Bellevue fireworks.",
    "link": "https://www.facebook.com/AscendBellevue/posts/tickets-are-now-on-sale-to-welcome-the-new-year-in-full-color-at-havana-nights-o/1421155396681409/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e211"
+   "id": "e186"
   },
   {
    "title": "Bubbles Jam",
@@ -2539,10 +2425,11 @@
    "venue": "Village Wines",
    "neighborhood": "Woodinville",
    "cost": "",
-   "description": "A festive open-house style party featuring tastings of various champagnes and sparkling wines.",
+   "ticketed": "True",
+   "description": "Festive open-house style party featuring 10 champagnes and sparkling wines to taste.",
    "link": "https://www.eventbrite.com/e/bubbles-jam-2025-two-days-to-sip-sparkle-celebrate-tickets-1967797194380",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e212"
+   "id": "e187"
   },
   {
    "title": "Cocoa and Carols",
@@ -2551,10 +2438,11 @@
    "venue": "W.W. Seymour Botanical Conservatory",
    "neighborhood": "Tacoma",
    "cost": "Donation",
-   "description": "Gather around the fire to sing holiday songs while enjoying the winter flower exhibit.",
+   "ticketed": "True",
+   "description": "Gather around the fire to sing holiday songs led by a classical singer, with an option to warm up inside the conservatory.",
    "link": "https://www.parkstacoma.gov/event/cocoa-and-carols/",
    "source": "https://www.events12.com/seattle/december/",
-   "id": "e213"
+   "id": "e188"
   },
   {
    "title": "Seattle Center Sculpture Walk 2026",
@@ -2563,10 +2451,11 @@
    "venue": "Memorial Stadium",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Explore our temporary art installations on campus throughout the year.",
    "link": "https://www.seattlecenter.com/events/event-calendar/seattle-center-sculpture-walk-2026-x46454",
    "source": "https://www.seattlecenter.com/events/event-calendar",
-   "id": "e214"
+   "id": "e189"
   },
   {
    "title": "Teddy Swims: The Ugly Tour",
@@ -2575,10 +2464,11 @@
    "venue": "Climate Pledge Arena",
    "neighborhood": "",
    "cost": "Entry Charge",
+   "ticketed": "True",
    "description": "Grammy nominated and Diamond-certified superstar, Teddy Swims, announces his 2026 The UGLY Tour coming to Seattle on November 5 with special guests Allen Stone and MarcLo!",
    "link": "https://www.seattlecenter.com/events/event-calendar/teddy-swims-the-ugly-tour",
    "source": "https://www.seattlecenter.com/events/event-calendar",
-   "id": "e215"
+   "id": "e190"
   },
   {
    "title": "Eureka Day",
@@ -2587,10 +2477,154 @@
    "venue": "Bagley Wright Theatre",
    "neighborhood": "",
    "cost": "Entry Charge",
+   "ticketed": "True",
    "description": "Jonathan Spector\u2019s popular Tony Award winner serves up a razor\u2011sharp satire of well\u2011meaning chaos and shines a light on the shared responsibility that holds a community together.",
    "link": "https://www.seattlecenter.com/events/event-calendar/eureka-day-x50657",
    "source": "https://www.seattlecenter.com/events/event-calendar",
-   "id": "e216"
+   "id": "e191"
+  },
+  {
+   "title": "Healing service for your medical conditions",
+   "date": "2026-12-06",
+   "time": "6:30 PM",
+   "venue": "15415 5th Ave NE",
+   "neighborhood": "Shoreline",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "A healing service aimed at addressing various medical conditions.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e192"
+  },
+  {
+   "title": "Fashion Internship for International Runway Show",
+   "date": "2026-11-28",
+   "time": "6:00 PM",
+   "venue": "TBA",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "An opportunity for those interested in fashion to gain internship experience.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e193"
+  },
+  {
+   "title": "Advanced Camera Techniques for Wildlife Photo and Video with Kristi Odom",
+   "date": "2026-11-06",
+   "time": "5:15 PM",
+   "venue": "Kenmore Camera",
+   "neighborhood": "Kenmore",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A workshop focusing on advanced photography techniques for wildlife.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e194"
+  },
+  {
+   "title": "ReVision Seattle 2.0",
+   "date": "2026-11-07",
+   "time": "7:00 PM",
+   "venue": "Maple Leaf Lutheran Church",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A community event focused on revising and improving local initiatives.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e195"
+  },
+  {
+   "title": "The Cove After Hours: Pop Culture Trivia with Tori Dahl",
+   "date": "2026-11-18",
+   "time": "7:00 PM",
+   "venue": "The Cove",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join for an evening of trivia focused on pop culture.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e196"
+  },
+  {
+   "title": "Mass Timber in Education: UW Founders Hall Tour and Design Seminar",
+   "date": "2026-11-17",
+   "time": "11:00 AM",
+   "venue": "University of Washington, Founders Hall",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A tour and seminar discussing the use of mass timber in education.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e197"
+  },
+  {
+   "title": "Build Here, Puget Sound! The Game: King County",
+   "date": "2026-11-13",
+   "time": "11:30 AM",
+   "venue": "Amazon Everest (SEA82)",
+   "neighborhood": "Bellevue",
+   "cost": "",
+   "ticketed": "False",
+   "description": "An interactive game focused on building and development in King County.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e198"
+  },
+  {
+   "title": "Seattle Job Fair December 10, 2026 - Seattle Career Fairs",
+   "date": "2026-12-10",
+   "time": "10:00 AM",
+   "venue": "Seattle",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A job fair connecting job seekers with local employers.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e199"
+  },
+  {
+   "title": "SEATTLE | Delete the Apps - Meet People in Person | at Art Marble 21",
+   "date": "2026-11-07",
+   "time": "7:00 PM",
+   "venue": "Art Marble 21",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "An event encouraging people to meet in person instead of online.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e200"
+  },
+  {
+   "title": "An Evening with Standing Together's Amin Amara and Nadav Shofet",
+   "date": "2026-11-18",
+   "time": "7:00 PM",
+   "venue": "Rainier Arts Center",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "An evening discussion featuring Amin Amara and Nadav Shofet.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e201"
+  },
+  {
+   "title": "2026 Annual BIA Neighborhood Celebration",
+   "date": "2026-11-18",
+   "time": "4:00 PM",
+   "venue": "Foster/White Gallery",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A celebration of the BIA neighborhood with various activities.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e202"
   },
   {
    "title": "Breast Oncology \u2013 Best of 2026",
@@ -2598,11 +2632,103 @@
    "time": "5:30 PM",
    "venue": "Renaissance Seattle Hotel",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "This event focuses on advancements in breast oncology.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A conference discussing advancements in breast oncology.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
-   "id": "e217"
+   "id": "e203"
+  },
+  {
+   "title": "The Ghost Cat: Stories of Spirit & Survival in the Himalayas w/Megan Brief",
+   "date": "2026-11-07",
+   "time": "9:30 AM",
+   "venue": "Kenmore Camera",
+   "neighborhood": "Kenmore",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A storytelling event about the experiences in the Himalayas.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e204"
+  },
+  {
+   "title": "First Friday Coffee Cuppings with Caffe Vita",
+   "date": "2026-11-06",
+   "time": "10:00 AM",
+   "venue": "KEXP",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A coffee tasting event featuring Caffe Vita.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e205"
+  },
+  {
+   "title": "Black Futures Book Club",
+   "date": "2026-11-23",
+   "time": "6:00 PM",
+   "venue": "Langston Hughes Performing Arts Institute",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A book club focusing on literature related to Black futures.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e206"
+  },
+  {
+   "title": "Furniture Repair Bank and Second Use Pop-Up Sale @ RCLC",
+   "date": "2026-11-07",
+   "time": "10:00 AM",
+   "venue": "Reuse Commons Lake City",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A pop-up sale featuring furniture repair services.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e207"
+  },
+  {
+   "title": "Estate Planning Seminar",
+   "date": "2026-11-10",
+   "time": "1:30 PM",
+   "venue": "316 Broadway",
+   "neighborhood": "Seattle",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A seminar discussing important aspects of estate planning.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e208"
+  },
+  {
+   "title": "Creating Captivating Landscapes from Life on the Road w/Josh Saltsman",
+   "date": "2026-11-07",
+   "time": "1:30 PM",
+   "venue": "Kenmore Camera",
+   "neighborhood": "Kenmore",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A workshop on creating landscapes inspired by travel.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e209"
+  },
+  {
+   "title": "Pushing Your Gear to the Limits with/Dalton Johnson and TAMRON",
+   "date": "2026-11-07",
+   "time": "12:00 PM",
+   "venue": "Kenmore Camera",
+   "neighborhood": "Kenmore",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A photography workshop focusing on maximizing gear performance.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events/",
+   "id": "e210"
   },
   {
    "title": "Wednesday Trivia at Admiral Pub",
@@ -2611,10 +2737,11 @@
    "venue": "Admiral Pub",
    "neighborhood": "West Seattle",
    "cost": "Free",
-   "description": "Join for trivia night at Admiral Pub every Wednesday.",
+   "ticketed": "False",
+   "description": "Join for trivia every Wednesday evening.",
    "link": "./events/weekly/wed/wednesday-trivia-at-admiral-pub-tickets",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e218"
+   "id": "e211"
   },
   {
    "title": "Rave Up! w Maxwell Edison & Heavy Friends",
@@ -2623,34 +2750,37 @@
    "venue": "Screwdriver Bar",
    "neighborhood": "Belltown",
    "cost": "Free",
-   "description": "Enjoy live music with Maxwell Edison and friends every Saturday.",
+   "ticketed": "False",
+   "description": "Enjoy live music every Saturday night.",
    "link": "./events/weekly/sat/rave-up-w-maxwell-edison-heavy-friends-tickets-aeojlel",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e219"
+   "id": "e212"
   },
   {
    "title": "University District Farmers Market",
    "date": "2026-11-07",
-   "time": "9am - 2pm",
+   "time": "9am",
    "venue": "University District",
    "neighborhood": "",
    "cost": "Free",
-   "description": "Visit the farmers market for fresh produce and local goods every Saturday.",
+   "ticketed": "False",
+   "description": "Shop for fresh produce and local goods every Saturday.",
    "link": "./events/weekly/sat/university-district-farmers-market-tickets",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e220"
+   "id": "e213"
   },
   {
    "title": "Georgetown Trailer Park Mall",
    "date": "2026-11-07",
-   "time": "11am - 4pm",
+   "time": "11am",
    "venue": "Georgetown Trailer Park Mall",
    "neighborhood": "Georgetown",
    "cost": "Free",
-   "description": "Explore the unique offerings at the Georgetown Trailer Park Mall every Saturday.",
+   "ticketed": "False",
+   "description": "Explore local vendors and food trucks every Saturday.",
    "link": "./events/weekly/sat/georgetown-trailer-park-mall-1601587987",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e221"
+   "id": "e214"
   },
   {
    "title": "Dia de Muetros Festival",
@@ -2659,10 +2789,11 @@
    "venue": "Seattle Center Armory",
    "neighborhood": "Uptown / Seattle Center",
    "cost": "Free",
-   "description": "Celebrate Dia de Muertos at the Seattle Center Armory.",
+   "ticketed": "False",
+   "description": "Celebrate the Day of the Dead with cultural activities.",
    "link": "./events/2026/10/31/dia-de-muetros-festival",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e222"
+   "id": "e215"
   },
   {
    "title": "Tim's Tavern Halloween Market",
@@ -2671,10 +2802,11 @@
    "venue": "Tim's Tavern",
    "neighborhood": "",
    "cost": "Free",
-   "description": "Check out the Halloween market at Tim's Tavern.",
+   "ticketed": "False",
+   "description": "Enjoy a Halloween-themed market at Tim's Tavern.",
    "link": "./events/2026/10/31/tim-s-tavern-halloween-market-tickets",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e223"
+   "id": "e216"
   },
   {
    "title": "Free 600 Level Student Show",
@@ -2683,10 +2815,11 @@
    "venue": "Unexpected Productions",
    "neighborhood": "Pike Place / Waterfront",
    "cost": "Free",
-   "description": "Enjoy a free student comedy show at Unexpected Productions.",
+   "ticketed": "False",
+   "description": "Watch a free student comedy show.",
    "link": "./events/2026/11/1/free-600-level-student-show-tickets",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e224"
+   "id": "e217"
   },
   {
    "title": "D\u00eda de Muertos Festival Seattle",
@@ -2695,10 +2828,11 @@
    "venue": "Seattle Center",
    "neighborhood": "Uptown / Seattle Center",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Join the D\u00eda de Muertos celebration at Seattle Center.",
    "link": "./events/2026/11/1/dia-de-muertos-festival-seattle-tickets",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e225"
+   "id": "e218"
   },
   {
    "title": "Conor Byrne Open Mic - FREE",
@@ -2707,10 +2841,11 @@
    "venue": "Conor Byrne Pub",
    "neighborhood": "Ballard",
    "cost": "Free",
-   "description": "Participate in the open mic night at Conor Byrne Pub every Sunday.",
+   "ticketed": "False",
+   "description": "Participate in an open mic night every Sunday.",
    "link": "./events/weekly/sun/open-mic-night-tickets",
    "source": "https://do206.com/free-events-seattle",
-   "id": "e226"
+   "id": "e219"
   },
   {
    "title": "ReVision Seattle 2.0",
@@ -2719,10 +2854,11 @@
    "venue": "Maple Leaf Lutheran Church",
    "neighborhood": "Seattle",
    "cost": "Free",
-   "description": "Join for a community event focused on revisioning Seattle.",
+   "ticketed": "False",
+   "description": "Join us for ReVision Seattle 2.0, a community event.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e227"
+   "id": "e220"
   },
   {
    "title": "Estate Planning Seminar",
@@ -2731,10 +2867,11 @@
    "venue": "316 Broadway",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Learn about estate planning in this informative seminar.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e228"
+   "id": "e221"
   },
   {
    "title": "Urban Landscaping with Native Plants: In-Person Plant Talk",
@@ -2743,10 +2880,11 @@
    "venue": "Flying Lion Brewing",
    "neighborhood": "Seattle",
    "cost": "Free",
-   "description": "Discover how to use native plants in urban landscaping.",
+   "ticketed": "False",
+   "description": "Discover how to use native plants in your landscaping.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e229"
+   "id": "e222"
   },
   {
    "title": "Juanita Bay Park Wildlife Photo Walk w/Kenmore Camera",
@@ -2755,34 +2893,11 @@
    "venue": "Juanita Bay Park",
    "neighborhood": "Kirkland",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Join a guided photo walk to capture wildlife at Juanita Bay Park.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e230"
-  },
-  {
-   "title": "Travel and Storytelling Photography with Erica Robinson and TAMRON",
-   "date": "2026-11-08",
-   "time": "12:30pm",
-   "venue": "Kenmore Camera",
-   "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "Learn about travel photography and storytelling techniques.",
-   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e231"
-  },
-  {
-   "title": "Studio Photography 101 - LIVE w/Lindsey Ruth and SIGMA",
-   "date": "2026-11-08",
-   "time": "12:30pm",
-   "venue": "Kenmore Camera",
-   "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "A live workshop on the basics of studio photography.",
-   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e232"
+   "id": "e223"
   },
   {
    "title": "Photowalk | University of Washington Campus",
@@ -2791,22 +2906,11 @@
    "venue": "Red Square",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Explore the University of Washington campus while taking photos.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e233"
-  },
-  {
-   "title": "Strings & Stillness",
-   "date": "2026-11-08",
-   "time": "5:00pm",
-   "venue": "18515 92nd Ave NE",
-   "neighborhood": "Bothell",
-   "cost": "Free",
-   "description": "An event combining music and mindfulness.",
-   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e234"
+   "id": "e224"
   },
   {
    "title": "Game Dev Drink Up Seattle",
@@ -2815,10 +2919,11 @@
    "venue": "Big Time Brewery & Alehouse",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Network with fellow game developers over drinks.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e235"
+   "id": "e225"
   },
   {
    "title": "Nordic Lunch at The Swedish Club",
@@ -2827,10 +2932,11 @@
    "venue": "Swedish Club",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Enjoy a traditional Nordic lunch at the Swedish Club.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e236"
+   "id": "e226"
   },
   {
    "title": "Build in Bothell",
@@ -2839,10 +2945,11 @@
    "venue": "Cascadia College",
    "neighborhood": "Bothell",
    "cost": "Free",
-   "description": "Participate in a community building event.",
+   "ticketed": "False",
+   "description": "Participate in a community building event at Cascadia College.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
-   "id": "e237"
+   "id": "e227"
   },
   {
    "title": "2026 Seattle Fall Makers & Merchants Market",
@@ -2850,11 +2957,12 @@
    "time": "10:00 AM",
    "venue": "Seattle Center Exhibition Hall",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A market featuring local makers and merchants.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e238"
+   "id": "e228"
   },
   {
    "title": "Seattle Fall Vendor Market-2026",
@@ -2862,11 +2970,12 @@
    "time": "9:00 AM",
    "venue": "Warren G. Magnuson Park",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A vendor market showcasing various local products.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e239"
+   "id": "e229"
   },
   {
    "title": "Rockstars, and Tombstones, and Birds Oh My...Dale Fall Photography Show",
@@ -2874,11 +2983,12 @@
    "time": "6:30 PM",
    "venue": "4547 California Ave SW suite a",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "A photography show featuring unique themes.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A photography show featuring Dale's work.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e240"
+   "id": "e230"
   },
   {
    "title": "Make Your Own Arts & Crafts Flower Bouquet",
@@ -2886,11 +2996,12 @@
    "time": "11:00 AM",
    "venue": "Noir Lux Collective",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A workshop to create your own flower bouquet.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e241"
+   "id": "e231"
   },
   {
    "title": "LGBTQIA+ Book Club: \"The Isle in the Silver Sea\" by Tasha Suri",
@@ -2898,11 +3009,12 @@
    "time": "6:30 PM",
    "venue": "109 1st Ave S",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "A book club meeting discussing a selected novel.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A book club meeting discussing Tasha Suri's novel.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e242"
+   "id": "e232"
   },
   {
    "title": "Artist Reception & Open House with Britta Ambauen",
@@ -2910,11 +3022,12 @@
    "time": "6:00 PM",
    "venue": "IntimaSpace at Intima Therapy",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "An open house event featuring artist Britta Ambauen.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e243"
+   "id": "e233"
   },
   {
    "title": "Sound Healing & Mantra | Sound Bowls, Gongs, Chimes, & Mantra",
@@ -2922,11 +3035,12 @@
    "time": "5:30 PM",
    "venue": "Bhakti Studio",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A sound healing session using various instruments.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e244"
+   "id": "e234"
   },
   {
    "title": "Michelle Tea w/ Mattilda Bernstein Sycamore, FREE LOVE",
@@ -2934,11 +3048,12 @@
    "time": "7:00 PM",
    "venue": "Elliott Bay Book Company",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "An event featuring discussions on love and relationships.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "An event featuring authors Michelle Tea and Mattilda Bernstein Sycamore.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e245"
+   "id": "e235"
   },
   {
    "title": "Seattle Autumn Harvest, Food & Holiday Makers Festival 2026",
@@ -2946,11 +3061,12 @@
    "time": "9:00 AM",
    "venue": "Seattle Center Exhibition Hall",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "A festival celebrating local food and crafts.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A festival celebrating local food and makers.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e246"
+   "id": "e236"
   },
   {
    "title": "Juanita Bay Park (East) Habitat Stewardship Day",
@@ -2958,11 +3074,12 @@
    "time": "10:00 AM",
    "venue": "Juanita Bay Park East",
    "neighborhood": "Kirkland",
-   "cost": "Free",
-   "description": "A stewardship day focused on habitat restoration.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A stewardship day to help maintain the park.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
-   "id": "e247"
+   "id": "e237"
   },
   {
    "title": "Breast Oncology \u2013 Best of 2026",
@@ -2970,11 +3087,12 @@
    "time": "5:30 PM",
    "venue": "Renaissance Seattle Hotel",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "True",
    "description": "A seminar focused on advancements in breast oncology.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events",
-   "id": "e248"
+   "id": "e238"
   },
   {
    "title": "Advanced Camera Techniques for Wildlife Photo and Video with Kristi Odom",
@@ -2983,10 +3101,11 @@
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
    "cost": "Free",
-   "description": "Join Kristi Odom for a workshop on advanced camera techniques for wildlife photography and video.",
+   "ticketed": "False",
+   "description": "Join Kristi Odom for a workshop on advanced camera techniques for wildlife photography.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e249"
+   "id": "e239"
   },
   {
    "title": "What\u2019s Next for the U District? Ideas, Drinks & Conversation",
@@ -2995,10 +3114,11 @@
    "venue": "Gateway Building, Rooftop Terrace",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Engage in a discussion about the future of the U District while enjoying drinks.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e250"
+   "id": "e240"
   },
   {
    "title": "First Friday Coffee Cuppings with Caffe Vita",
@@ -3007,10 +3127,11 @@
    "venue": "KEXP",
    "neighborhood": "Seattle",
    "cost": "Free",
-   "description": "Experience coffee cuppings with Caffe Vita at KEXP.",
+   "ticketed": "False",
+   "description": "Experience a coffee cupping session with Caffe Vita.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e251"
+   "id": "e241"
   },
   {
    "title": "In Motion Vinyasa w/ Iza Narag",
@@ -3019,10 +3140,11 @@
    "venue": "lululemon University Village",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Join Iza Narag for a rejuvenating Vinyasa yoga session.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e252"
+   "id": "e242"
   },
   {
    "title": "Human Trafficking Awareness & Response",
@@ -3031,10 +3153,11 @@
    "venue": "Hyatt Regency Bellevue on Seattle's Eastside",
    "neighborhood": "Bellevue",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Attend a seminar focused on raising awareness and response strategies for human trafficking.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e253"
+   "id": "e243"
   },
   {
    "title": "The Hidden Door Comedy Open-Mic",
@@ -3043,10 +3166,11 @@
    "venue": "14525 Aurora Ave N",
    "neighborhood": "Shoreline",
    "cost": "Free",
-   "description": "Enjoy a night of laughs at the Hidden Door Comedy Open-Mic.",
+   "ticketed": "False",
+   "description": "Enjoy a night of laughter at the Hidden Door's open-mic comedy event.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e254"
+   "id": "e244"
   },
   {
    "title": "First Friday Flash Tattoos + Books @ Old Stove Gardens",
@@ -3055,10 +3179,115 @@
    "venue": "Old Stove Brewing Co - Gardens",
    "neighborhood": "Seattle",
    "cost": "Free",
-   "description": "Get a tattoo and browse books at Old Stove Gardens.",
+   "ticketed": "False",
+   "description": "Get a tattoo and browse books at this unique event.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e255"
+   "id": "e245"
+  },
+  {
+   "title": "\"STARTUP-INVESTOR PITCH LUNCH\" - FUNDRAISING PROGRAM IN SILICON VALLEY",
+   "date": "2026-11-06",
+   "time": "10:00 AM",
+   "venue": "Seattle Convention Center | Arch",
+   "neighborhood": "Seattle",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Participate in a startup pitch lunch aimed at fundraising.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e246"
+  },
+  {
+   "title": "Main Stage",
+   "date": "2026-11-06",
+   "time": "8:00 PM",
+   "venue": "W Seattle",
+   "neighborhood": "Seattle",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Enjoy a night of entertainment at the Main Stage event.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e247"
+  },
+  {
+   "title": "Karaoke at O'Houlies Pub in Mountlake Terrace",
+   "date": "2026-11-06",
+   "time": "9:00 PM",
+   "venue": "O'Houlies Pub",
+   "neighborhood": "Mountlake Terrace",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Sing your heart out at karaoke night.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e248"
+  },
+  {
+   "title": "Baby Powder: First Friday House + Amapiano at The Octopus Bar",
+   "date": "2026-11-06",
+   "time": "10:00 PM",
+   "venue": "The Octopus Bar",
+   "neighborhood": "Seattle",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Dance the night away with house and amapiano music.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e249"
+  },
+  {
+   "title": "Juanita Bay Park (East) Habitat Stewardship Day",
+   "date": "2026-11-06",
+   "time": "10:00 AM",
+   "venue": "Juanita Bay Park East",
+   "neighborhood": "Kirkland",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Volunteer for habitat stewardship at Juanita Bay Park.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e250"
+  },
+  {
+   "title": "Ladies Night",
+   "date": "2026-11-06",
+   "time": "9:30 PM",
+   "venue": "Red Lounge",
+   "neighborhood": "Seattle",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Enjoy a fun night out with friends at Ladies Night.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e251"
+  },
+  {
+   "title": "Otoconia :: Rotating Local Djs :: 1st Fridays House Music Social",
+   "date": "2026-11-06",
+   "time": "6:00 PM",
+   "venue": "Crystal Lounge by Crystallography Gems",
+   "neighborhood": "Seattle",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Join local DJs for a house music social.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e252"
+  },
+  {
+   "title": "Saint Edward State Park Restoration Work Party: November",
+   "date": "2026-11-06",
+   "time": "10:00 AM",
+   "venue": "Environmental Education and Research Center (EERC) St. Edward State Park Gym Annex",
+   "neighborhood": "Kenmore",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Help restore the natural habitat at Saint Edward State Park.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e253"
   },
   {
    "title": "Sip, Sit : Free Day Office Trial",
@@ -3067,10 +3296,11 @@
    "venue": "Regus - Seattle - Columbia Center",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Try out a free day office trial at Regus.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e256"
+   "id": "e254"
   },
   {
    "title": "Free Music Bingo Fridays",
@@ -3079,10 +3309,11 @@
    "venue": "19th Bar and Grill",
    "neighborhood": "Mountlake Terrace",
    "cost": "Free",
-   "description": "Join for a fun night of music bingo at 19th Bar and Grill.",
+   "ticketed": "False",
+   "description": "Join for a fun night of music bingo.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e257"
+   "id": "e255"
   },
   {
    "title": "Getaway Tavern Karaoke - Thursday & Friday",
@@ -3091,10 +3322,24 @@
    "venue": "Getaway Tavern",
    "neighborhood": "Mountlake Terrace",
    "cost": "Free",
-   "description": "Sing your heart out at Getaway Tavern's karaoke night.",
+   "ticketed": "False",
+   "description": "Enjoy karaoke at Getaway Tavern.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e258"
+   "id": "e256"
+  },
+  {
+   "title": "Bellevue Real Estate Seminar: Buying, Selling & Understanding Escrow",
+   "date": "2026-11-06",
+   "time": "6:00 PM",
+   "venue": "extraSlice \u2014 50 116th Ave SE",
+   "neighborhood": "Bellevue",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Learn about real estate processes in this informative seminar.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
+   "id": "e257"
   },
   {
    "title": "Aussies & Kiwis in Seattle - Mugs with Mates (Queen Anne)",
@@ -3103,10 +3348,11 @@
    "venue": "Cafe Hagen",
    "neighborhood": "Seattle",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Meet fellow Aussies and Kiwis for coffee and conversation.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
-   "id": "e259"
+   "id": "e258"
   },
   {
    "title": "Advanced Camera Techniques for Wildlife Photo and Video with Kristi Odom",
@@ -3114,11 +3360,12 @@
    "time": "5:15 PM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "Join Kristi Odom for a workshop on advanced camera techniques for wildlife photography.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e260"
+   "id": "e259"
   },
   {
    "title": "Delete the Apps - Meet People in Person",
@@ -3126,11 +3373,12 @@
    "time": "7:00 PM",
    "venue": "Art Marble 21",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "A social event to meet new people in person and connect without apps.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A social event to meet new people in person.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e261"
+   "id": "e260"
   },
   {
    "title": "The Ghost Cat: Stories of Spirit & Survival in the Himalayas w/Megan Brief",
@@ -3138,11 +3386,12 @@
    "time": "9:30 AM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "Megan Brief shares captivating stories about the ghost cat and its survival in the Himalayas.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Megan Brief shares stories about the ghost cat and its survival in the Himalayas.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e262"
+   "id": "e261"
   },
   {
    "title": "Furniture Repair Bank and Second Use Pop-Up Sale @ RCLC",
@@ -3150,11 +3399,12 @@
    "time": "10:00 AM",
    "venue": "Reuse Commons Lake City",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A pop-up sale featuring furniture repair services and second-hand items.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e263"
+   "id": "e262"
   },
   {
    "title": "Creating Captivating Landscapes from Life on the Road w/Josh Saltsman",
@@ -3162,23 +3412,12 @@
    "time": "1:30 PM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "Learn how to create stunning landscape photographs from your travels.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Learn how to create captivating landscapes from your travels with Josh Saltsman.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e264"
-  },
-  {
-   "title": "First Friday Coffee Cuppings with Caffe Vita",
-   "date": "2026-11-06",
-   "time": "10:00 AM",
-   "venue": "KEXP",
-   "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "Join us for a coffee cupping session featuring Caffe Vita's finest brews.",
-   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e265"
+   "id": "e263"
   },
   {
    "title": "Pushing Your Gear to the Limits with/Dalton Johnson and TAMRON",
@@ -3186,11 +3425,12 @@
    "time": "12:00 PM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A workshop focused on maximizing the potential of your photography gear.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e266"
+   "id": "e264"
   },
   {
    "title": "Travel and Storytelling Photography with Erica Robinson and TAMRON",
@@ -3198,11 +3438,12 @@
    "time": "12:30 PM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "Learn how to tell compelling stories through your travel photography.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join Erica Robinson for a session on travel and storytelling through photography.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e267"
+   "id": "e265"
   },
   {
    "title": "Studio Photography 101 - LIVE w/Lindsey Ruth and SIGMA",
@@ -3210,11 +3451,12 @@
    "time": "12:30 PM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "A live workshop on the fundamentals of studio photography.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A live workshop on the basics of studio photography with Lindsey Ruth.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e268"
+   "id": "e266"
   },
   {
    "title": "Improv & Flow: Seattle Center",
@@ -3222,11 +3464,12 @@
    "time": "1:00 PM",
    "venue": "Seattle Center Armory - 4th Floor",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "Join us for an improv session that encourages creativity and flow.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "An improv session at the Seattle Center for creativity and fun.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e269"
+   "id": "e267"
   },
   {
    "title": "What Do You Do Before You Print with Ross Joseph and Canon",
@@ -3234,11 +3477,12 @@
    "time": "3:30 PM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "Learn the essential steps to take before printing your photographs.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Learn about the steps to take before printing your photographs with Ross Joseph.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e270"
+   "id": "e268"
   },
   {
    "title": "Botanical Portraits with Canon Product Educator Tyler Beck",
@@ -3246,11 +3490,12 @@
    "time": "2:30 PM",
    "venue": "Kenmore Camera",
    "neighborhood": "Kenmore",
-   "cost": "Free",
-   "description": "A workshop focused on capturing beautiful botanical portraits.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A workshop on creating botanical portraits with guidance from Tyler Beck.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e271"
+   "id": "e269"
   },
   {
    "title": "Holiday Gift Pop-Up",
@@ -3258,11 +3503,12 @@
    "time": "1:00 PM",
    "venue": "159 Western Ave W",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "A pop-up event featuring unique holiday gifts.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A pop-up event featuring holiday gifts and local vendors.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
-   "id": "e272"
+   "id": "e270"
   },
   {
    "title": "Strings & Stillness",
@@ -3270,8 +3516,35 @@
    "time": "5:00 PM",
    "venue": "18515 92nd Ave NE",
    "neighborhood": "Bothell",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "An event combining music and mindfulness.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
+   "id": "e271"
+  },
+  {
+   "title": "Creative Constant Lighting Workshop with Sony & Godox",
+   "date": "2026-11-08",
+   "time": "3:00 PM",
+   "venue": "Kenmore Camera",
+   "neighborhood": "Kenmore",
+   "cost": "",
+   "ticketed": "False",
+   "description": "A workshop on using constant lighting for photography.",
+   "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
+   "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
+   "id": "e272"
+  },
+  {
+   "title": "Tracking Basics: Learning by Looking",
+   "date": "2026-11-07",
+   "time": "10:00 AM",
+   "venue": "Environmental Education Research Center",
+   "neighborhood": "Kenmore",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Learn the basics of tracking in this educational workshop.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "id": "e273"
@@ -3282,7 +3555,8 @@
    "time": "10:00 AM",
    "venue": "Swedish Club",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A holiday market featuring local crafts and goods.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
@@ -3294,8 +3568,9 @@
    "time": "10:00 AM",
    "venue": "Red Square",
    "neighborhood": "Seattle",
-   "cost": "Free",
-   "description": "Join us for a guided photowalk around the beautiful UW campus.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join a guided photowalk around the University of Washington campus.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "id": "e275"
@@ -3306,11 +3581,25 @@
    "time": "4:00 PM",
    "venue": "Gateway Building, Rooftop Terrace",
    "neighborhood": "Seattle",
-   "cost": "Free",
+   "cost": "",
+   "ticketed": "False",
    "description": "A community discussion about the future of the U District.",
    "link": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "source": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "id": "e276"
+  },
+  {
+   "title": "D\u00eda de Muertos Festival Seattle",
+   "date": "2026-10-31",
+   "time": "",
+   "venue": "Seattle Center",
+   "neighborhood": "",
+   "cost": "Free",
+   "ticketed": "False",
+   "description": "Honoring the departed in a celebration steeped in ritual and tradition through elaborate community altars, sugar skull making, processions and festive music.",
+   "link": "/events/featured-events/festal/dia-de-muertos",
+   "source": "https://www.seattlecenter.com/events/featured-events/festal",
+   "id": "e277"
   },
   {
    "title": "Diwali: Lights of India",
@@ -3319,10 +3608,11 @@
    "venue": "Seattle Center",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Inspiring a day of joyful celebration that marks the Indian festival of light with art workshops, succulent foods, henna tattooing, folk dancing and more.",
    "link": "/events/featured-events/festal/diwali-lights-of-india",
    "source": "https://www.seattlecenter.com/events/featured-events/festal",
-   "id": "e277"
+   "id": "e278"
   },
   {
    "title": "Seattle Hmong New Year",
@@ -3331,10 +3621,11 @@
    "venue": "Seattle Center",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Marking the end of the harvest season and the coming of the new year for this deeply rooted Asian highland culture with ornate clothing, traditional dances, visual arts and ball-tossing competitions.",
    "link": "/events/featured-events/festal/hmong-new-year",
    "source": "https://www.seattlecenter.com/events/featured-events/festal",
-   "id": "e278"
+   "id": "e279"
   },
   {
    "title": "Plini - An Unnameable Desire North American Tour",
@@ -3342,11 +3633,12 @@
    "time": "7pm",
    "venue": "The Crocodile",
    "neighborhood": "Belltown",
-   "cost": "$25",
-   "description": "Plini brings his unique blend of progressive rock and instrumental music to Seattle.",
+   "cost": "$15",
+   "ticketed": "True",
+   "description": "Plini is performing live as part of his North American tour.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e279"
+   "id": "e280"
   },
   {
    "title": "King Buffalo",
@@ -3354,11 +3646,12 @@
    "time": "8pm",
    "venue": "The Crocodile",
    "neighborhood": "Belltown",
-   "cost": "$15",
-   "description": "King Buffalo performs their heavy psychedelic rock in Seattle.",
+   "cost": "$10-25",
+   "ticketed": "True",
+   "description": "King Buffalo brings their unique sound to The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e280"
+   "id": "e281"
   },
   {
    "title": "48th Annual Seattle International Comedy Competition",
@@ -3367,22 +3660,63 @@
    "venue": "The Comedy Underground",
    "neighborhood": "Pioneer Square",
    "cost": "$20",
-   "description": "Watch comedians compete in the longest-running comedy competition in the U.S.",
+   "ticketed": "True",
+   "description": "Join us for the 48th Annual Seattle International Comedy Competition featuring various comedians.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e281"
+   "id": "e282"
   },
   {
    "title": "Claudia Rankine",
    "date": "2026-11-05",
-   "time": "6pm",
-   "venue": "Seattle Art Museum",
-   "neighborhood": "Downtown",
-   "cost": "Free",
-   "description": "Join Claudia Rankine for a discussion on race and art.",
+   "time": "7pm",
+   "venue": "Town Hall Seattle",
+   "neighborhood": "Capitol Hill",
+   "cost": "$15",
+   "ticketed": "True",
+   "description": "Claudia Rankine will be discussing her work and the themes of race and identity.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e282"
+   "id": "e283"
+  },
+  {
+   "title": "The Best One Yet: The IPO Tour",
+   "date": "2026-11-05",
+   "time": "8pm",
+   "venue": "Neumos",
+   "neighborhood": "Capitol Hill",
+   "cost": "$20",
+   "ticketed": "True",
+   "description": "Catch The Best One Yet as they tour for their latest album.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e284"
+  },
+  {
+   "title": "Big Star Quintet",
+   "date": "2026-11-05",
+   "time": "9pm",
+   "venue": "The Triple Door",
+   "neighborhood": "Downtown",
+   "cost": "$15",
+   "ticketed": "True",
+   "description": "Enjoy a night of jazz with the Big Star Quintet at The Triple Door.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e285"
+  },
+  {
+   "title": "Art School Dropouts with DJs Erica Dear and Kittyslickr",
+   "date": "2026-11-05",
+   "time": "10pm",
+   "venue": "The Crocodile",
+   "neighborhood": "Belltown",
+   "cost": "$10",
+   "ticketed": "True",
+   "description": "Dance the night away with Art School Dropouts and DJs Erica Dear and Kittyslickr.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e286"
   },
   {
    "title": "Pioneer Square First Thursday Art Walk",
@@ -3391,10 +3725,11 @@
    "venue": "Pioneer Square",
    "neighborhood": "Pioneer Square",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Explore art galleries and enjoy the vibrant art scene in Pioneer Square.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e283"
+   "id": "e287"
   },
   {
    "title": "Late Thursdays at the Frye",
@@ -3403,10 +3738,11 @@
    "venue": "Frye Art Museum",
    "neighborhood": "Capitol Hill",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Enjoy extended hours at the Frye Art Museum with special programming.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e284"
+   "id": "e288"
   },
   {
    "title": "Frye Parlor x Jayme Yen",
@@ -3415,10 +3751,11 @@
    "venue": "Frye Art Museum",
    "neighborhood": "Capitol Hill",
    "cost": "Free",
-   "description": "Experience a unique performance by Jayme Yen at the Frye Parlor.",
+   "ticketed": "False",
+   "description": "Join us for a special performance by Jayme Yen at the Frye.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e285"
+   "id": "e289"
   },
   {
    "title": "Kenyon Hall Presents - Christopher Icasiano",
@@ -3426,299 +3763,350 @@
    "time": "",
    "venue": "Kenyon Hall",
    "neighborhood": "",
-   "cost": "$15",
-   "description": "Christopher Icasiano performs at Kenyon Hall.",
-   "link": "https://everout.com/seattle",
-   "source": "https://everout.com/seattle",
-   "id": "e286"
-  },
-  {
-   "title": "Quadeca: Life 1 Tour",
-   "date": "2026-11-05",
-   "time": "7pm",
-   "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "$25",
-   "description": "Quadeca brings his Life 1 Tour to The Crocodile.",
-   "link": "https://everout.com/seattle",
-   "source": "https://everout.com/seattle",
-   "id": "e287"
-  },
-  {
-   "title": "The Smashing Pumpkins: The Rats In A Cage Tour",
-   "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "Climate Pledge Arena",
-   "neighborhood": "Downtown",
-   "cost": "$50",
-   "description": "The Smashing Pumpkins perform live as part of their Rats In A Cage Tour.",
-   "link": "https://everout.com/seattle",
-   "source": "https://everout.com/seattle",
-   "id": "e288"
-  },
-  {
-   "title": "Powaqqatsi: Live with The Philip Glass Ensemble",
-   "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "Benaroya Hall",
-   "neighborhood": "Downtown",
-   "cost": "$40",
-   "description": "Experience Powaqqatsi with live music from The Philip Glass Ensemble.",
-   "link": "https://everout.com/seattle",
-   "source": "https://everout.com/seattle",
-   "id": "e289"
-  },
-  {
-   "title": "Karaoke at the Old Rainier Brewery",
-   "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "Old Rainier Brewery",
-   "neighborhood": "Rainier Valley",
-   "cost": "Free",
-   "description": "Join us for a fun night of karaoke at the Old Rainier Brewery.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy a performance by Christopher Icasiano at Kenyon Hall.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e290"
   },
   {
-   "title": "Swing It Wednesday: Live Music & Swing Dance",
+   "title": "Quadeca: Life 1 Tour",
    "date": "2026-11-05",
-   "time": "7pm",
-   "venue": "The Triple Door",
-   "neighborhood": "Downtown",
-   "cost": "$10",
-   "description": "Enjoy live music and swing dancing at The Triple Door.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Catch Quadeca on his Life 1 Tour at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e291"
   },
   {
-   "title": "Wednesday Swing Dance at Reverie Ballroom",
+   "title": "The Smashing Pumpkins: The Rats In A Cage Tour",
    "date": "2026-11-05",
-   "time": "7:30pm",
-   "venue": "Reverie Ballroom",
-   "neighborhood": "Capitol Hill",
-   "cost": "$15",
-   "description": "Join us for a lively swing dance night at Reverie Ballroom.",
+   "time": "",
+   "venue": "Climate Pledge Arena",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "The Smashing Pumpkins perform live at Climate Pledge Arena.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e292"
   },
   {
-   "title": "Bad Drag",
+   "title": "Powaqqatsi: Live with The Philip Glass Ensemble",
    "date": "2026-11-05",
-   "time": "9pm",
-   "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "$10",
-   "description": "A night of fun and entertainment with Bad Drag at The Crocodile.",
+   "time": "",
+   "venue": "Benaroya Hall",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Experience Powaqqatsi live with music by The Philip Glass Ensemble.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e293"
   },
   {
-   "title": "Dancing Queens",
+   "title": "Karaoke at the Old Rainier Brewery",
    "date": "2026-11-05",
-   "time": "9pm",
-   "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "$15",
-   "description": "Dance the night away at Dancing Queens at The Crocodile.",
+   "time": "",
+   "venue": "Old Rainier Brewery",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join for a fun night of karaoke at the Old Rainier Brewery.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e294"
   },
   {
-   "title": "Expressive Dance Collective",
+   "title": "Swing It Wednesday: Live Music & Swing Dance",
    "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "$12",
-   "description": "Join the Expressive Dance Collective for a night of dance and performance.",
+   "time": "",
+   "venue": "The Triple Door",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy live music and swing dancing at The Triple Door.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e295"
   },
   {
-   "title": "Salsa, Bachata and Latin Mix Party",
+   "title": "Wednesday Swing Dance at Reverie Ballroom",
    "date": "2026-11-05",
-   "time": "9pm",
-   "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "$10",
-   "description": "Enjoy a night of salsa, bachata, and Latin music at The Crocodile.",
+   "time": "",
+   "venue": "Reverie Ballroom",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join for a swing dance night at Reverie Ballroom.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e296"
   },
   {
-   "title": "Reggae Night!",
+   "title": "Bad Drag",
    "date": "2026-11-05",
-   "time": "9pm",
+   "time": "",
    "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "$10",
-   "description": "Join us for a night of reggae music at The Crocodile.",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy a night of Bad Drag at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e297"
   },
   {
-   "title": "Your Favorite Karaoke: Art Walk After Party",
+   "title": "Dancing Queens",
    "date": "2026-11-05",
-   "time": "10pm",
+   "time": "",
    "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "Free",
-   "description": "Join us for karaoke after the art walk at The Crocodile.",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Dance the night away at Dancing Queens at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e298"
   },
   {
-   "title": "JOOSED",
+   "title": "Expressive Dance Collective",
    "date": "2026-11-05",
-   "time": "9pm",
+   "time": "",
    "venue": "The Crocodile",
-   "neighborhood": "Belltown",
-   "cost": "$15",
-   "description": "Enjoy a night of music and fun with JOOSED at The Crocodile.",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Experience the Expressive Dance Collective at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e299"
   },
   {
-   "title": "48th Annual Seattle International Comedy Competition",
+   "title": "Salsa, Bachata and Latin Mix Party",
    "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "The Comedy Underground",
-   "neighborhood": "Pioneer Square",
-   "cost": "$20",
-   "description": "Catch the best comedians at the Seattle International Comedy Competition.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join the Salsa, Bachata and Latin Mix Party at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e300"
   },
   {
-   "title": "The Best One Yet: The IPO Tour",
+   "title": "Reggae Night!",
    "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "The Paramount Theatre",
-   "neighborhood": "Downtown",
-   "cost": "$45",
-   "description": "Join us for The Best One Yet tour at The Paramount Theatre.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy a night of Reggae at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e301"
   },
   {
-   "title": "Oh, Mary!",
+   "title": "Your Favorite Karaoke: Art Walk After Party",
    "date": "2026-11-05",
-   "time": "7:30pm",
-   "venue": "The 5th Avenue Theatre",
-   "neighborhood": "Downtown",
-   "cost": "$30",
-   "description": "Experience the musical Oh, Mary! at The 5th Avenue Theatre.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join the Art Walk After Party with karaoke at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e302"
   },
   {
-   "title": "I Am My Own Wife",
+   "title": "JOOSED",
    "date": "2026-11-05",
-   "time": "7:30pm",
-   "venue": "ACT Theatre",
-   "neighborhood": "Downtown",
-   "cost": "$25",
-   "description": "Watch the powerful play I Am My Own Wife at ACT Theatre.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy JOOSED at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e303"
   },
   {
-   "title": "BurlyCon Burlesque Education & Social Convention",
+   "title": "48th Annual Seattle International Comedy Competition",
    "date": "2026-11-05",
    "time": "",
-   "venue": "Seattle Center",
-   "neighborhood": "Queen Anne",
-   "cost": "$100",
-   "description": "Join the BurlyCon for a weekend of burlesque education and fun.",
+   "venue": "The Comedy Underground",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Laugh out loud at the 48th Annual Seattle International Comedy Competition.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e304"
   },
   {
-   "title": "Queen Of The Sky: A Demon Ballet",
+   "title": "The Best One Yet: The IPO Tour",
    "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "The Moore Theatre",
-   "neighborhood": "Downtown",
-   "cost": "$35",
-   "description": "Experience the unique ballet Queen Of The Sky at The Moore Theatre.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Catch The Best One Yet on the IPO Tour at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e305"
   },
   {
-   "title": "Eureka Day",
+   "title": "Oh, Mary!",
    "date": "2026-11-05",
-   "time": "7:30pm",
-   "venue": "The 5th Avenue Theatre",
-   "neighborhood": "Downtown",
-   "cost": "$30",
-   "description": "Catch the thought-provoking play Eureka Day at The 5th Avenue Theatre.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy the performance of Oh, Mary! at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e306"
   },
   {
-   "title": "Claudia Rankine",
+   "title": "I Am My Own Wife",
    "date": "2026-11-05",
-   "time": "7pm",
-   "venue": "Seattle Public Library",
-   "neighborhood": "Downtown",
-   "cost": "Free",
-   "description": "Join Claudia Rankine for a reading at the Seattle Public Library.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Experience I Am My Own Wife at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e307"
   },
   {
-   "title": "Min Jin Lee",
+   "title": "BurlyCon Burlesque Education & Social Convention",
    "date": "2026-11-05",
-   "time": "7pm",
-   "venue": "Seattle Public Library",
-   "neighborhood": "Downtown",
-   "cost": "Free",
-   "description": "Join author Min Jin Lee for a reading at the Seattle Public Library.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join the BurlyCon Burlesque Education & Social Convention at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e308"
   },
   {
-   "title": "An Evening with David Sedaris",
+   "title": "Queen Of The Sky: A Demon Ballet",
    "date": "2026-11-05",
-   "time": "8pm",
-   "venue": "The Paramount Theatre",
-   "neighborhood": "Downtown",
-   "cost": "$50",
-   "description": "Enjoy an evening with humorist David Sedaris at The Paramount Theatre.",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Experience Queen Of The Sky: A Demon Ballet at The Crocodile.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
    "id": "e309"
   },
   {
-   "title": "Chlo\u00eb Bass: Soft Services",
+   "title": "Eureka Day",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "The Crocodile",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy Eureka Day at The Crocodile.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e310"
+  },
+  {
+   "title": "Claudia Rankine",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "Town Hall Seattle",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join Claudia Rankine for a reading at Town Hall Seattle.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e311"
+  },
+  {
+   "title": "Min Jin Lee",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "Town Hall Seattle",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Join Min Jin Lee for a reading at Town Hall Seattle.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e312"
+  },
+  {
+   "title": "An Evening with David Sedaris",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "The Paramount Theatre",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy an evening with David Sedaris at The Paramount Theatre.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e313"
+  },
+  {
+   "title": "Never Turn Back: Echoes of African American Music",
    "date": "2026-11-05",
    "time": "",
    "venue": "Seattle Art Museum",
    "neighborhood": "",
-   "cost": "Free",
-   "description": "An exhibition by artist Chlo\u00eb Bass exploring themes of care and community.",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Visit the exhibit Never Turn Back: Echoes of African American Music at Seattle Art Museum.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e310"
+   "id": "e314"
+  },
+  {
+   "title": "Frye Parlor x Jayme Yen",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "Frye Art Museum",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Experience Frye Parlor x Jayme Yen at Frye Art Museum.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e315"
+  },
+  {
+   "title": "Chlo\u00eb Bass: Soft Services",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "Henry Art Gallery",
+   "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Visit Chlo\u00eb Bass: Soft Services at Henry Art Gallery.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e316"
   },
   {
    "title": "Free First Thursday",
@@ -3726,167 +4114,207 @@
    "time": "",
    "venue": "Seattle Art Museum",
    "neighborhood": "",
+   "cost": "",
+   "ticketed": "False",
+   "description": "Enjoy Free First Thursday at Seattle Art Museum.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e317"
+  },
+  {
+   "title": "Chlo\u00eb Bass: Soft Services",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "Seattle Art Museum",
+   "neighborhood": "Downtown",
    "cost": "Free",
+   "ticketed": "False",
+   "description": "An exhibition by artist Chlo\u00eb Bass exploring themes of care and community.",
+   "link": "https://everout.com/seattle",
+   "source": "https://everout.com/seattle",
+   "id": "e318"
+  },
+  {
+   "title": "Free First Thursday",
+   "date": "2026-11-05",
+   "time": "",
+   "venue": "Seattle Art Museum",
+   "neighborhood": "Downtown",
+   "cost": "Free",
+   "ticketed": "False",
    "description": "Enjoy free admission to the Seattle Art Museum on the first Thursday of the month.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e311"
+   "id": "e319"
   },
   {
    "title": "Pacific Species",
    "date": "2026-11-05",
    "time": "",
    "venue": "Seattle Art Museum",
-   "neighborhood": "",
+   "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "An exhibition showcasing the diverse species found in the Pacific region.",
+   "ticketed": "False",
+   "description": "An exhibition showcasing the diverse marine life of the Pacific.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e312"
+   "id": "e320"
   },
   {
    "title": "Ai Weiwei: Circle of Animals/Zodiac Heads",
    "date": "2026-11-05",
    "time": "",
    "venue": "Seattle Art Museum",
-   "neighborhood": "",
+   "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "An installation by Ai Weiwei featuring the zodiac heads from the fountain of the Old Summer Palace.",
+   "ticketed": "False",
+   "description": "A powerful installation by Ai Weiwei reflecting on cultural heritage.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e313"
+   "id": "e321"
   },
   {
    "title": "Pioneer Square First Thursday Art Walk",
    "date": "2026-11-05",
    "time": "",
    "venue": "Pioneer Square",
-   "neighborhood": "",
+   "neighborhood": "Pioneer Square",
    "cost": "Free",
-   "description": "Explore art galleries and enjoy special events during the First Thursday Art Walk in Pioneer Square.",
+   "ticketed": "False",
+   "description": "Explore art galleries and enjoy special events during the First Thursday Art Walk.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e314"
+   "id": "e322"
   },
   {
    "title": "Surge: A Geography of Flow",
    "date": "2026-11-05",
    "time": "",
    "venue": "Seattle Art Museum",
-   "neighborhood": "",
+   "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "An exhibition examining the flow of water and its impact on the environment.",
+   "ticketed": "False",
+   "description": "An exhibition examining the flow of water and its impact on society.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e315"
+   "id": "e323"
   },
   {
    "title": "Late Thursdays at the Frye",
    "date": "2026-11-05",
    "time": "",
    "venue": "Frye Art Museum",
-   "neighborhood": "",
+   "neighborhood": "Capitol Hill",
    "cost": "Free",
-   "description": "Enjoy extended hours at the Frye Art Museum with special programming.",
+   "ticketed": "False",
+   "description": "Enjoy extended hours at the Frye Art Museum with free admission.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e316"
+   "id": "e324"
   },
   {
    "title": "Christopher Marley: Exquisite Creatures",
    "date": "2026-11-05",
    "time": "",
    "venue": "Seattle Art Museum",
-   "neighborhood": "",
+   "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "An exhibition featuring intricate artworks made from preserved insects and other natural materials.",
+   "ticketed": "False",
+   "description": "An exhibition featuring intricate artworks made from preserved insects.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e317"
+   "id": "e325"
   },
   {
    "title": "Engauge Experimental Film Festival 2026",
    "date": "2026-11-05",
    "time": "",
-   "venue": "Seattle",
-   "neighborhood": "",
-   "cost": "Free",
+   "venue": "Northwest Film Forum",
+   "neighborhood": "Capitol Hill",
+   "cost": "$10-25",
+   "ticketed": "True",
    "description": "A festival showcasing innovative and experimental films.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e318"
+   "id": "e326"
   },
   {
    "title": "Eco-Blockbusters: Environmentalism in Cinema",
    "date": "2026-11-05",
    "time": "",
-   "venue": "Seattle",
-   "neighborhood": "",
-   "cost": "Free",
-   "description": "A film series focusing on environmental themes in popular cinema.",
+   "venue": "Northwest Film Forum",
+   "neighborhood": "Capitol Hill",
+   "cost": "$10-25",
+   "ticketed": "True",
+   "description": "A film series highlighting environmental themes in popular cinema.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e319"
+   "id": "e327"
   },
   {
    "title": "2026 HUMP! Film Festival",
    "date": "2026-11-05",
    "time": "",
-   "venue": "Seattle",
-   "neighborhood": "",
-   "cost": "Free",
-   "description": "An annual film festival showcasing short films with adult themes.",
+   "venue": "The Egyptian Theatre",
+   "neighborhood": "Capitol Hill",
+   "cost": "$10-25",
+   "ticketed": "True",
+   "description": "An annual film festival featuring short films with adult themes.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e320"
+   "id": "e328"
   },
   {
    "title": "SECS Fest 2026",
    "date": "2026-11-05",
    "time": "",
-   "venue": "Seattle",
-   "neighborhood": "",
-   "cost": "Free",
-   "description": "A festival celebrating the art of short films and experimental cinema.",
+   "venue": "The Crocodile",
+   "neighborhood": "Belltown",
+   "cost": "$10-25",
+   "ticketed": "True",
+   "description": "A festival celebrating the best in queer cinema.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e321"
+   "id": "e329"
   },
   {
    "title": "Christmas Pop-Up",
    "date": "2026-11-05",
    "time": "",
-   "venue": "Seattle",
-   "neighborhood": "",
+   "venue": "Pike Place Market",
+   "neighborhood": "Downtown",
    "cost": "Free",
-   "description": "A festive pop-up event featuring holiday-themed activities and shopping.",
+   "ticketed": "False",
+   "description": "A festive pop-up market featuring holiday-themed goods.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e322"
+   "id": "e330"
   },
   {
    "title": "Cinema Italian Style",
    "date": "2026-11-05",
    "time": "",
-   "venue": "Seattle",
-   "neighborhood": "",
-   "cost": "Free",
+   "venue": "Northwest Film Forum",
+   "neighborhood": "Capitol Hill",
+   "cost": "$10-25",
+   "ticketed": "True",
    "description": "A film series showcasing contemporary Italian cinema.",
    "link": "https://everout.com/seattle",
    "source": "https://everout.com/seattle",
-   "id": "e323"
+   "id": "e331"
   },
   {
    "title": "Summer Walker",
    "date": "2026-07-01",
    "time": "7pm",
-   "venue": "Climate Pledge Arena",
+   "venue": "Climate Pledge Arena at Seattle Center",
    "neighborhood": "",
    "cost": "Entry Charge",
+   "ticketed": "True",
    "description": "Summer Walker brings the closing chapter of her Over It trilogy to Climate Pledge Arena on July 1!",
    "link": "https://www.ticketmaster.com/summer-walker-still-finally-over-it-seattle-washington-07-01-2026/event/0F006435C675D4E9",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e324"
+   "id": "e332"
   },
   {
    "title": "Let's Play SEA '26 - Armory Fan Experience: Round of 32",
@@ -3895,10 +4323,11 @@
    "venue": "Armory",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Seattle Center offers shared viewing experiences throughout SEA \u201926, creating a welcoming place for fans to gather, connect, and experience the excitement of the game together.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/lets-play-sea-26-armory-fan-experience-round-of-32",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e325"
+   "id": "e333"
   },
   {
    "title": "Let's Play SEA '26 Global Marketplace",
@@ -3907,10 +4336,11 @@
    "venue": "",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "The Global Marketplace showcases local businesses and community-based entrepreneurs participating in Seattle Center\u2019s Fan Celebration throughout SEA \u201926.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/lets-play-sea-26-global-marketplace-x47287",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e326"
+   "id": "e334"
   },
   {
    "title": "Let's Play SEA'26 Visual Arts at Seattle Center: Sand Sculpture Installation by Jamie Loukes",
@@ -3919,10 +4349,11 @@
    "venue": "",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Watch as acclaimed artist carves a giant sand sculpture, themed for World Cup Soccer.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/lets-play-sea26-visual-arts-at-seattle-center-sand-sculpture-installation-by-jamie-loukes-x47533",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e327"
+   "id": "e335"
   },
   {
    "title": "Let's Play SEA'26-Watch Parties at Mural Amphitheatre",
@@ -3931,10 +4362,11 @@
    "venue": "Mural Amphitheatre",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Seattle Center offers shared viewing experiences throughout SEA \u201926, creating a welcoming place for fans to gather, connect, and experience the excitement of the game together.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/lets-play-sea-26-watch-parties-at-mural-amphitheatre",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e328"
+   "id": "e336"
   },
   {
    "title": "Seattle Center Sculpture Walk 2026",
@@ -3943,22 +4375,24 @@
    "venue": "",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Experience temporary art installations on our grounds throughout the year.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/seattle-center-sculpture-walk-2026-x46327",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e329"
+   "id": "e337"
   },
   {
    "title": "Unity Loop 5k Virtual Experience: Welcoming the World to Seattle",
    "date": "2026-07-01",
-   "time": "",
+   "time": "1pm",
    "venue": "",
    "neighborhood": "",
    "cost": "Entry Charge",
+   "ticketed": "True",
    "description": "Explore Seattle's Unity Loop with a self-guided 3.1 mile walk or run.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/unity-loop-5k-virtual-experience-welcoming-the-world-to-seattle-x47631",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e330"
+   "id": "e338"
   },
   {
    "title": "Traditions: Connecting Threads of Shared Humanity \u2013 A Fest\u00e1l Exhibit",
@@ -3967,10 +4401,11 @@
    "venue": "A/NT Gallery",
    "neighborhood": "",
    "cost": "Free",
-   "description": "Visual art and heritage exhibit hosted by the Fest\u00e1l cultural festival coalition.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/traditions-connecting-threads-of-shared-humanity-%E2%80%93-a-festal-exhibit-x47684",
+   "ticketed": "False",
+   "description": "Visual art and heritage exhibit hosted by the\u202fFest\u00e1l cultural festival coalition.",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e331"
+   "id": "e339"
   },
   {
    "title": "Let\u2019s Play SEA\u201926 Workshop Series: Seattle Children's Museum",
@@ -3979,10 +4414,11 @@
    "venue": "Armory",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Free Brush Bot Engineering workshop.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/lets-play-sea26-workshop-series-seattle-childrens-museum",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e332"
+   "id": "e340"
   },
   {
    "title": "Summer Fitness: Workout Wednesdays: Yoga",
@@ -3991,10 +4427,11 @@
    "venue": "",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Free outdoor fitness classes every Wednesday evening in summer.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/summer-fitness-workout-wednesdays-yoga-x46732",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e333"
+   "id": "e341"
   },
   {
    "title": "Summer Fitness: Workout Wednesdays: Zumba",
@@ -4003,10 +4440,11 @@
    "venue": "",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Free outdoor fitness classes every Wednesday evening in summer.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/summer-fitness-workout-wednesdays-zumba-x46733",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e334"
+   "id": "e342"
   },
   {
    "title": "Summer Fitness: Workout Wednesdays: Mat Pilates",
@@ -4015,10 +4453,11 @@
    "venue": "",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Free outdoor fitness classes every Wednesday evening in summer.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/summer-fitness-workout-wednesdays-mat-pilates-x46734",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e335"
+   "id": "e343"
   },
   {
    "title": "Visit Seattle Drone Show July 1",
@@ -4027,22 +4466,23 @@
    "venue": "International Fountain",
    "neighborhood": "",
    "cost": "Free",
+   "ticketed": "False",
    "description": "Look to the sky to catch the score for matches hosted in Seattle, through a first-ever drone scoreboard.",
-   "link": "https://www.seattlecenter.com/events/event-calendar/visit-seattle-drone-show-july-1",
+   "link": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
    "source": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
-   "id": "e336"
+   "id": "e344"
   }
  ],
  "pages": [
   {
    "url": "https://www.events12.com/seattle/november/",
    "status": "read",
-   "events": 110
+   "events": 88
   },
   {
    "url": "https://www.events12.com/seattle/december/",
    "status": "read",
-   "events": 103
+   "events": 100
   },
   {
    "url": "https://www.events12.com/seattle/january/",
@@ -4062,7 +4502,7 @@
   {
    "url": "https://www.eventbrite.com/d/wa--seattle/free--events/",
    "status": "read",
-   "events": 1
+   "events": 19
   },
   {
    "url": "https://do206.com/free-events-seattle",
@@ -4072,7 +4512,7 @@
   {
    "url": "https://www.eventbrite.com/d/wa--seattle/free--events--next-week",
    "status": "read",
-   "events": 11
+   "events": 8
   },
   {
    "url": "https://www.eventbrite.com/d/wa--seattle/free--events/fall",
@@ -4087,17 +4527,17 @@
   {
    "url": "https://www.eventbrite.com/d/wa--seattle/free--events--tomorrow",
    "status": "read",
-   "events": 11
+   "events": 20
   },
   {
    "url": "https://www.eventbrite.com/d/wa--seattle/free--events--this-weekend",
    "status": "read",
-   "events": 17
+   "events": 18
   },
   {
    "url": "https://www.seattlecenter.com/events/featured-events/festal",
    "status": "read",
-   "events": 2
+   "events": 3
   },
   {
    "url": "https://www.seattlecenter.com/events",
@@ -4112,7 +4552,7 @@
   {
    "url": "https://everout.com/seattle",
    "status": "read",
-   "events": 45
+   "events": 52
   },
   {
    "url": "https://www.seattlecenter.com/events/event-calendar/summer-walker",
@@ -4125,12 +4565,12 @@
    "events": 0
   },
   {
-   "url": "https://www.greaterseattleonthecheap.com",
+   "url": "https://everout.com/seattle/events?category=community",
    "status": "could not load",
    "events": 0
   },
   {
-   "url": "https://everout.com/seattle/events?category=community",
+   "url": "https://www.greaterseattleonthecheap.com",
    "status": "could not load",
    "events": 0
   }
@@ -4159,9 +4599,9 @@
  ],
  "pages_failed": [
   "https://everout.com/seattle/events/?category=community",
-  "https://www.greaterseattleonthecheap.com",
-  "https://everout.com/seattle/events?category=community"
+  "https://everout.com/seattle/events?category=community",
+  "https://www.greaterseattleonthecheap.com"
  ],
  "query": "free events in Seattle",
- "fetched_at": "2026-11-05T13:55+00:00"
+ "fetched_at": "2026-11-05T14:12+00:00"
 }
