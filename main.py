@@ -15,7 +15,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description="Find events for Seattle Unlocked.")
     p.add_argument("--query", default="free events in Seattle this week")
     p.add_argument("--days", type=int, default=14, help="how far ahead to look")
-    p.add_argument("--pages", type=int, default=10, help="max listing pages to read")
+    p.add_argument("--pages", type=int, default=20, help="max listing pages to read")
     p.add_argument("--picks", type=int, default=6, help="how many picks to suggest")
     p.add_argument("--include-paid", action="store_true")
     p.add_argument("-v", "--verbose", action="store_true")

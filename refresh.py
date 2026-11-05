@@ -13,7 +13,7 @@ from pipeline import build_graph
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     try:
-        raw = build_graph(stop_after="extractor").invoke({"query": "free events in Seattle"})
+        raw = build_graph(stop_after="extractor").invoke({"query": "free events in Seattle", "max_pages": 20})
     except RuntimeError as err:
         sys.exit(f"Setup problem: {err}")
     if not raw.get("events_raw"):

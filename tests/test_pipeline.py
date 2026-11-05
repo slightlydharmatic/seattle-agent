@@ -123,3 +123,12 @@ def test_snapshot_round_trip(tmp_path, monkeypatch):
     # A loaded snapshot runs through the rest of the pipeline like a fresh fetch.
     result = build_graph(skip_until="normalizer").invoke({**loaded, "today": state["today"]})
     assert len(result["trace"]) == len(SAMPLE_EVENTS_RAW)
+
+
+def test_long_pages_are_read_in_overlapping_chunks():
+    from agents.extractor import CHUNK_CHARS, CHUNK_OVERLAP, chunks
+    text = "x" * (CHUNK_CHARS * 2 + 500)
+    parts = chunks(text)
+    assert len(parts) == 3 and all(len(p) <= CHUNK_CHARS for p in parts)
+    assert parts[0][-CHUNK_OVERLAP:] == parts[1][:CHUNK_OVERLAP]
+    assert chunks("") == []

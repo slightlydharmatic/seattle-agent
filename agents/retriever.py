@@ -14,14 +14,14 @@ def _domain(url: str) -> str:
 
 def retrieve(state: dict) -> dict:
     query = state.get("query", "free events in Seattle this week")
-    max_pages = state.get("max_pages", 10)
+    max_pages = state.get("max_pages", 20)
 
     urls = list(SOURCE_PAGES)
     try:
         results = clients.tavily().search(
             query=query,
             include_domains=sorted({_domain(u) for u in SOURCE_PAGES}),
-            max_results=10,
+            max_results=20,
         )
         urls += [r["url"] for r in results.get("results", []) if r.get("url")]
     except Exception as err:  # search is a bonus; the trusted pages still run

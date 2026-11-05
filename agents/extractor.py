@@ -12,7 +12,10 @@ from config import OPENAI_MODEL
 
 log = logging.getLogger(__name__)
 
-MAX_PAGE_CHARS = 24_000
+# Long listing pages are read in chunks so events further down aren't cut off.
+CHUNK_CHARS = 20_000
+CHUNK_OVERLAP = 1_000   # an event split across two chunks still shows up whole in one
+MAX_CHUNKS = 6          # up to ~120k characters per page
 
 PROMPT = """You read Seattle event listing pages and return the events on them.
 Today is {today}. Return JSON: {{"events": [ ... ]}}. Each event has:
@@ -47,17 +50,29 @@ def parse_events(raw_json: str, source_url: str) -> list[dict]:
     return out
 
 
+def chunks(content: str) -> list[str]:
+    """Split page text into overlapping pieces the model can read in full."""
+    out, start = [], 0
+    while start < len(content) and len(out) < MAX_CHUNKS:
+        out.append(content[start:start + CHUNK_CHARS])
+        start += CHUNK_CHARS - CHUNK_OVERLAP
+    return out
+
+
 def _events_from_page(url: str, content: str, today: date) -> list[dict]:
-    reply = clients.openai().chat.completions.create(
-        model=OPENAI_MODEL,
-        temperature=0,
-        response_format={"type": "json_object"},
-        messages=[
-            {"role": "system", "content": PROMPT.format(today=today.isoformat())},
-            {"role": "user", "content": f"URL: {url}\n\n{content[:MAX_PAGE_CHARS]}"},
-        ],
-    )
-    return parse_events(reply.choices[0].message.content, url)
+    found = []
+    for i, piece in enumerate(chunks(content), 1):
+        reply = clients.openai().chat.completions.create(
+            model=OPENAI_MODEL,
+            temperature=0,
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": PROMPT.format(today=today.isoformat())},
+                {"role": "user", "content": f"URL: {url} (part {i})\n\n{piece}"},
+            ],
+        )
+        found += parse_events(reply.choices[0].message.content, url)
+    return found  # overlap duplicates are merged by the normalizer
 
 
 def extract(state: dict) -> dict:
