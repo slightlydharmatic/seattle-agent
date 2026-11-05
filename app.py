@@ -104,6 +104,19 @@ html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family
 .st-key-nav-months button p{font-size:13px;font-weight:500;color:var(--dim)}
 .st-key-nav-months button[kind="primary"] p{color:#fff}
 .st-key-nav-months [data-testid="stVerticalBlock"]{gap:2px}
+.ob-acc{margin-top:18px}
+.ob-acc > summary{list-style:none;cursor:pointer;margin:0;user-select:none}
+.ob-acc > summary::-webkit-details-marker, .ob-acc-day > summary::-webkit-details-marker{display:none}
+.ob-acc:not([open]) > summary{border-bottom:1px solid var(--line);border-radius:3px}
+.ob-acc-day > summary{list-style:none;cursor:pointer;user-select:none}
+.ob-acc-day > summary:hover, .ob-acc > summary:hover{background:var(--panel2)}
+.chev{display:inline-block;width:0;height:0;border-left:5px solid var(--muted);border-top:4px solid transparent;
+      border-bottom:4px solid transparent;margin-right:8px;transition:transform .15s}
+details[open] > summary .chev{transform:rotate(90deg)}
+.ob-acc-day:first-child > summary{border-top:none}
+.ob-empty-in{color:var(--muted);font-size:13px;padding:14px 12px}
+[data-testid="stExpander"] details{border-color:var(--line);background:#20252B}
+[data-testid="stExpander"] summary p{font-weight:600}
 .ob-note{font-size:12px;color:var(--orange);background:rgba(240,183,38,.12);border:1px solid rgba(240,183,38,.3);
          border-radius:3px;padding:6px 10px;margin-bottom:10px;display:inline-block}
 @media (max-width:900px){.ob-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -374,19 +387,22 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
         f"<div class='ob-stat'><span>Sources</span><b>{len(sources)}</b></div>"
         f"</div></div>", unsafe_allow_html=True)
 
-    # 1. Available
-    st.markdown(f"<div class='ob ob-sec'><span class='dot'></span><span class='t'>Available</span>"
-                f"<span class='c'>{len(available)}</span></div>", unsafe_allow_html=True)
-    if available.empty:
-        st.markdown("<div class='ob empty'>No events ready for this month yet.</div>", unsafe_allow_html=True)
+    # 1. Available: one collapsible section, with a collapsible group per day
+    collapse = st.toggle("Collapse all days", key=f"collapse-{label}")
+    day_open = "" if collapse else " open"
     body, n = "", 0
     for d, group in available.groupby("_d", sort=True):
-        body += f"<div class='ob-day'>{day_label(d)} · {len(group)}</div>"
+        rows = ""
         for _, t in group.iterrows():
             n += 1
-            body += event_row(n, t)
-    if body:
-        st.markdown(f"<div class='ob ob-list'>{body}</div>", unsafe_allow_html=True)
+            rows += event_row(n, t)
+        body += (f"<details class='ob-acc-day'{day_open}><summary class='ob-day'>"
+                 f"<span class='chev'></span>{day_label(d)} · {len(group)}</summary>{rows}</details>")
+    if not body:
+        body = "<div class='ob-empty-in'>No events ready for this month yet.</div>"
+    st.markdown(f"<details class='ob ob-acc' open><summary class='ob-sec'><span class='chev'></span>"
+                f"<span class='dot'></span><span class='t'>Available</span><span class='c'>{len(available)}</span>"
+                f"</summary><div class='ob-list'>{body}</div></details>", unsafe_allow_html=True)
 
     if team and file_label and not available.empty:
         with st.expander("Sheet rows"):
@@ -399,23 +415,21 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
                                f"{file_label} - Seattle.csv", "text/csv", type="primary",
                                key=f"dl-{file_label}")
 
-    # 2. Held
-    st.markdown(f"<div class='ob ob-sec held'><span class='dot'></span><span class='t'>Held for review</span>"
-                f"<span class='c'>{len(held)}</span></div>", unsafe_allow_html=True)
-    if held.empty:
-        st.markdown("<div class='ob empty'>Nothing held.</div>", unsafe_allow_html=True)
-    else:
-        rows = "".join(event_row(i, t, held=True) for i, (_, t) in enumerate(held.iterrows(), 1))
-        st.markdown(f"<div class='ob ob-list'>{rows}</div>", unsafe_allow_html=True)
+    # 2. Held: collapsible
+    rows = "".join(event_row(i, t, held=True) for i, (_, t) in enumerate(held.iterrows(), 1)) \
+        or "<div class='ob-empty-in'>Nothing held.</div>"
+    st.markdown(f"<details class='ob ob-acc held'{'' if collapse else ' open'}><summary class='ob-sec held'>"
+                f"<span class='chev'></span><span class='dot'></span><span class='t'>Held for review</span>"
+                f"<span class='c'>{len(held)}</span></summary><div class='ob-list'>{rows}</div></details>",
+                unsafe_allow_html=True)
 
     # 3. Full record
-    st.markdown(f"<div class='ob ob-sec rec'><span class='dot'></span><span class='t'>Full record</span>"
-                f"<span class='c'>{len(df)}</span></div>", unsafe_allow_html=True)
-    st.markdown("<div class='ob src-chips'>" + "".join(
-        f"<span>{esc(s)}<b>{k}</b></span>" for s, k in sources.most_common()) + "</div>",
-        unsafe_allow_html=True)
     st.write("")
-    record_table(df, key=f"rec-{label}")
+    with st.expander(f"Full record · {len(df)} events, every source and check", expanded=False):
+        st.markdown("<div class='ob src-chips' style='border:none;padding:0 0 8px;background:none'>" + "".join(
+            f"<span>{esc(s)}<b>{k}</b></span>" for s, k in sources.most_common()) + "</div>",
+            unsafe_allow_html=True)
+        record_table(df, key=f"rec-{label}")
 
 
 # ---------- ontology ----------
