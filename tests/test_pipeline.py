@@ -187,3 +187,20 @@ def test_paid_or_ticketed_events_never_reach_the_list():
     assert by["p1"]["status"] == "Filtered"
     assert by["p2"]["status"] == "Needs review" and "cost not listed" in by["p2"]["why"]
     assert not {"Big Concert", "Mystery Show"} & {r["title"] for r in result["rows"]}
+
+
+def test_ontology_links_every_event_to_its_things():
+    import ontology
+    result = run_offline()
+    graph = ontology.build(result["trace"])
+    types = {n["type"] for n in graph["nodes"]}
+    assert {"Event", "Category", "Venue", "Neighborhood", "Source", "Month", "Status"} <= types
+    events = [n for n in graph["nodes"] if n["type"] == "Event"]
+    assert len(events) == len(result["trace"])
+    rels = {e["rel"] for e in graph["edges"]}
+    assert {"IS_A", "HAPPENS_AT", "IN_AREA", "FOUND_ON", "IN_MONTH", "DUPLICATE_OF"} <= rels
+    sm = ontology.summary(graph)
+    assert sm["sources"] and sm["categories"]
+    # The merged Fremont copy points at the kept event, so the kept one isn't "only here".
+    dup = [e for e in graph["edges"] if e["rel"] == "DUPLICATE_OF"][0]
+    assert dup["target"].startswith("Event:")
