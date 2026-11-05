@@ -64,8 +64,15 @@ html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family
 .ob-sec .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
 .ob-sec.held .dot{background:var(--red)}.ob-sec.rec .dot{background:var(--blue)}
 .ob-list{border:1px solid var(--line);border-radius:0 0 3px 3px;background:#20252B}
-.ob-day{font-family:var(--mono) !important;font-size:11px;color:var(--muted);padding:8px 12px;background:#1E2329;
-        border-top:1px solid var(--line)}
+.ob-day{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text);
+        padding:11px 12px;background:var(--panel2);border-top:1px solid var(--line2);
+        border-left:3px solid var(--blue)}
+.ob-day .wd{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);
+            background:var(--blue-bg);padding:2px 7px;border-radius:3px}
+.ob-day .n{margin-left:auto;font-family:var(--mono) !important;font-size:11px;font-weight:500;color:var(--dim);
+           background:var(--panel);padding:1px 8px;border-radius:9px}
+.ob-day.weekend{border-left-color:var(--green)}
+.ob-day.weekend .wd{color:var(--green);background:var(--green-bg)}
 .ob-day:first-child{border-top:none}
 .ob-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:start;padding:10px 12px;
         border-top:1px solid var(--line)}
@@ -388,6 +395,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
         f"</div></div>", unsafe_allow_html=True)
 
     # 1. Available: one collapsible section, with a collapsible group per day
+    st.write("")
     collapse = st.toggle("Collapse all days", key=f"collapse-{label}")
     day_open = "" if collapse else " open"
     body, n = "", 0
@@ -396,8 +404,12 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
         for _, t in group.iterrows():
             n += 1
             rows += event_row(n, t)
-        body += (f"<details class='ob-acc-day'{day_open}><summary class='ob-day'>"
-                 f"<span class='chev'></span>{day_label(d)} · {len(group)}</summary>{rows}</details>")
+        weekend = " weekend" if isinstance(d, date) and d.weekday() >= 5 else ""
+        head = (f"<span class='wd'>{d:%a}</span>{d:%B} {d.day}" if isinstance(d, date) and d != date.max
+                else "No date")
+        body += (f"<details class='ob-acc-day'{day_open}><summary class='ob-day{weekend}'>"
+                 f"<span class='chev'></span>{head}<span class='n'>{len(group)} events</span></summary>"
+                 f"{rows}</details>")
     if not body:
         body = "<div class='ob-empty-in'>No events ready for this month yet.</div>"
     st.markdown(f"<details class='ob ob-acc' open><summary class='ob-sec'><span class='chev'></span>"
