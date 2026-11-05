@@ -50,15 +50,28 @@ def require(name: str) -> str:
     return value
 
 
-# Topics Seattle Unlocked never features. An event whose title, description, or
-# venue matches any of these is filtered out (still listed in the full record).
-BLOCKED_TOPICS = {
-    "real estate": [
-        r"real[\s-]?estate", r"realtors?", r"realty", r"brokerage", r"escrow",
-        r"mortgage", r"refinanc\w*", r"home ?equity", r"home ?buy(?:er|ers|ing)",
-        r"first[\s-]time (?:home ?)?buyers?", r"home ?sell(?:er|ers|ing)", r"open house",
-        r"property invest\w*", r"investment propert\w*", r"rental propert\w*", r"landlords?",
-        r"house hunting", r"condo tour", r"title company", r"d?adus?", r"accessory dwelling",
-        r"zillow", r"redfin", r"windermere", r"coldwell", r"keller williams", r"re/max",
+# Default filter rules. The team can change these in the app (Filters page);
+# changes are saved to data/filters.json and override these defaults.
+# Terms are plain words or phrases, matched as whole words, ignoring case.
+DEFAULT_FILTERS = {
+    "price_listed": True,        # a price in the cost field ("$15", "Varies")
+    "tickets": True,             # ticket language, or the extractor marked it ticketed
+    "price_in_text": True,       # a dollar amount anywhere in the title or description
+    "ticket_terms": [
+        "buy tickets", "get tickets", "get your tickets", "tickets on sale", "tickets available",
+        "tickets required", "tickets from", "tickets start", "purchase tickets", "cover charge",
+        "presale", "sold out", "ticketmaster", "axs", "etix", "seetickets", "dice.fm",
     ],
+    "topics": {
+        "Real estate": [
+            "real estate", "realtor", "realtors", "realty", "brokerage", "escrow", "mortgage",
+            "refinance", "refinancing", "home equity", "homebuyer", "homebuyers", "home buyer",
+            "home buying", "first-time buyer", "first-time homebuyer", "home seller", "home selling",
+            "open house", "property investing", "investment property", "rental property", "landlord",
+            "landlords", "house hunting", "condo tour", "title company", "adu", "dadu",
+            "accessory dwelling", "zillow", "redfin", "windermere", "coldwell banker",
+            "keller williams", "re/max",
+        ],
+    },
+    "allow": [],                 # events kept on the list even though a filter matched
 }

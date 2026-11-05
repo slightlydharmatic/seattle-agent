@@ -46,7 +46,8 @@ def build(trace: list[dict]) -> dict:
         nodes[ev]["events"] = 1
         nodes[ev]["live"] = int(live)
         if status == "Filtered":
-            nodes[ev]["filter_kind"] = "paid" if t["why"].startswith(("not free", "tickets")) else "topic"
+            nodes[ev]["filter_kind"] = ("paid" if t.get("filter_category") in
+                                        ("Price listed", "Tickets required", "Price in description") else "topic")
 
         links = []
         cat = t.get("category") or categorize(t)

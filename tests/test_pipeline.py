@@ -39,7 +39,7 @@ def test_every_event_is_published_or_reviewed_with_a_reason():
     result = run_offline()
     reasons = {e["title"]: e["review_reasons"] for e in result["events_review"]}
     filtered = {e["title"]: e["filter_reason"] for e in result["events_filtered"]}
-    assert filtered["Seattle Symphony Open Rehearsal"] == "not free ($15)"
+    assert filtered["Seattle Symphony Open Rehearsal"] == "price listed: $15"
     assert reasons["Halloween Pumpkin Walk"] == ["already happened"]
     assert reasons["Ballard Night Market"] == ["missing venue"]
     assert reasons["Winter Lights Preview"] == ["date not understood"]
@@ -170,8 +170,8 @@ def test_monthly_pages_roll_over_the_year():
 
 def test_paid_or_ticketed_events_never_reach_the_list():
     from agents.validator import paid_reason
-    assert paid_reason({"cost": "$45"}) == "not free ($45)"
-    assert paid_reason({"cost": "Free", "ticketed": True}) == "tickets required"
+    assert paid_reason({"cost": "$45"}) == "price listed ($45)"
+    assert paid_reason({"cost": "Free", "ticketed": True}).startswith("tickets required")
     assert paid_reason({"cost": "Not listed", "description": "Buy tickets at the door"})
     assert paid_reason({"cost": "Free", "description": "Tickets from $20"})
     assert paid_reason({"cost": "Free", "description": "Free, RSVP required"}) is None
@@ -204,3 +204,26 @@ def test_ontology_links_every_event_to_its_things():
     # The merged Fremont copy points at the kept event, so the kept one isn't "only here".
     dup = [e for e in graph["edges"] if e["rel"] == "DUPLICATE_OF"][0]
     assert dup["target"].startswith("Event:")
+
+
+def test_filters_are_editable_and_allow_list_survives_reruns(tmp_path, monkeypatch):
+    import filters
+    monkeypatch.setattr(filters, "PATH", tmp_path / "filters.json")
+    rules = filters.load()
+    # Turn off the price rule: the $15 rehearsal is no longer filtered.
+    rules["price_listed"] = False
+    result = run_offline(filters=rules)
+    assert "Seattle Symphony Open Rehearsal" not in {e["title"] for e in result["events_filtered"]}
+    # Add a new topic: anything about yoga is filtered, with that category.
+    rules = filters.load()
+    rules["topics"]["Fitness classes"] = ["yoga"]
+    result = run_offline(filters=rules)
+    yoga = [e for e in result["events_filtered"] if e["title"] == "Rooftop Sunset Yoga"][0]
+    assert yoga["filter_category"] == "Fitness classes"
+    # Allow one event by its stable key: it comes back on the list.
+    rules["allow"] = [yoga["filter_key"]]
+    result = run_offline(filters=rules)
+    assert "Rooftop Sunset Yoga" in {e["title"] for e in result["events_valid"]}
+    # Saved rules round-trip.
+    filters.save(rules)
+    assert filters.load()["topics"]["Fitness classes"] == ["yoga"]

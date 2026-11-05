@@ -4,46 +4,23 @@ Every event either passes all checks or goes to human review with a reason.
 Nothing is silently dropped. Each event keeps its full checklist so the UI
 can show exactly what passed and what failed.
 """
-import re
 from datetime import date, timedelta
 
-from config import BLOCKED_TOPICS
-
-_BLOCKED = {topic: re.compile(r"\b(?:" + "|".join(pats) + r")\b", re.I)
-            for topic, pats in BLOCKED_TOPICS.items()}
-
-
-# Signs an event costs money even when the cost field says nothing.
-_PAID = re.compile(
-    r"buy (?:your )?tickets?|get (?:your )?tickets?|tickets? (?:on sale|available|required|from|start)"
-    r"|purchase tickets?|\$\s?\d|admission:? \$|cover charge|presale|ticketmaster|\baxs\b|etix"
-    r"|seetickets|dice\.fm|\bsold out\b",
-    re.I,
-)
+import filters
 
 
 def paid_reason(e: dict) -> str | None:
-    """Return why an event isn't free (e.g. 'not free ($45)', 'tickets required'), or None."""
-    cost = str(e.get("cost") or "")
-    if cost and cost not in ("Free", "Not listed"):
-        return f"not free ({cost})"
-    if str(e.get("ticketed")).lower() == "true":
-        return "tickets required"
-    text = " ".join(str(e.get(k) or "") for k in ("title", "description"))
-    m = _PAID.search(text)
-    if m:
-        return f"tickets required ({m.group(0).lower()})"
-    return None
+    """Why an event isn't free under the default rules, or None. Kept for tests and scripts."""
+    r = filters.reason({**e, "title": e.get("title", ""), "custom": False},
+                       {**filters.load(), "topics": {}, "allow": []}, True)
+    return f"{r[0].lower()} ({r[1]})" if r else None
 
 
 def blocked_topic(e: dict) -> str | None:
-    """Return why an event is off-topic (e.g. 'real estate: escrow'), or None."""
-    text = " ".join(str(e.get(k) or "") for k in ("title", "description", "venue"))
-    for topic, rx in _BLOCKED.items():
-        m = rx.search(text)
-        if m:
-            return f"{topic} ({m.group(0).lower()})"
-    return None
+    """Which blocked topic an event matches under the default rules, or None."""
+    rules = filters.load()
+    r = filters.reason({**e, "custom": False}, {**rules, "allow": []}, False)
+    return f"{r[0].lower()} ({r[1]})" if r else None
 
 
 def checklist(e: dict, today: date, last_day: date, free_only: bool) -> list[dict]:
@@ -90,14 +67,14 @@ def validate(state: dict) -> dict:
     today = state.get("today") or date.today()
     end = last_day(state, today)
     free_only = state.get("free_only", True)
+    rules = state.get("filters") or filters.load()
 
     valid, review, filtered = [], [], []
     for e in state.get("events_clean", []):
-        topic = None if e.get("custom") else blocked_topic(e)  # your own events are never filtered
-        if not topic and free_only and not e.get("custom"):
-            topic = paid_reason(e)
-        if topic:
-            filtered.append({**e, "filter_reason": topic})
+        hit = filters.reason(e, rules, free_only)
+        if hit:
+            filtered.append({**e, "filter_category": hit[0], "filter_reason": f"{hit[0].lower()}: {hit[1]}",
+                             "filter_key": filters.event_key(e)})
             continue
         e["checks"] = checklist(e, today, end, free_only)
         reasons = [c["detail"] for c in e["checks"] if not c["passed"]]

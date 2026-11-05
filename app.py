@@ -15,6 +15,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 import custom_events
+import filters
 import ontology
 import snapshot
 from agents.reasoner import CATEGORIES
@@ -124,6 +125,15 @@ details[open] > summary .chev{transform:rotate(90deg)}
 .ob-empty-in{color:var(--muted);font-size:13px;padding:14px 12px}
 [data-testid="stExpander"] details{border-color:var(--line);background:#20252B}
 [data-testid="stExpander"] summary p{font-weight:600}
+a.ob-stat.link{text-decoration:none;display:block;cursor:pointer}
+a.ob-stat.link:hover{border-color:var(--orange)}
+a.ob-stat.link b{color:var(--orange)}
+.ob-sec.filt .dot{background:var(--orange)}
+.ob-sec .hint{margin-left:auto;font-size:11px;color:var(--muted);font-weight:400}
+.ob-day.filt{border-left-color:var(--orange)}
+.ob-day.filt .wd{color:var(--orange);background:rgba(240,183,38,.14);text-transform:none;letter-spacing:0;font-size:12px}
+.rule-chips span{display:inline-block;font-family:var(--mono);font-size:11px;background:var(--panel2);
+  border:1px solid var(--line2);color:var(--dim);padding:2px 8px;border-radius:3px;margin:0 4px 4px 0}
 .ob-note{font-size:12px;color:var(--orange);background:rgba(240,183,38,.12);border:1px solid rgba(240,183,38,.3);
          border-radius:3px;padding:6px 10px;margin-bottom:10px;display:inline-block}
 @media (max-width:900px){.ob-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -154,7 +164,7 @@ def team_password() -> str:
 
 def finish(raw: dict, custom: list[dict], end: date, picks: int, include_paid: bool) -> dict:
     """Steps 3 to 6: fast, so they rerun whenever settings or your events change."""
-    state = {**raw, "custom_events": custom, "window_end": end,
+    state = {**raw, "custom_events": custom, "window_end": end, "filters": filters.load(),
              "max_picks": picks, "free_only": not include_paid}
     return build_graph(skip_until="normalizer").invoke(state)
 
@@ -277,7 +287,8 @@ if is_sample:
 
 # ---------- pieces ----------
 def esc(x) -> str:
-    return html.escape(str(x or ""))
+    # "$" is escaped too: Streamlit markdown would otherwise read "$20 ... $50" as math.
+    return html.escape(str(x or "")).replace("$", "&#36;")
 
 
 def day_label(d) -> str:
@@ -372,6 +383,20 @@ def record_table(df: pd.DataFrame, key: str) -> None:
     )
 
 
+def filtered_row(t: pd.Series) -> str:
+    title = esc(t["title"]) or "(no title)"
+    if t["link"]:
+        title = f"<a href='{esc(t['link'])}' target='_blank'>{title}</a>"
+    detail = str(t["why"]).split(": ", 1)[-1]
+    props = [("date", day_label(t["date"])), ("venue", t["venue"] or "none"), ("cost", t["cost"]),
+             ("source", t["site"])]
+    props_html = "".join(f"<span><i>{k}</i>{esc(v)}</span>" for k, v in props)
+    return (f"<div class='ob-row'><div class='ob-ic held'>{ICON}</div><div>"
+            f"<div class='ob-t'>{title}</div><div class='ob-props'>{props_html}</div>"
+            f"<div><span class='chk no'>matched: {esc(detail)}</span></div></div>"
+            f"<div class='ob-r'>{esc(t['id'])}</div></div>")
+
+
 def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
     order = {PICK: 0, PUBLISH: 0, REVIEW: 1, MERGED: 2, FILTERED: 3}
     df = df.assign(_o=df["status"].map(order),
@@ -390,7 +415,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
         f"<div class='ob-stat blue'><span>Picks</span><b>{c[PICK]}</b></div>"
         f"<div class='ob-stat red'><span>Held</span><b>{c[REVIEW]}</b></div>"
         f"<div class='ob-stat'><span>Duplicates</span><b>{c[MERGED]}</b></div>"
-        f"<div class='ob-stat'><span>Filtered</span><b>{c[FILTERED]}</b></div>"
+        f"<a class='ob-stat link' href='#filtered-{abs(hash(label))}'><span>Filtered ↓</span><b>{c[FILTERED]}</b></a>"
         f"<div class='ob-stat'><span>Sources</span><b>{len(sources)}</b></div>"
         f"</div></div>", unsafe_allow_html=True)
 
@@ -435,7 +460,22 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
                 f"<span class='c'>{len(held)}</span></summary><div class='ob-list'>{rows}</div></details>",
                 unsafe_allow_html=True)
 
-    # 3. Full record
+    # 3. Filtered out, grouped by reason
+    filt = df[df["status"] == FILTERED]
+    groups = ""
+    for cat_name, grp in sorted(filt.groupby("filter_category"), key=lambda g: -len(g[1])):
+        rows = "".join(filtered_row(t) for _, t in grp.iterrows())
+        groups += (f"<details class='ob-acc-day'><summary class='ob-day filt'><span class='chev'></span>"
+                   f"<span class='wd'>{esc(cat_name)}</span><span class='n'>{len(grp)} events</span></summary>"
+                   f"{rows}</details>")
+    groups = groups or "<div class='ob-empty-in'>Nothing filtered.</div>"
+    st.markdown(f"<span id='filtered-{abs(hash(label))}'></span>"
+                f"<details class='ob ob-acc'{'' if collapse else ' open'}><summary class='ob-sec filt'>"
+                f"<span class='chev'></span><span class='dot'></span><span class='t'>Filtered out</span>"
+                f"<span class='c'>{len(filt)}</span><span class='hint'>by reason · edit rules on the Filters page"
+                f"</span></summary><div class='ob-list'>{groups}</div></details>", unsafe_allow_html=True)
+
+    # 4. Full record
     st.write("")
     with st.expander(f"Full record · {len(df)} events, every source and check", expanded=False):
         st.markdown("<div class='ob src-chips' style='border:none;padding:0 0 8px;background:none'>" + "".join(
@@ -588,6 +628,108 @@ def render_ontology(trace_rows: list[dict], month_labels: list[str]) -> None:
             st.dataframe(cat.sort_values("Free", ascending=False), hide_index=True, width="stretch")
 
 
+# ---------- filters page ----------
+def render_filters_page() -> None:
+    rules = filters.load()
+    st.markdown("<div class='ob ob-title'><h1>Filters</h1>"
+                "<p>What gets kept off the list, and why. Every filtered event is grouped by its reason.</p></div>",
+                unsafe_allow_html=True)
+    filt = trace[trace["status"] == FILTERED]
+
+    # Filtered events by reason, with an Allow switch for the team
+    st.markdown(f"<div class='ob ob-sec filt'><span class='dot'></span><span class='t'>Filtered events</span>"
+                f"<span class='c'>{len(filt)}</span></div>", unsafe_allow_html=True)
+    if filt.empty:
+        st.markdown("<div class='ob empty'>Nothing filtered this run.</div>", unsafe_allow_html=True)
+    allow_now = set(rules["allow"])
+    for cat_name, grp in sorted(filt.groupby("filter_category"), key=lambda g: -len(g[1])):
+        with st.expander(f"{cat_name} · {len(grp)}"):
+            table = pd.DataFrame({
+                "Allow": False,
+                "Event": grp["title"],
+                "Date": grp["date"].map(day_label),
+                "Matched": grp["why"].map(lambda w: str(w).split(": ", 1)[-1]),
+                "Cost": grp["cost"],
+                "Source": grp["site"],
+                "Link": grp["link"],
+            })
+            if team:
+                edited = st.data_editor(
+                    table, hide_index=True, width="stretch", key=f"allow-{cat_name}",
+                    column_config={"Allow": st.column_config.CheckboxColumn(help="Keep this event on the list"),
+                                   "Link": st.column_config.LinkColumn(display_text="open")},
+                    disabled=[c for c in table.columns if c != "Allow"])
+                picked = grp.loc[edited["Allow"].values, "filter_key"].tolist()
+                if picked and st.button(f"Allow {len(picked)} selected", key=f"allow-btn-{cat_name}",
+                                        type="primary"):
+                    rules["allow"] = sorted(allow_now | set(picked))
+                    filters.save(rules)
+                    st.rerun()
+            else:
+                st.dataframe(table.drop(columns=["Allow"]), hide_index=True, width="stretch",
+                             column_config={"Link": st.column_config.LinkColumn(display_text="open")})
+
+    # The rules themselves
+    st.markdown("<div class='ob ob-sec rec' style='margin-top:26px'><span class='dot'></span>"
+                "<span class='t'>Rules</span></div>", unsafe_allow_html=True)
+    if not team:
+        on = lambda x: "on" if x else "off"
+        st.markdown(
+            f"<div class='ob empty' style='color:var(--dim)'>"
+            f"Price listed: <b>{on(rules['price_listed'])}</b> · Tickets required: <b>{on(rules['tickets'])}</b> · "
+            f"Price in description: <b>{on(rules['price_in_text'])}</b></div>", unsafe_allow_html=True)
+        for topic, terms in rules["topics"].items():
+            st.markdown(f"<div class='ob' style='margin-top:12px'><b>{esc(topic)}</b><div class='rule-chips' "
+                        f"style='margin-top:6px'>" + "".join(f"<span>{esc(t)}</span>" for t in terms)
+                        + "</div></div>", unsafe_allow_html=True)
+        st.caption("Sign in to change the rules.")
+        return
+
+    with st.form("rules"):
+        st.markdown("**Free events only**")
+        c1, c2, c3 = st.columns(3)
+        price = c1.toggle("Price listed", value=rules["price_listed"],
+                          help="Filter events whose cost shows a price, like $15 or Varies.")
+        tickets = c2.toggle("Tickets required", value=rules["tickets"],
+                            help="Filter events with ticket language, or marked ticketed by the extractor.")
+        price_text = c3.toggle("Price in description", value=rules["price_in_text"],
+                               help="Filter events with a dollar amount in the title or description.")
+        ticket_terms = st.text_area("Ticket words (one per line)", "\n".join(rules["ticket_terms"]), height=140)
+
+        st.markdown("**Topics to keep off the list**")
+        topic_edits, remove = {}, set()
+        for topic, terms in rules["topics"].items():
+            a, b = st.columns([5, 1], vertical_alignment="bottom")
+            topic_edits[topic] = a.text_area(f"{topic} (one word or phrase per line)", "\n".join(terms),
+                                             height=120, key=f"topic-{topic}")
+            if b.checkbox("Remove", key=f"rm-topic-{topic}"):
+                remove.add(topic)
+        a, b = st.columns([2, 5])
+        new_name = a.text_input("New topic", placeholder="e.g. Fundraisers")
+        new_terms = b.text_input("Words for the new topic, comma separated", placeholder="gala, fundraiser, donate")
+
+        if st.form_submit_button("Save rules", type="primary"):
+            lines = lambda txt: [t.strip() for t in txt.replace(",", "\n").splitlines() if t.strip()]
+            rules.update(price_listed=price, tickets=tickets, price_in_text=price_text,
+                         ticket_terms=lines(ticket_terms))
+            rules["topics"] = {t: lines(v) for t, v in topic_edits.items() if t not in remove}
+            if new_name.strip() and new_terms.strip():
+                rules["topics"][new_name.strip()] = lines(new_terms)
+            filters.save(rules)
+            st.rerun()
+
+    if rules["allow"]:
+        with st.expander(f"Allowed events · {len(rules['allow'])}"):
+            keep = st.multiselect("Allowed (remove to filter them again)", rules["allow"], default=rules["allow"])
+            if st.button("Update allowed list") and set(keep) != set(rules["allow"]):
+                rules["allow"] = keep
+                filters.save(rules)
+                st.rerun()
+    if st.button("Reset all rules to defaults"):
+        filters.reset()
+        st.rerun()
+
+
 # ---------- navigation ----------
 labels = [f"{m:%B %Y}" for m in months]
 in_range = {(m.year, m.month) for m in months}
@@ -620,9 +762,14 @@ with nav_box:
                           type="primary" if state.view == v else "tertiary")
     st.button("Ontology of events", key="nav-onto", width="stretch", on_click=go_to, args=("ontology",),
               type="primary" if state.section == "ontology" else "secondary")
+    st.button(f"Filters  ·  {int((trace['status'] == FILTERED).sum())}", key="nav-filters", width="stretch",
+              on_click=go_to, args=("filters",),
+              type="primary" if state.section == "filters" else "secondary")
 
 # ---------- page ----------
-if state.section == "ontology":
+if state.section == "filters":
+    render_filters_page()
+elif state.section == "ontology":
     st.markdown("<div class='ob ob-title'><h1>Ontology of events</h1>"
                 "<p>How Seattle's free events connect: categories, neighborhoods, venues, and sources.</p></div>",
                 unsafe_allow_html=True)
