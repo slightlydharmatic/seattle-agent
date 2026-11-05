@@ -92,6 +92,18 @@ html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family
                 padding:2px 8px;border-radius:3px;color:var(--dim)}
 .src-chips b{color:var(--text);font-weight:500;margin-left:6px}
 .empty{color:var(--muted);font-size:13px;padding:14px 12px;border:1px solid var(--line);border-top:none;background:#20252B}
+.ob-title{padding:6px 0 18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.ob-title h1{font-size:40px;font-weight:600;letter-spacing:-.02em;color:var(--text);margin:0;padding:0;line-height:1.1}
+.ob-title p{font-size:15px;color:var(--dim);margin:6px 0 0}
+.st-key-nav{margin-top:14px}
+.st-key-nav button{justify-content:flex-start;border-radius:3px;min-height:36px;padding-left:12px}
+.st-key-nav button > div, .st-key-nav button [data-testid="stMarkdownContainer"]{justify-content:flex-start;text-align:left;width:100%}
+.st-key-nav button p{font-size:14px;font-weight:600}
+.st-key-nav-months{padding-left:14px;border-left:1px solid var(--line2);margin:2px 0 6px 10px}
+.st-key-nav-months button{min-height:30px}
+.st-key-nav-months button p{font-size:13px;font-weight:500;color:var(--dim)}
+.st-key-nav-months button[kind="primary"] p{color:#fff}
+.st-key-nav-months [data-testid="stVerticalBlock"]{gap:2px}
 .ob-note{font-size:12px;color:var(--orange);background:rgba(240,183,38,.12);border:1px solid rgba(240,183,38,.3);
          border-radius:3px;padding:6px 10px;margin-bottom:10px;display:inline-block}
 @media (max-width:900px){.ob-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -172,7 +184,8 @@ snap = snapshot.load()
 
 with st.sidebar:
     st.markdown("<div class='ob ob-brand'><i></i>Seattle Unlocked</div>", unsafe_allow_html=True)
-    st.caption("Event desk")
+    nav_box = st.container(key="nav")  # filled in once the months are known
+    st.divider()
 
     if team:
         use_sample = st.checkbox("Show sample data", value=snap is None)
@@ -350,7 +363,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
     sources = Counter(df.loc[df["status"] != MERGED, "site"])
 
     st.markdown(
-        f"<div class='ob'><div class='ob-crumb'>Seattle Unlocked / <b>Event</b> / {esc(label)}</div>"
+        f"<div class='ob'>"
         f"<div class='ob-head'><h2>{esc(label)}</h2><span class='ob-type'>{len(df)} objects</span></div>"
         f"<div class='ob-stats'>"
         f"<div class='ob-stat green'><span>Available</span><b>{len(available)}</b></div>"
@@ -484,8 +497,7 @@ setTimeout(refit, 600); setTimeout(refit, 1800);
 
 def render_ontology(trace_rows: list[dict], month_labels: list[str]) -> None:
     st.markdown(
-        "<div class='ob'><div class='ob-crumb'>Seattle Unlocked / <b>Ontology</b></div>"
-        "<div class='ob-head'><h2>Event ontology</h2>"
+        "<div class='ob'><div class='ob-head'><h2>Graph</h2>"
         f"<span class='ob-type'>{len(trace_rows)} events</span></div></div>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns([2, 2, 1])
     month = c1.selectbox("Month", ["All months"] + month_labels, key="onto-month")
@@ -550,34 +562,55 @@ def render_ontology(trace_rows: list[dict], month_labels: list[str]) -> None:
             st.dataframe(cat.sort_values("Free", ascending=False), hide_index=True, width="stretch")
 
 
-# ---------- months ----------
+# ---------- navigation ----------
 labels = [f"{m:%B %Y}" for m in months]
 in_range = {(m.year, m.month) for m in months}
 other = trace[~trace["month"].isin(in_range)]
-tab_names = [f"{lab} · {int((trace['month'] == (m.year, m.month)).sum())}" for lab, m in zip(labels, months)]
-tab_names.append("Ontology")
+views = [(lab, int((trace["month"] == (m.year, m.month)).sum())) for lab, m in zip(labels, months)]
 if not other.empty:
-    tab_names.append(f"Other · {len(other)}")
+    views.append(("Past or undated", len(other)))
 if mine:
-    tab_names.append(f"Added by you · {len(mine)}")
-tabs = st.tabs(tab_names)
+    views.append(("Added by you", len(mine)))
 
-for tab, lab, m in zip(tabs, labels, months):
-    with tab:
-        render(trace[trace["month"] == (m.year, m.month)], lab, lab)
+state = st.session_state
+state.setdefault("section", "events")
+if state.get("view") not in [v for v, _ in views]:
+    state.view = labels[0]
 
-i = len(months)
-with tabs[i]:
+
+def go_to(section: str, view: str | None = None) -> None:
+    state.section = section
+    if view:
+        state.view = view
+
+
+with nav_box:
+    st.button("Events", key="nav-events", width="stretch", on_click=go_to, args=("events",),
+              type="primary" if state.section == "events" else "secondary")
+    if state.section == "events":
+        with st.container(key="nav-months"):
+            for v, n in views:
+                st.button(f"{v}  ·  {n}", key=f"nav-{v}", width="stretch", on_click=go_to, args=("events", v),
+                          type="primary" if state.view == v else "tertiary")
+    st.button("Ontology of events", key="nav-onto", width="stretch", on_click=go_to, args=("ontology",),
+              type="primary" if state.section == "ontology" else "secondary")
+
+# ---------- page ----------
+if state.section == "ontology":
+    st.markdown("<div class='ob ob-title'><h1>Ontology of events</h1>"
+                "<p>How Seattle's free events connect: categories, neighborhoods, venues, and sources.</p></div>",
+                unsafe_allow_html=True)
     render_ontology(res["trace"], labels)
-i += 1
-
-if not other.empty:
-    with tabs[i]:
+else:
+    st.markdown("<div class='ob ob-title'><h1>Seattle Free Events</h1><p>Curated list</p></div>",
+                unsafe_allow_html=True)
+    v = state.view
+    if v in labels:
+        m = months[labels.index(v)]
+        render(trace[trace["month"] == (m.year, m.month)], v, v)
+    elif v == "Past or undated":
         render(other, "Past, undated, or later", None)
-    i += 1
-
-if mine:
-    with tabs[i]:
+    elif v == "Added by you":
         st.markdown("<div class='ob'><div class='ob-head'><h2>Added by you</h2></div></div>", unsafe_allow_html=True)
         status_by_id = {t["custom_id"]: t for _, t in trace.iterrows() if t["custom"]}
         for e in mine:
