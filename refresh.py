@@ -1,22 +1,42 @@
-"""Fetch listing pages (steps 1 and 2) and save them as the latest snapshot.
+"""Fetch listing pages, curate the events with the AI classifier, and save the snapshot.
 
     python refresh.py
 
 Run weekly by .github/workflows/refresh.yml. Needs OPENAI_API_KEY and TAVILY_API_KEY.
+The classifier only sees events it hasn't scored before, and uses the team's
+latest thumbs up / down as examples.
 """
+import calendar
 import logging
 import sys
+from datetime import date
 
+import filters
 import snapshot
 from pipeline import build_graph
+
+
+def three_months_out(today: date) -> date:
+    y, m = divmod(today.month - 1 + 2, 12)
+    y, m = today.year + y, m + 1
+    return date(y, m, calendar.monthrange(y, m)[1])
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     try:
         raw = build_graph(stop_after="extractor").invoke({"query": "free events in Seattle", "max_pages": 20})
+        if not raw.get("events_raw"):
+            sys.exit("No events came back, so the existing snapshot was kept.")
+        old = snapshot.load() or {}
+        rules = filters.load()
+        curated = build_graph(skip_until="normalizer", stop_after="curator").invoke({
+            **raw, "curation": old.get("curation") or {}, "curate_live": True,
+            "window_end": three_months_out(date.today()), "filters": rules,
+            **rules.get("curation", {}),
+        })
     except RuntimeError as err:
         sys.exit(f"Setup problem: {err}")
-    if not raw.get("events_raw"):
-        sys.exit("No events came back, so the existing snapshot was kept.")
-    snap = snapshot.save(raw)
-    print(f"Saved {len(snap['events_raw'])} events from {len(snap['pages'] or [])} pages.")
+    snap = snapshot.save({**raw, "curation": curated["curation"]})
+    print(f"Saved {len(snap['events_raw'])} events from {len(snap['pages'] or [])} pages; "
+          f"{len(snap['curation'])} events have AI scores.")

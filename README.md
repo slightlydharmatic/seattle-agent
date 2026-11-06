@@ -76,3 +76,36 @@ Until the first live run is saved, the public page shows sample events with a "S
 Set it up once: in the GitHub repo, **Settings > Secrets and variables > Actions**, add `OPENAI_API_KEY` and `TAVILY_API_KEY`. To run it right away, open the **Actions** tab, pick "Weekly event refresh", and click **Run workflow**.
 
 Note: events added in the app are saved on the server and reset when Streamlit restarts the app. Connecting the Google Sheet will make them permanent.
+
+## Client tracker
+
+The **Clients** page shows every client and where each deal stands:
+
+- **Client types:** Large business, Small business, Team member (new senders start as "Unsorted" unless a hint matches).
+- **Deal stages:** 1 Unconfirmed deal, 2 Awaiting client approval, 3 Completed, awaiting invoice, 4 Fully complete.
+- **Public view:** the pipeline board, counts by type, and emails per week. Names, emails, and deal titles are replaced with labels like "Large business · C-4F2A". Deal values are never shown.
+- **Team view (signed in):** real names, sort new clients, move deals between stages, add clients by hand, and "Sync Gmail now."
+
+Until Supabase is connected it shows made-up sample clients, labeled as sample.
+
+### Set up (about 20 minutes, once)
+
+1. **Supabase:** in your project, open the SQL editor and run `crm/schema.sql`. Copy the project URL and the `service_role` key (Project settings > API).
+2. **Gmail:** in Google Cloud console, create a project, enable the Gmail API, create an OAuth client of type "Desktop app," and download its JSON. Then on your Mac:
+   ```bash
+   python -m crm.gmail_auth ~/Downloads/client_secret.json
+   ```
+   Sign in to the inbox clients email. It prints one line of JSON: that's `GMAIL_TOKEN_JSON`. Access is read-only.
+3. **In Gmail,** make a label called `Clients` and a filter that applies it to client emails (or set `GMAIL_QUERY` to any Gmail search).
+4. **Secrets:** add `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, and `GMAIL_TOKEN_JSON` to Streamlit secrets and to GitHub Actions secrets. Optional hints go in GitHub Actions variables: `GMAIL_SELF`, `TEAM_EMAILS`, `TEAM_DOMAINS`, `LARGE_CLIENT_DOMAINS`.
+5. **Hourly sync:** move `setup/clients-sync.yml` to `.github/workflows/`. Run it once from the Actions tab.
+
+## AI curation and the feedback loop
+
+Keyword rules (price, tickets, blocked topics) run first as cheap guardrails. Then an LLM curator (`agents/curator.py`) reads each remaining event and returns an **intent** (community gathering, high-value networking, marketing pitch, sales funnel...), a **0-100 relevance score**, and a one-line reason. It judges meaning, not keywords: a community "AI meetup" with named talks scores high; a free "AI webinar" that ends in a sales call scores low.
+
+**Operating point.** Score at or above `keep_at` (70) goes on the list; below `drop_below` (40) is filtered as "AI: low relevance"; in between is held for a person. The public list is tuned for precision; the review band protects recall. The team changes the band on the **AI curation** page.
+
+**Feedback loop.** Signed-in team members get thumbs up / down on every event. A vote overrides the model immediately, is saved (Supabase `feedback` table, or `data/feedback.json`), and the most recent votes are added to the classifier's instructions as few-shot examples on its next run. Votes double as labels: the AI curation page plots precision and recall against them at every threshold.
+
+**Cost.** Scores are cached by event in the snapshot, so each event is classified once. Only `refresh.py`, "Run live search", and "Re-curate with AI" call the model.

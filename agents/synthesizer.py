@@ -57,6 +57,10 @@ def _trace_entry(e: dict, status: str, why: str) -> dict:
         "merged_into": e.get("merged_into", ""),
         "custom": bool(e.get("custom")),
         "filter_category": e.get("filter_category", ""),
+        "key": e.get("key", ""),
+        "ai_intent": (e.get("ai") or {}).get("intent", ""),
+        "ai_score": (e.get("ai") or {}).get("score"),
+        "ai_reason": (e.get("ai") or {}).get("reason", ""),
         "filter_key": e.get("filter_key", ""),
         "custom_id": e.get("custom_id", ""),
     }

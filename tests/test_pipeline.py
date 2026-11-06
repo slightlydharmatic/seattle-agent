@@ -227,3 +227,92 @@ def test_filters_are_editable_and_allow_list_survives_reruns(tmp_path, monkeypat
     # Saved rules round-trip.
     filters.save(rules)
     assert filters.load()["topics"]["Fitness classes"] == ["yoga"]
+
+
+def test_curator_uses_the_operating_point():
+    result = run_offline(window_days=90)
+    by = {t["title"]: t for t in result["trace"]}
+    assert by["Seattle AI Builders Meetup"]["status"] in ("Pick", "Publish")
+    assert by["Free AI Webinar: Grow Your Business 10x"]["status"] == "Filtered"
+    assert by["Free AI Webinar: Grow Your Business 10x"]["filter_category"] == "AI: low relevance"
+    assert by["Free Wealth Building Workshop"]["ai_intent"] == "Sales funnel"
+    tool = by["Neighborhood Tool Library Open Hours"]
+    assert tool["status"] == "Needs review" and "AI unsure (58)" in tool["why"]
+    # Lowering the bar keeps the borderline event; raising it holds more.
+    assert {t["title"]: t for t in run_offline(window_days=90, keep_at=50)["trace"]}[
+        "Neighborhood Tool Library Open Hours"]["status"] in ("Pick", "Publish")
+    assert {t["title"]: t for t in run_offline(window_days=90, keep_at=85)["trace"]}[
+        "Rooftop Sunset Yoga"]["status"] == "Needs review"
+
+
+def test_team_votes_override_the_model():
+    import filters
+    from agents.normalizer import parse_date
+    key = filters.event_key({"title": "Free Wealth Building Workshop", "date": parse_date("2026-11-14")})
+    meetup = filters.event_key({"title": "Seattle AI Builders Meetup", "date": parse_date("2026-11-12")})
+    rows = [{"event_key": key, "vote": 1, "title": "x"}, {"event_key": meetup, "vote": -1, "title": "y"}]
+    by = {t["title"]: t for t in run_offline(window_days=90, feedback_rows=rows)["trace"]}
+    assert by["Free Wealth Building Workshop"]["status"] in ("Pick", "Publish")
+    assert by["Seattle AI Builders Meetup"]["filter_category"] == "Downvoted by team"
+
+
+def test_live_curation_calls_the_model_once_per_new_event(monkeypatch):
+    from agents import curator
+    calls = []
+
+    def fake(batch, examples):
+        calls.append((len(batch), len(examples)))
+        return {e["key"]: {"intent": "Community gathering", "score": 90, "reason": "ok",
+                           "version": curator.PROMPT_VERSION}
+                for e in batch}
+    monkeypatch.setattr(curator, "classify_batch", fake)
+    rows = [{"event_key": "a|b", "vote": -1, "title": "Bad pitch", "created_at": "1"}]
+    state = sample_state(window_days=90, curate_live=True, curation={}, feedback_rows=rows)
+    first = build_graph(skip_until="normalizer").invoke(state)
+    assert calls and all(n_examples == 1 for _, n_examples in calls)
+    n = len(calls)
+    build_graph(skip_until="normalizer").invoke(
+        sample_state(window_days=90, curate_live=True, curation=first["curation"], feedback_rows=rows))
+    assert len(calls) == n  # everything was cached
+
+
+def test_feedback_store_and_few_shot_prompt(tmp_path, monkeypatch):
+    import feedback
+    from agents.curator import build_messages, parse
+    monkeypatch.setattr(feedback, "PATH", tmp_path / "fb.json")
+    ev = {"key": "k1", "title": "Crypto Seminar", "description": "Free pizza, learn to trade", "venue": "Hall"}
+    feedback.vote(ev, -1, {"score": 65, "intent": "Free class or talk"}, note="sales pitch")
+    feedback.vote({**ev, "key": "k2", "title": "Park Cleanup"}, 1)
+    feedback.vote(ev, -1, note="sales pitch")  # re-vote replaces, doesn't duplicate
+    rows = feedback.load()
+    assert len(rows) == 2 and feedback.votes_by_key(rows) == {"k1": -1, "k2": 1}
+    system = build_messages([{"key": "z", "title": "t"}], feedback.few_shots(rows))[0]["content"]
+    assert 'DO NOT FEATURE: "Crypto Seminar"' in system and "sales pitch" in system
+    assert 'FEATURE: "Park Cleanup"' in system
+    parsed = parse('{"results": [{"key": "z", "intent": "Nope", "score": 140, "reason": "r"}]}', ["z"])
+    assert parsed["z"]["score"] == 100 and parsed["z"]["intent"] == "Vague or low effort"
+    assert parse("not json", ["z"]) == {}
+
+
+def test_religious_and_partisan_events_are_filtered_but_cultural_festivals_stay():
+    by = {t["title"]: t for t in run_offline(window_days=90)["trace"]}
+    assert by["Sunday Revival Worship Night"]["filter_category"] == "AI: low relevance"
+    assert by["Sunday Revival Worship Night"]["ai_intent"] == "Religious service"
+    assert by["Candidate Meet and Greet"]["ai_intent"] == "Divisive or partisan"
+    assert by["Candidate Meet and Greet"]["status"] == "Filtered"
+    assert by["Diwali Festival of Lights"]["status"] in ("Pick", "Publish")
+    assert by["MLK Day March and Rally"]["status"] in ("Pick", "Publish")
+
+
+def test_prompt_states_the_policy_and_old_scores_get_rescored(monkeypatch):
+    from agents import curator
+    system = " ".join(curator.build_messages([], [])[0]["content"].split())
+    for phrase in ("community", "Religious services", "Divisive or partisan", "Treat every side the same way",
+                   "Diwali", "Salesy"):
+        assert phrase in system
+    seen = []
+    monkeypatch.setattr(curator, "classify_batch",
+                        lambda batch, ex: seen.extend(e["key"] for e in batch) or {})
+    old = {k: {**v, "version": "curator-v1"} for k, v in sample_state()["curation"].items()}
+    build_graph(skip_until="normalizer").invoke(sample_state(window_days=90, curate_live=True, curation=old))
+    assert set(old) <= set(seen) or len(seen) >= len(old) - 2  # v1 scores are re-scored

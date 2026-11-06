@@ -7,7 +7,7 @@ import hmac
 import html
 import os
 from collections import Counter
-from datetime import date
+from datetime import date, timedelta
 from urllib.parse import urlparse
 
 import pandas as pd
@@ -15,7 +15,10 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 import custom_events
+import feedback
 import filters
+from agents.curator import INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
+from crm import view as crm_view
 import ontology
 import snapshot
 from agents.reasoner import CATEGORIES
@@ -28,115 +31,166 @@ st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
 # Look: a dark, dense object explorer. Each event is an object with properties.
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
-:root{--bg:#1C2127;--panel:#252A31;--panel2:#2F343C;--line:#383E47;--line2:#404854;
-      --text:#F6F7F9;--dim:#ABB3BF;--muted:#738091;--blue:#4C90F0;--blue-bg:rgba(45,114,210,.2);
-      --green:#72CA9B;--green-bg:rgba(35,133,81,.25);--red:#FA999C;--red-bg:rgba(205,66,70,.25);
-      --orange:#F0B726;--mono:'JetBrains Mono',Menlo,monospace}
-html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family:'Inter',-apple-system,'Segoe UI',sans-serif}
-.block-container{padding-top:3.2rem;max-width:1240px}
-.ob, .ob *, .stTabs [data-baseweb="tab"] p, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label{font-family:'Inter',-apple-system,'Segoe UI',sans-serif !important}
-[data-testid="stSidebar"]{background:#111418;border-right:1px solid var(--line)}
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+/* Look: light and quiet like Stripe, warmer and softer. Warm white, plum accent, sage for good, coral for held. */
+:root{--bg:#FBF9F7;--panel:#FFFFFF;--panel2:#F6F2EF;--line:#ECE6E1;--line2:#E2DAD4;
+      --text:#2A2433;--dim:#6E6676;--muted:#706877;
+      --blue:#A04D74;--blue-bg:rgba(160,77,116,.09);
+      --green:#456F5E;--green-bg:rgba(94,140,122,.12);
+      --red:#B14A40;--red-bg:rgba(194,86,75,.09);
+      --orange:#8F6214;--mono:'Figtree',-apple-system,'Segoe UI',sans-serif;
+      --shadow:0 1px 2px rgba(42,36,51,.04),0 2px 8px rgba(42,36,51,.04)}
+html, body, .stApp, .stMarkdown p, label, input, textarea, button p {font-family:'Figtree',-apple-system,'Segoe UI',sans-serif}
+.stApp{background:var(--bg)}
+.block-container{padding-top:3.4rem;max-width:1160px}
+.ob, .ob *, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label{font-family:'Figtree',-apple-system,'Segoe UI',sans-serif !important}
+
+/* sidebar */
+[data-testid="stSidebar"]{background:#F6F2EF;border-right:1px solid var(--line)}
 [data-testid="stSidebar"] p, [data-testid="stSidebar"] label, [data-testid="stSidebar"] span{color:var(--dim)}
-[data-testid="stSidebar"] button[kind="primary"]{background:#2D72D2;border-color:#2D72D2;border-radius:3px}
+[data-testid="stSidebar"] button{border-radius:8px;box-shadow:none}
+[data-testid="stSidebar"] button[kind="primary"]{background:var(--blue);border-color:var(--blue)}
 [data-testid="stSidebar"] button[kind="primary"] p{color:#fff;font-weight:600}
-[data-testid="stSidebar"] button[kind="secondary"]{background:var(--panel2);border:1px solid var(--line2);border-radius:3px}
+[data-testid="stSidebar"] button[kind="secondary"]{background:#fff;border:1px solid var(--line2)}
 [data-testid="stSidebar"] button[kind="secondary"] p{color:var(--text)}
-.stTabs [data-baseweb="tab-list"]{gap:2px;border-bottom:1px solid var(--line)}
-.stTabs [data-baseweb="tab"]{padding:6px 12px}
-.stTabs [data-baseweb="tab"] p{font-size:13px;font-weight:500;color:var(--dim)}
-.stTabs [aria-selected="true"] p{color:var(--text)}
-.ob-brand{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
-.ob-brand i{display:inline-block;width:18px;height:18px;border-radius:3px;background:#2D72D2}
-.ob-crumb{font-family:var(--mono) !important;font-size:12px;color:var(--muted);margin-top:10px}
-.ob-crumb b{color:var(--dim);font-weight:500}
-.ob-head{display:flex;align-items:center;gap:12px;margin:6px 0 16px}
-.ob-head h2{font-size:24px;font-weight:600;color:var(--text);margin:0;padding:0}
-.ob-type{font-family:var(--mono) !important;font-size:11px;color:var(--blue);background:var(--blue-bg);padding:2px 8px;border-radius:3px}
-.ob-stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
-.ob-stat{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:10px 12px}
-.ob-stat span{display:block;font-size:11px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
-.ob-stat b{display:block;font-size:22px;font-weight:600;color:var(--text);margin-top:2px;font-variant-numeric:tabular-nums}
-.ob-stat.blue b{color:var(--blue)}.ob-stat.red b{color:var(--red)}.ob-stat.green b{color:var(--green)}
-.ob-sec{display:flex;align-items:center;gap:8px;margin:26px 0 0;padding:9px 12px;background:var(--panel);
-        border:1px solid var(--line);border-bottom:none;border-radius:3px 3px 0 0}
-.ob-sec .t{font-size:13px;font-weight:600;color:var(--text)}
-.ob-sec .c{font-family:var(--mono) !important;font-size:11px;color:var(--dim);background:var(--panel2);padding:1px 7px;border-radius:9px}
-.ob-sec .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
-.ob-sec.held .dot{background:var(--red)}.ob-sec.rec .dot{background:var(--blue)}
-.ob-list{border:1px solid var(--line);border-radius:0 0 3px 3px;background:#20252B}
-.ob-day{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text);
-        padding:11px 12px;background:var(--panel2);border-top:1px solid var(--line2);
-        border-left:3px solid var(--blue)}
-.ob-day .wd{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);
-            background:var(--blue-bg);padding:2px 7px;border-radius:3px}
-.ob-day .n{margin-left:auto;font-family:var(--mono) !important;font-size:11px;font-weight:500;color:var(--dim);
-           background:var(--panel);padding:1px 8px;border-radius:9px}
-.ob-day.weekend{border-left-color:var(--green)}
-.ob-day.weekend .wd{color:var(--green);background:var(--green-bg)}
-.ob-day:first-child{border-top:none}
-.ob-row{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:start;padding:10px 12px;
-        border-top:1px solid var(--line)}
-.ob-row:hover{background:var(--panel)}
-.ob-ic{width:28px;height:28px;border-radius:3px;background:var(--blue-bg);display:grid;place-items:center}
-.ob-ic svg{width:15px;height:15px;fill:none;stroke:var(--blue);stroke-width:1.6}
-.ob-ic.mine{background:var(--green-bg)}.ob-ic.mine svg{stroke:var(--green)}
-.ob-ic.held{background:var(--red-bg)}.ob-ic.held svg{stroke:var(--red)}
-.ob-t{font-size:14px;font-weight:600;color:var(--text);line-height:1.4}
-.ob-t a{color:var(--text);text-decoration:none}.ob-t a:hover{color:var(--blue);text-decoration:underline}
-.ob-props{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:3px;font-size:12px;color:var(--dim)}
-.ob-props i{font-style:normal;font-family:var(--mono) !important;font-size:11px;color:var(--muted);margin-right:5px}
-.ob-r{font-family:var(--mono) !important;font-size:12px;color:var(--dim);white-space:nowrap;padding-top:2px}
-.tag{display:inline-block;font-size:11px;font-weight:500;padding:1px 7px;margin-left:8px;border-radius:3px;vertical-align:1px}
-.tag.cat{background:rgba(143,153,168,.18);color:var(--dim)}
-.tag.pick{background:var(--blue-bg);color:#8ABBFF}
-.tag.mine{background:var(--green-bg);color:var(--green)}
-.chk{display:inline-block;font-family:var(--mono) !important;font-size:11px;padding:1px 7px;margin:6px 4px 0 0;border-radius:3px}
-.chk.ok{background:var(--green-bg);color:var(--green)}
-.chk.no{background:var(--red-bg);color:var(--red)}
-.chk-why{font-size:12px;color:var(--red);margin-left:6px}
-.src-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border:1px solid var(--line);border-top:none;background:#20252B}
-.src-chips span{font-family:var(--mono) !important;font-size:11px;background:var(--panel2);border:1px solid var(--line2);
-                padding:2px 8px;border-radius:3px;color:var(--dim)}
-.src-chips b{color:var(--text);font-weight:500;margin-left:6px}
-.empty{color:var(--muted);font-size:13px;padding:14px 12px;border:1px solid var(--line);border-top:none;background:#20252B}
-.ob-title{padding:6px 0 18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
-.ob-title h1{font-size:40px;font-weight:600;letter-spacing:-.02em;color:var(--text);margin:0;padding:0;line-height:1.1}
-.ob-title p{font-size:15px;color:var(--dim);margin:6px 0 0}
-.st-key-nav{margin-top:14px}
-.st-key-nav button{justify-content:flex-start;border-radius:3px;min-height:36px;padding-left:12px}
+.ob-brand{font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:9px;letter-spacing:-.01em}
+.ob-brand i{display:inline-block;width:20px;height:20px;border-radius:50%;
+            background:radial-gradient(circle at 35% 35%,#E7B3C8,#A04D74)}
+.st-key-nav{margin-top:18px}
+.st-key-nav button{justify-content:flex-start;min-height:36px;padding-left:12px;border:none !important;background:transparent !important}
 .st-key-nav button > div, .st-key-nav button [data-testid="stMarkdownContainer"]{justify-content:flex-start;text-align:left;width:100%}
-.st-key-nav button p{font-size:14px;font-weight:600}
-.st-key-nav-months{padding-left:14px;border-left:1px solid var(--line2);margin:2px 0 6px 10px}
+.st-key-nav button p{font-size:15px;font-weight:500;color:var(--text) !important}
+.st-key-nav button:hover{background:rgba(42,36,51,.05) !important}
+.st-key-nav button[kind="primary"]{background:var(--blue-bg) !important}
+.st-key-nav button[kind="primary"] p{color:var(--blue) !important;font-weight:600}
+.st-key-nav-months{padding-left:12px;border-left:1px solid var(--line2);margin:2px 0 6px 14px}
 .st-key-nav-months button{min-height:30px}
-.st-key-nav-months button p{font-size:13px;font-weight:500;color:var(--dim)}
-.st-key-nav-months button[kind="primary"] p{color:#fff}
+.st-key-nav-months button p{font-size:14px !important;font-weight:400 !important;color:var(--dim) !important}
+.st-key-nav-months button[kind="primary"] p{color:var(--blue) !important;font-weight:600 !important}
 .st-key-nav-months [data-testid="stVerticalBlock"]{gap:2px}
-.ob-acc{margin-top:18px}
-.ob-acc > summary{list-style:none;cursor:pointer;margin:0;user-select:none}
-.ob-acc > summary::-webkit-details-marker, .ob-acc-day > summary::-webkit-details-marker{display:none}
-.ob-acc:not([open]) > summary{border-bottom:1px solid var(--line);border-radius:3px}
-.ob-acc-day > summary{list-style:none;cursor:pointer;user-select:none}
-.ob-acc-day > summary:hover, .ob-acc > summary:hover{background:var(--panel2)}
-.chev{display:inline-block;width:0;height:0;border-left:5px solid var(--muted);border-top:4px solid transparent;
-      border-bottom:4px solid transparent;margin-right:8px;transition:transform .15s}
-details[open] > summary .chev{transform:rotate(90deg)}
-.ob-acc-day:first-child > summary{border-top:none}
-.ob-empty-in{color:var(--muted);font-size:13px;padding:14px 12px}
-[data-testid="stExpander"] details{border-color:var(--line);background:#20252B}
-[data-testid="stExpander"] summary p{font-weight:600}
+
+/* page title */
+.ob-title{padding:4px 0 22px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.ob-title h1{font-size:38px;font-weight:700;letter-spacing:-.025em;color:var(--text);margin:0;padding:0;line-height:1.1}
+.ob-title p{font-size:16px;color:var(--dim);margin:8px 0 0;max-width:62ch;line-height:1.5}
+.ob-head{display:flex;align-items:baseline;gap:12px;margin:4px 0 16px}
+.ob-head h2{font-size:24px;font-weight:700;letter-spacing:-.015em;color:var(--text);margin:0;padding:0}
+.ob-type{font-size:13px;color:var(--muted)}
+.ob-crumb{font-size:13px;color:var(--muted)}
+
+/* stat cards */
+.ob-stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.ob-stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.ob-stat span{display:block;font-size:13px;font-weight:500;color:var(--dim)}
+.ob-stat b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin-top:4px;font-variant-numeric:tabular-nums}
+.ob-stat.blue b{color:var(--blue)}.ob-stat.red b{color:var(--red)}.ob-stat.green b{color:var(--green)}
 a.ob-stat.link{text-decoration:none;display:block;cursor:pointer}
 a.ob-stat.link:hover{border-color:var(--orange)}
 a.ob-stat.link b{color:var(--orange)}
-.ob-sec.filt .dot{background:var(--orange)}
-.ob-sec .hint{margin-left:auto;font-size:11px;color:var(--muted);font-weight:400}
-.ob-day.filt{border-left-color:var(--orange)}
-.ob-day.filt .wd{color:var(--orange);background:rgba(240,183,38,.14);text-transform:none;letter-spacing:0;font-size:12px}
-.rule-chips span{display:inline-block;font-family:var(--mono);font-size:11px;background:var(--panel2);
-  border:1px solid var(--line2);color:var(--dim);padding:2px 8px;border-radius:3px;margin:0 4px 4px 0}
-.ob-note{font-size:12px;color:var(--orange);background:rgba(240,183,38,.12);border:1px solid rgba(240,183,38,.3);
-         border-radius:3px;padding:6px 10px;margin-bottom:10px;display:inline-block}
-@media (max-width:900px){.ob-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* sections: a plain heading, then a white card */
+.ob-sec{display:flex;align-items:baseline;gap:8px;margin:34px 0 10px;padding:0;background:none;border:none}
+.ob-sec .t{font-size:18px;font-weight:700;letter-spacing:-.01em;color:var(--text)}
+.ob-sec .c{font-size:14px;color:var(--muted)}
+.ob-sec .dot{display:none}
+.ob-sec .hint{margin-left:auto;font-size:13px;color:var(--muted);font-weight:400}
+.ob-list{border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
+.ob-acc{margin-top:0}
+.ob-acc > summary{list-style:none;cursor:pointer;user-select:none}
+.ob-acc > summary::-webkit-details-marker, .ob-acc-day > summary::-webkit-details-marker{display:none}
+.ob-acc-day > summary{list-style:none;cursor:pointer;user-select:none}
+.ob-acc-day > summary:hover{background:#F8F4F1}
+.chev{display:inline-block;width:0;height:0;border-left:5px solid var(--muted);border-top:4px solid transparent;
+      border-bottom:4px solid transparent;margin-right:4px;transition:transform .15s}
+details[open] > summary .chev{transform:rotate(90deg)}
+.ob-empty-in{color:var(--muted);font-size:14px;padding:16px}
+.empty{color:var(--dim);font-size:14px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+
+/* day headers */
+.ob-day{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:var(--text);
+        padding:12px 16px;background:#FCFAF8;border-top:1px solid var(--line)}
+.ob-acc-day:first-child .ob-day{border-top:none}
+.ob-day .wd{font-size:13px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:2px 9px;border-radius:999px}
+.ob-day .n{margin-left:auto;font-size:13px;font-weight:400;color:var(--muted)}
+.ob-day.weekend .wd{color:var(--green);background:var(--green-bg)}
+.ob-day.filt .wd{color:var(--orange);background:rgba(176,122,34,.1)}
+
+/* event rows */
+.ob-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:14px;align-items:start;padding:14px 16px;
+        border-top:1px solid var(--line);background:var(--panel)}
+.ob-row:hover{background:#FDFBFA}
+.ob-ic{width:32px;height:32px;border-radius:10px;background:var(--blue-bg);display:grid;place-items:center}
+.ob-ic svg{width:16px;height:16px;fill:none;stroke:var(--blue);stroke-width:1.6}
+.ob-ic.mine{background:var(--green-bg)}.ob-ic.mine svg{stroke:var(--green)}
+.ob-ic.held{background:var(--red-bg)}.ob-ic.held svg{stroke:var(--red)}
+.ob-t{font-size:16px;font-weight:600;color:var(--text);line-height:1.4}
+.ob-t a{color:var(--text);text-decoration:none}.ob-t a:hover{color:var(--blue)}
+.ob-props{display:flex;flex-wrap:wrap;gap:2px 16px;margin-top:4px;font-size:14px;color:var(--dim);line-height:1.5}
+.ob-props i{font-style:normal;color:var(--muted);margin-right:5px}
+.ob-props .ai-why{color:var(--dim);font-style:italic}
+.ob-r{font-size:13px;color:var(--muted);white-space:nowrap;padding-top:3px}
+
+/* tags and chips */
+.tag{display:inline-block;font-size:12px;font-weight:500;padding:2px 9px;margin-left:8px;border-radius:999px;vertical-align:2px}
+.tag.cat{background:var(--panel2);color:var(--dim)}
+.tag.pick{background:var(--blue);color:#fff}
+.tag.mine{background:var(--green-bg);color:var(--green)}
+.tag.ai{font-size:12px}
+.tag.ai.hi{background:var(--green-bg);color:var(--green)}
+.tag.ai.mid{background:rgba(176,122,34,.1);color:var(--orange)}
+.tag.ai.lo{background:var(--red-bg);color:var(--red)}
+.chk{display:inline-block;font-size:12px;padding:2px 9px;margin:8px 4px 0 0;border-radius:999px}
+.chk.ok{background:var(--green-bg);color:var(--green)}
+.chk.no{background:var(--red-bg);color:var(--red)}
+.chk-why{font-size:13px;color:var(--red);margin-left:6px}
+.src-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 0 10px}
+.src-chips span{font-size:13px;background:var(--panel);border:1px solid var(--line);padding:3px 10px;border-radius:999px;color:var(--dim)}
+.src-chips b{color:var(--text);font-weight:600;margin-left:6px}
+.rule-chips span{display:inline-block;font-size:13px;background:var(--panel);border:1px solid var(--line);color:var(--dim);
+  padding:3px 10px;border-radius:999px;margin:0 4px 4px 0}
+.ob-note{font-size:13px;color:var(--orange);background:rgba(176,122,34,.08);border:1px solid rgba(176,122,34,.2);
+         border-radius:999px;padding:5px 12px;margin-bottom:12px;display:inline-block}
+
+/* streamlit widgets */
+[data-testid="stExpander"] details{border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:var(--shadow)}
+[data-testid="stExpander"] summary p{font-weight:600;font-size:15px}
+[data-testid="stDataFrame"]{border-radius:12px;overflow:hidden}
+.st-key-teamlist [data-testid="stVerticalBlock"]{gap:0}
+
+/* curation policy */
+.policy{border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:var(--shadow);margin-bottom:24px;overflow:hidden}
+.pol-k{display:block;font-size:14px;font-weight:600;color:var(--dim);margin-bottom:8px}
+.pol-mission{padding:24px 26px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#FBF3F6,#FFFFFF)}
+.pol-mission p{font-size:20px;line-height:1.5;color:var(--text);margin:0;max-width:60ch;letter-spacing:-.005em}
+.pol-mission b{color:var(--blue);font-weight:600}
+.pol-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.pol-col{padding:20px 26px}
+.pol-col.good{border-right:1px solid var(--line)}
+.pol-col.good .pol-k{color:var(--green)}
+.pol-col.bad .pol-k{color:var(--red)}
+.pol-sub{font-size:15px;color:var(--dim);margin:0 0 12px;line-height:1.5}
+.pol-chips{display:flex;flex-wrap:wrap;gap:6px}
+.pol-chips span{font-size:14px;padding:4px 12px;border-radius:999px;background:var(--green-bg);color:var(--green)}
+.pol-avoid{padding:10px 0;border-top:1px solid var(--line)}
+.pol-avoid:first-of-type{border-top:none;padding-top:0}
+.pol-avoid b{font-size:15px;color:var(--text)}
+.pol-avoid p{font-size:14px;color:var(--dim);margin:3px 0 0;line-height:1.55}
+.pol-foot{padding:16px 26px;border-top:1px solid var(--line);display:grid;gap:8px;background:#FCFAF8}
+.pol-foot p{font-size:14px;color:var(--dim);margin:0;line-height:1.6}
+.pol-foot b{color:var(--text);font-weight:600}
+@media (max-width:900px){.pol-grid{grid-template-columns:1fr}.pol-col.good{border-right:none;border-bottom:1px solid var(--line)}
+  .ob-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.teach{border:1px dashed var(--line2);border-radius:12px;background:var(--panel);padding:20px 22px;max-width:760px}
+.teach p{font-size:15px;color:var(--dim);line-height:1.6;margin:0 0 10px}
+.teach p.teach-lead{font-size:17px;font-weight:600;color:var(--text);margin-bottom:6px}
+.teach b{color:var(--text);font-weight:600}
+.teach-bar{height:8px;border-radius:999px;background:var(--panel2);overflow:hidden;margin:14px 0 6px}
+.teach-bar i{display:block;height:100%;background:var(--blue);border-radius:999px}
+.teach p.teach-count{font-size:14px;color:var(--dim);margin:0}
+.teach-ex{padding:10px 0;border-top:1px solid var(--line);font-size:15px;color:var(--text)}
+.teach-ex .chk{margin:0 8px 0 0}
+.teach-why{display:block;font-size:14px;color:var(--dim);margin-top:4px}
+.teach p.teach-foot{font-size:13px;color:var(--muted);margin:10px 0 0}
 </style>
 """, unsafe_allow_html=True)
 
@@ -162,10 +216,19 @@ def team_password() -> str:
         return os.getenv("TEAM_PASSWORD", "")
 
 
-def finish(raw: dict, custom: list[dict], end: date, picks: int, include_paid: bool) -> dict:
-    """Steps 3 to 6: fast, so they rerun whenever settings or your events change."""
-    state = {**raw, "custom_events": custom, "window_end": end, "filters": filters.load(),
-             "max_picks": picks, "free_only": not include_paid}
+def finish(raw: dict, custom: list[dict], end: date, picks: int, include_paid: bool,
+           fb_rows: list[dict] | None = None, live: bool = False) -> dict:
+    """Steps 3 to 7: fast, so they rerun whenever settings, votes, or your events change.
+
+    The AI curator only calls the model when live=True (team buttons); otherwise it
+    reuses the scores saved in the snapshot.
+    """
+    rules = filters.load()
+    state = {**raw, "custom_events": custom, "window_end": end, "filters": rules,
+             "max_picks": picks, "free_only": not include_paid, "curate_live": live,
+             **rules.get("curation", {})}
+    if fb_rows is not None:
+        state["feedback_rows"] = fb_rows
     return build_graph(skip_until="normalizer").invoke(state)
 
 
@@ -224,6 +287,9 @@ with st.sidebar:
         picks = st.slider("Picks per month", 0, 12, 6)
         include_paid = st.checkbox("Include paid events")
         go = st.button("Run live search", type="primary", width="stretch")
+        if st.button("Re-curate with AI", width="stretch",
+                     help="Score every event again using the latest thumbs up and down. Costs a few cents."):
+            st.session_state.curate_now, st.session_state.curate_mode = True, "all"
         if st.button("Add an event", width="stretch"):
             add_event_dialog()
     else:
@@ -239,6 +305,21 @@ if go:
     if not fetched.get("events_raw"):
         st.warning("That run found no events, so the last snapshot is still showing.")
     snap, use_sample = snapshot.load(), False
+    st.session_state.curate_now = "new"
+
+# Team: score events with the AI curator (new ones, or everything again with the latest votes)
+if st.session_state.pop("curate_now", None) and snap is not None:
+    mode = st.session_state.pop("curate_mode", "new")
+    base = {**snap, "curation": {} if mode == "all" else (snap.get("curation") or {})}
+    with st.spinner("The AI curator is reading the events..."):
+        try:
+            done = finish(base, custom_events.load(), date.today().replace(day=28) + timedelta(days=95),
+                          6, False, live=True)
+            snapshot.save({**snap, "curation": done["curation"]})
+            snap = snapshot.load()
+            st.toast(f"Curated {len(done['curation'])} events")
+        except RuntimeError as err:
+            st.error(str(err))
 
 if use_sample or snap is None:
     raw, as_of, is_sample = sample_state(), None, True
@@ -251,7 +332,9 @@ last = months[-1]
 end = last.replace(day=calendar.monthrange(last.year, last.month)[1])
 
 mine = custom_events.load()
-res = finish(raw, mine, end, picks, include_paid)
+fb_rows = feedback.load()
+res = finish(raw, mine, end, picks, include_paid, fb_rows=fb_rows)
+votes = feedback.votes_by_key(fb_rows)
 trace = pd.DataFrame(res["trace"])
 trace["month"] = trace["date"].map(lambda d: (d.year, d.month) if isinstance(d, date) else None)
 trace["site"] = trace.apply(lambda t: "added by you" if t["custom"] else site(t["source"]), axis=1)
@@ -306,6 +389,18 @@ def checks_html(t: pd.Series) -> str:
     return out
 
 
+def ai_tag(t) -> str:
+    score = t.get("ai_score")
+    if score is None or pd.isna(score):
+        return ""
+    score = int(score)
+    level = "hi" if score >= 70 else ("mid" if score >= 40 else "lo")
+    vote = votes.get(t.get("key"))
+    team_mark = " · team ▲" if vote == 1 else (" · team ▼" if vote == -1 else "")
+    return (f"<span class='tag ai {level}' title='{esc(t.get('ai_reason'))}'>AI {score} · "
+            f"{esc(t.get('ai_intent'))}{team_mark}</span>")
+
+
 def event_row(n, t: pd.Series, held: bool = False) -> str:
     title = esc(t["title"]) or "(no title)"
     if t["link"]:
@@ -315,6 +410,7 @@ def event_row(n, t: pd.Series, held: bool = False) -> str:
         tags += "<span class='tag pick'>Pick</span>"
     if t["custom"]:
         tags += "<span class='tag mine'>Added by you</span>"
+    tags += ai_tag(t)
     props = [("venue", t["venue"] or "none")]
     if t["neighborhood"]:
         props.append(("area", t["neighborhood"]))
@@ -324,6 +420,8 @@ def event_row(n, t: pd.Series, held: bool = False) -> str:
         props.append(("cost", t["cost"]))
     props.append(("source", "added by you" if t["custom"] else t["site"]))
     props_html = "".join(f"<span><i>{k}</i>{esc(v)}</span>" for k, v in props)
+    if t.get("ai_reason"):
+        props_html += f"<span class='ai-why'><i>ai</i>{esc(t['ai_reason'])}</span>"
     extra = f"<div>{checks_html(t)}</div>" if held else ""
     icon_cls = "held" if held else ("mine" if t["custom"] else "")
     right = day_label(t["date"]) if held else esc(t["id"])
@@ -369,7 +467,7 @@ def record_table(df: pd.DataFrame, key: str) -> None:
                         if t["status"] == MERGED else t["why"], axis=1),
         "Page": df.apply(lambda t: "" if t["custom"] else t["source"], axis=1),
     })
-    color = {"✓": "color:#72CA9B;font-weight:600", "✕": "color:#FA999C;font-weight:600"}
+    color = {"✓": "color:#456F5E;font-weight:600", "✕": "color:#B14A40;font-weight:600"}
     styled = table.style.map(lambda v: color.get(v, ""), subset=["Title", "Date ok", "Venue", "Free"])
     st.dataframe(
         styled, hide_index=True, width="stretch", key=key,
@@ -383,6 +481,27 @@ def record_table(df: pd.DataFrame, key: str) -> None:
     )
 
 
+def cast_vote(t: dict, value: int) -> None:
+    """Thumbs up/down. Clicking the same thumb again removes the vote."""
+    if votes.get(t["key"]) == value:
+        feedback.clear(t["key"])
+    else:
+        curation = {"score": t.get("ai_score"), "intent": t.get("ai_intent")}
+        feedback.vote({**t, "description": t.get("description", "")}, value, curation)
+
+
+def team_rows(group: pd.DataFrame, held: bool) -> None:
+    for i, (_, t) in enumerate(group.iterrows(), 1):
+        a, b, c = st.columns([24, 1, 1], gap="small", vertical_alignment="center")
+        a.markdown(f"<div class='ob'>{event_row(i, t, held=held)}</div>", unsafe_allow_html=True)
+        v = votes.get(t["key"])
+        rec = t.to_dict()
+        b.button("", icon=":material/thumb_up:", key=f"up-{t['key']}-{t['id']}", help="Feature events like this",
+                 type="primary" if v == 1 else "tertiary", on_click=cast_vote, args=(rec, 1))
+        c.button("", icon=":material/thumb_down:", key=f"dn-{t['key']}-{t['id']}", help="Don't feature events like this",
+                 type="primary" if v == -1 else "tertiary", on_click=cast_vote, args=(rec, -1))
+
+
 def filtered_row(t: pd.Series) -> str:
     title = esc(t["title"]) or "(no title)"
     if t["link"]:
@@ -394,7 +513,7 @@ def filtered_row(t: pd.Series) -> str:
     return (f"<div class='ob-row'><div class='ob-ic held'>{ICON}</div><div>"
             f"<div class='ob-t'>{title}</div><div class='ob-props'>{props_html}</div>"
             f"<div><span class='chk no'>matched: {esc(detail)}</span></div></div>"
-            f"<div class='ob-r'>{esc(t['id'])}</div></div>")
+            f"<div class='ob-r'></div></div>")
 
 
 def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
@@ -407,17 +526,20 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
     c = Counter(df["status"])
     sources = Counter(df.loc[df["status"] != MERGED, "site"])
 
+    head = (f"{len(available)} free event{'s' if len(available) != 1 else ''}"
+            + (f" · {c[PICK]} picks" if c[PICK] else ""))
+    stats = ""
+    if team:  # pipeline numbers are for the team; readers just get the list
+        stats = (f"<div class='ob-stats'>"
+                 f"<div class='ob-stat green'><span>Available</span><b>{len(available)}</b></div>"
+                 f"<div class='ob-stat blue'><span>Picks</span><b>{c[PICK]}</b></div>"
+                 f"<div class='ob-stat red'><span>Held</span><b>{c[REVIEW]}</b></div>"
+                 f"<div class='ob-stat'><span>Duplicates</span><b>{c[MERGED]}</b></div>"
+                 f"<a class='ob-stat link' href='#filtered-{abs(hash(label))}'><span>Filtered ↓</span><b>{c[FILTERED]}</b></a>"
+                 f"<div class='ob-stat'><span>Sources</span><b>{len(sources)}</b></div></div>")
     st.markdown(
-        f"<div class='ob'>"
-        f"<div class='ob-head'><h2>{esc(label)}</h2><span class='ob-type'>{len(df)} objects</span></div>"
-        f"<div class='ob-stats'>"
-        f"<div class='ob-stat green'><span>Available</span><b>{len(available)}</b></div>"
-        f"<div class='ob-stat blue'><span>Picks</span><b>{c[PICK]}</b></div>"
-        f"<div class='ob-stat red'><span>Held</span><b>{c[REVIEW]}</b></div>"
-        f"<div class='ob-stat'><span>Duplicates</span><b>{c[MERGED]}</b></div>"
-        f"<a class='ob-stat link' href='#filtered-{abs(hash(label))}'><span>Filtered ↓</span><b>{c[FILTERED]}</b></a>"
-        f"<div class='ob-stat'><span>Sources</span><b>{len(sources)}</b></div>"
-        f"</div></div>", unsafe_allow_html=True)
+        f"<div class='ob'><div class='ob-head'><h2>{esc(label)}</h2><span class='ob-type'>{head}</span></div>"
+        f"{stats}</div>", unsafe_allow_html=True)
 
     # 1. Available: one collapsible section, with a collapsible group per day
     st.write("")
@@ -433,13 +555,22 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
         head = (f"<span class='wd'>{d:%a}</span>{d:%B} {d.day}" if isinstance(d, date) and d != date.max
                 else "No date")
         body += (f"<details class='ob-acc-day'{day_open}><summary class='ob-day{weekend}'>"
-                 f"<span class='chev'></span>{head}<span class='n'>{len(group)} events</span></summary>"
+                 f"<span class='chev'></span>{head}<span class='n'>{len(group)} event{'s' if len(group) != 1 else ''}</span></summary>"
                  f"{rows}</details>")
     if not body:
         body = "<div class='ob-empty-in'>No events ready for this month yet.</div>"
-    st.markdown(f"<details class='ob ob-acc' open><summary class='ob-sec'><span class='chev'></span>"
-                f"<span class='dot'></span><span class='t'>Available</span><span class='c'>{len(available)}</span>"
-                f"</summary><div class='ob-list'>{body}</div></details>", unsafe_allow_html=True)
+    if team:
+        st.markdown(f"<div class='ob ob-sec' style='margin-top:18px'><span class='dot'></span>"
+                    f"<span class='t'>Available</span><span class='c'>{len(available)}</span>"
+                    f"<span class='hint'>thumbs teach the AI curator</span></div>", unsafe_allow_html=True)
+        for d, group in available.groupby("_d", sort=True):
+            label_d = f"{d:%a %B} {d.day}" if isinstance(d, date) and d != date.max else "No date"
+            with st.expander(f"{label_d} · {len(group)} events", expanded=not collapse):
+                team_rows(group, held=False)
+    else:
+        st.markdown(f"<details class='ob ob-acc' open><summary class='ob-sec'><span class='chev'></span>"
+                    f"<span class='dot'></span><span class='t'>Available</span><span class='c'>{len(available)}</span>"
+                    f"</summary><div class='ob-list'>{body}</div></details>", unsafe_allow_html=True)
 
     if team and file_label and not available.empty:
         with st.expander("Sheet rows"):
@@ -453,12 +584,16 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
                                key=f"dl-{file_label}")
 
     # 2. Held: collapsible
+    if team and not held.empty:
+        with st.expander(f"Held for review · {len(held)}  (AI unsure and missing details)", expanded=not collapse):
+            team_rows(held, held=True)
     rows = "".join(event_row(i, t, held=True) for i, (_, t) in enumerate(held.iterrows(), 1)) \
         or "<div class='ob-empty-in'>Nothing held.</div>"
-    st.markdown(f"<details class='ob ob-acc held'{'' if collapse else ' open'}><summary class='ob-sec held'>"
-                f"<span class='chev'></span><span class='dot'></span><span class='t'>Held for review</span>"
-                f"<span class='c'>{len(held)}</span></summary><div class='ob-list'>{rows}</div></details>",
-                unsafe_allow_html=True)
+    if not team or held.empty:
+        st.markdown(f"<details class='ob ob-acc held'{'' if collapse else ' open'}><summary class='ob-sec held'>"
+                    f"<span class='chev'></span><span class='dot'></span><span class='t'>Held for review</span>"
+                    f"<span class='c'>{len(held)}</span></summary><div class='ob-list'>{rows}</div></details>",
+                    unsafe_allow_html=True)
 
     # 3. Filtered out, grouped by reason
     filt = df[df["status"] == FILTERED]
@@ -466,7 +601,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
     for cat_name, grp in sorted(filt.groupby("filter_category"), key=lambda g: -len(g[1])):
         rows = "".join(filtered_row(t) for _, t in grp.iterrows())
         groups += (f"<details class='ob-acc-day'><summary class='ob-day filt'><span class='chev'></span>"
-                   f"<span class='wd'>{esc(cat_name)}</span><span class='n'>{len(grp)} events</span></summary>"
+                   f"<span class='wd'>{esc(cat_name)}</span><span class='n'>{len(grp)} event{'s' if len(grp) != 1 else ''}</span></summary>"
                    f"{rows}</details>")
     groups = groups or "<div class='ob-empty-in'>Nothing filtered.</div>"
     st.markdown(f"<span id='filtered-{abs(hash(label))}'></span>"
@@ -474,6 +609,11 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
                 f"<span class='chev'></span><span class='dot'></span><span class='t'>Filtered out</span>"
                 f"<span class='c'>{len(filt)}</span><span class='hint'>by reason · edit rules on the Filters page"
                 f"</span></summary><div class='ob-list'>{groups}</div></details>", unsafe_allow_html=True)
+
+    ai_out = filt[filt["filter_category"].isin(["AI: low relevance", "Downvoted by team"])]
+    if team and not ai_out.empty:
+        with st.expander(f"Filtered by the AI or your team · {len(ai_out)}  (thumbs up to bring one back)"):
+            team_rows(ai_out, held=True)
 
     # 4. Full record
     st.write("")
@@ -492,7 +632,7 @@ def vis_js() -> str:
     return (Path(__file__).parent / "assets" / "vis-network.min.js").read_text()
 
 
-TYPE_COLOR = {"Category": "#4C90F0", "Neighborhood": "#72CA9B", "Source": "#F0B726", "Venue": "#ABB3BF"}
+TYPE_COLOR = {"Category": "#A04D74", "Neighborhood": "#5E8C7A", "Source": "#D29A3A", "Venue": "#B9AFBF"}
 
 
 def graph_html(graph: dict, show_venues: bool, live_only: bool) -> str:
@@ -535,20 +675,20 @@ def graph_html(graph: dict, show_venues: bool, live_only: bool) -> str:
                  for (a, b), k in pair.items() if a in ids and b in ids]
     import json as _json
     return """
-<div id="net" style="width:100%;height:560px;background:#1C2127;border:1px solid #383E47;border-radius:3px"></div>
-<div style="font:12px Inter,sans-serif;color:#ABB3BF;margin-top:8px;display:flex;gap:16px">
-  <span><b style="color:#4C90F0">●</b> Category</span><span><b style="color:#72CA9B">●</b> Neighborhood</span>
-  <span><b style="color:#F0B726">●</b> Source</span>""" + (
-        '<span><b style="color:#ABB3BF">●</b> Venue</span>' if show_venues else "") + """
+<div id="net" style="width:100%;height:560px;background:#FFFFFF;border:1px solid #ECE6E1;border-radius:12px"></div>
+<div style="font:13px Figtree,sans-serif;color:#6E6676;margin-top:8px;display:flex;gap:16px">
+  <span><b style="color:#A04D74">●</b> Category</span><span><b style="color:#5E8C7A">●</b> Neighborhood</span>
+  <span><b style="color:#D29A3A">●</b> Source</span>""" + (
+        '<span><b style="color:#B9AFBF">●</b> Venue</span>' if show_venues else "") + """
 </div>
 <script>VISJS</script>
 <script>
 const data = {nodes: new vis.DataSet(NODES), edges: new vis.DataSet(EDGES)};
 const net = new vis.Network(document.getElementById('net'), data, {
   nodes: {shape: 'dot', scaling: {min: 6, max: 34, label: {enabled: true, min: 11, max: 18}},
-          font: {color: '#F6F7F9', face: 'Inter, sans-serif', strokeWidth: 3, strokeColor: '#1C2127'},
+          font: {color: '#2A2433', face: 'Figtree, sans-serif', strokeWidth: 4, strokeColor: '#FFFFFF'},
           borderWidth: 0},
-  edges: {color: {color: 'rgba(171,179,191,0.22)', highlight: '#4C90F0'}, scaling: {min: 1, max: 7},
+  edges: {color: {color: 'rgba(110,102,118,0.18)', highlight: '#A04D74'}, scaling: {min: 1, max: 7},
           smooth: {type: 'continuous'}},
   physics: {barnesHut: {gravitationalConstant: -6000, springLength: 120, centralGravity: 0.35},
             stabilization: {iterations: 400}},
@@ -600,8 +740,8 @@ def render_ontology(trace_rows: list[dict], month_labels: list[str]) -> None:
             df = df.loc[df.sum(axis=1).sort_values(ascending=False).index[:12]]
             df = df[df.sum().sort_values(ascending=False).index[:7]]
             top_v = max(int(df.values.max()), 1)
-            heat = lambda v: (f"background-color: rgba(76,144,240,{0.12 + 0.75 * v / top_v:.2f}); color: #F6F7F9"
-                              if v else "color: #5C6370")
+            heat = lambda v: (f"background-color: rgba(160,77,116,{0.08 + 0.6 * v / top_v:.2f}); "
+                              f"color: {'#FFFFFF' if v / top_v > .55 else '#2A2433'}" if v else "color: #706877")
             st.dataframe(df.style.map(heat), width="stretch")
     with b:
         st.markdown("<div class='ob ob-sec'><span class='dot'></span><span class='t'>Repeat venues</span>"
@@ -626,6 +766,198 @@ def render_ontology(trace_rows: list[dict], month_labels: list[str]) -> None:
             cat["Free share"] = (cat["Free"] / (cat["Free"] + cat["Paid"]).replace(0, pd.NA)).map(
                 lambda x: "" if pd.isna(x) else f"{x:.0%}")
             st.dataframe(cat.sort_values("Free", ascending=False), hide_index=True, width="stretch")
+
+
+# ---------- AI curation page ----------
+POLICY_FAVORS = ["Festivals", "Markets", "Art walks", "Volunteering", "Cleanups", "Potlucks",
+                 "Neighborhood celebrations", "Free classes taught for their own sake",
+                 "Meetups with a clear host and agenda"]
+POLICY_AVOIDS = [
+    ("Salesy", "Events that mainly exist to sell, collect leads, recruit, or upsell: free seminars, "
+               "consultations, \"limited spots\" webinars, product demos, multi-level marketing."),
+    ("Religious services", "Worship services, revivals, prayer meetings, scripture study, and events meant "
+                           "to bring people into a faith."),
+    ("Divisive or partisan", "Campaign events, events for or against a candidate or party, protests or rallies "
+                             "on hot-button issues, and debates built around a deeply divisive topic. "
+                             "Every side is treated the same way."),
+]
+POLICY_KEEPS = ("Cultural festivals with religious roots that everyone celebrates stay in (Diwali, Lunar New Year, "
+                "Day of the Dead, holiday tree lightings and markets), as do widely shared civic commemorations "
+                "(MLK Day, Juneteenth) and nonpartisan civic events like voter registration.")
+
+
+def render_policy() -> None:
+    """The curation story: what the AI looks for and what it steers away from."""
+    favors = "".join(f"<span>{esc(f)}</span>" for f in POLICY_FAVORS)
+    avoids = "".join(f"<div class='pol-avoid'><b>{esc(k)}</b><p>{esc(v)}</p></div>" for k, v in POLICY_AVOIDS)
+    st.markdown(f"""
+<div class='ob policy'>
+  <div class='pol-mission'>
+    <span class='pol-k'>The mission</span>
+    <p>Seattle Unlocked stands for <b>community</b>: events where neighbors meet, make, celebrate, learn,
+    or help out together, <b>with nothing to sell</b>. The AI's instructions open with this.</p>
+  </div>
+  <div class='pol-grid'>
+    <div class='pol-col good'>
+      <span class='pol-k'>What the AI favors</span>
+      <p class='pol-sub'>Top scores go to events whose main purpose is bringing people together.</p>
+      <div class='pol-chips'>{favors}</div>
+    </div>
+    <div class='pol-col bad'>
+      <span class='pol-k'>What it scores low, even when free</span>
+      {avoids}
+    </div>
+  </div>
+  <div class='pol-foot'>
+    <p><b>What stays in.</b> {esc(POLICY_KEEPS)}</p>
+    <p><b>Gray areas go to a person.</b> Events like an interfaith dinner or a debate night usually land in the
+    review band, and the team's votes on them become the AI's best examples.</p>
+  </div>
+</div>""", unsafe_allow_html=True)
+
+def teach_empty(n: int) -> None:
+    """Empty state for the precision/recall chart: what it will show, and how to unlock it."""
+    need = 10
+    st.markdown(
+        "<div class='ob teach'>"
+        "<p class='teach-lead'>Vote on 10 events and this becomes a chart of how often the AI agrees with you.</p>"
+        "<p>Each thumbs up or down is a label. Once there are enough, this section plots two numbers at every "
+        "score cutoff: <b>precision</b> (of the events the AI kept, how many you'd keep) and <b>recall</b> "
+        "(of the events you'd keep, how many the AI found).</p>"
+        f"<div class='teach-bar'><i style='width:{min(n, need) / need:.0%}'></i></div>"
+        f"<p class='teach-count'>{n} of {need} votes</p></div>", unsafe_allow_html=True)
+    if team:
+        st.button("Start voting on events", type="primary", icon=":material/thumb_up:",
+                  on_click=go_to, args=("events",))
+    else:
+        st.caption("Team members vote on events after signing in.")
+
+
+def render_curation_page() -> None:
+    rules = filters.load()
+    op = rules.get("curation", {"keep_at": 70, "drop_below": 40})
+    st.markdown("<div class='ob ob-title'><h1>AI curation</h1>"
+                "<p>An LLM reads every event and judges its intent and value, not its keywords. "
+                "Your team's thumbs override it and teach it.</p></div>", unsafe_allow_html=True)
+
+    render_policy()
+
+    scored = trace[trace["ai_score"].notna()]
+    decided = trace[trace["status"] != MERGED]
+    n_kept = int(((decided["ai_score"] >= op["keep_at"]) & decided["status"].isin([PICK, PUBLISH])).sum())
+    n_unsure = int(decided["why"].astype(str).str.startswith("AI unsure").sum())
+    n_low = int((decided["filter_category"] == "AI: low relevance").sum())
+    n_team = sum(1 for k in decided["key"] if k in votes)
+    stats = [("Events scored", len(scored)), ("Kept by AI", n_kept), ("AI unsure, held", n_unsure),
+             ("AI filtered", n_low), ("Team votes", len(fb_rows)), ("Prompt", PROMPT_VERSION)]
+    st.markdown("<div class='ob'><div class='ob-stats'>" + "".join(
+        f"<div class='ob-stat'><span>{k}</span><b style='font-size:{18 if k == 'Prompt' else 22}px'>{v}</b></div>"
+        for k, v in stats) + "</div></div>", unsafe_allow_html=True)
+    if scored.empty:
+        st.markdown("<div class='ob teach'><p class='teach-lead'>No AI scores yet.</p><p>"
+                    + ("Press <b>Re-curate with AI</b> in the sidebar. It reads every event once and costs a few cents."
+                       if team else "Scores appear after the next weekly refresh.") + "</p></div>",
+                    unsafe_allow_html=True)
+
+    # 1. Operating point
+    st.markdown("<div class='ob ob-sec' style='margin-top:26px'><span class='dot'></span>"
+                "<span class='t'>Operating point: precision vs recall</span></div>", unsafe_allow_html=True)
+    st.markdown(
+        "<div class='ob empty' style='color:var(--dim);line-height:1.6'>"
+        f"Events scoring <b>{op['keep_at']}+</b> go on the list. Below <b>{op['drop_below']}</b> they're filtered. "
+        "In between, a person decides. The public list is tuned for <b>precision</b>, because one spammy pick costs "
+        "reader trust. <b>Recall</b> is protected by the review band, so borderline events reach a person instead of "
+        "disappearing.</div>", unsafe_allow_html=True)
+    if team:
+        with st.form("op"):
+            keep_at, drop_below = st.slider("Review band (drop below, keep at)", 0, 100,
+                                            (op["drop_below"], op["keep_at"]), step=5)
+            if st.form_submit_button("Save operating point", type="primary"):
+                rules["curation"] = {"keep_at": keep_at, "drop_below": drop_below}
+                filters.save(rules)
+                st.rerun()
+
+    # 2. Measured against the team's thumbs
+    st.markdown("<div class='ob ob-sec rec' style='margin-top:26px'><span class='dot'></span>"
+                "<span class='t'>How the AI does against your thumbs</span></div>", unsafe_allow_html=True)
+    labeled = [r for r in fb_rows if r.get("model_score") is not None]
+    if len(labeled) < 10:
+        teach_empty(len(labeled))
+    else:
+        import altair as alt
+        lab = pd.DataFrame({"score": [int(r["model_score"]) for r in labeled],
+                            "good": [int(r["vote"]) > 0 for r in labeled]})
+        pts = []
+        for th in range(0, 101, 5):
+            kept = lab[lab["score"] >= th]
+            prec = kept["good"].mean() if len(kept) else None
+            rec = kept["good"].sum() / max(lab["good"].sum(), 1)
+            pts += [{"threshold": th, "metric": "Precision", "value": prec},
+                    {"threshold": th, "metric": "Recall", "value": rec}]
+        curve = pd.DataFrame(pts).dropna()
+        at = curve[curve["threshold"] == op["keep_at"] // 5 * 5].set_index("metric")["value"]
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Precision at keep line", f"{at.get('Precision', 0):.0%}")
+        c2.metric("Recall at keep line", f"{at.get('Recall', 0):.0%}")
+        c3.metric("Labeled events", len(lab))
+        line = alt.Chart(curve).mark_line(point=True).encode(
+            x=alt.X("threshold:Q", title="Keep threshold (AI score)"),
+            y=alt.Y("value:Q", title=None, axis=alt.Axis(format="%"), scale=alt.Scale(domain=[0, 1])),
+            color=alt.Color("metric:N", scale=alt.Scale(range=["#A04D74", "#5E8C7A"]), title=None))
+        rule = alt.Chart(pd.DataFrame({"x": [op["keep_at"]]})).mark_rule(color="#D29A3A", strokeDash=[4, 4]).encode(x="x:Q")
+        st.altair_chart((line + rule).properties(height=260), width="stretch")
+        st.caption("Raising the keep line usually raises precision and lowers recall. The dashed line is where you are.")
+
+    # 3. What the AI thinks the events are
+    a, b = st.columns(2, gap="large")
+    with a:
+        st.markdown("<div class='ob ob-sec'><span class='dot'></span><span class='t'>Events by intent</span></div>",
+                    unsafe_allow_html=True)
+        if not scored.empty:
+            by = scored.groupby("ai_intent")["ai_score"].agg(["count", "mean"]).reindex(INTENTS).dropna()
+            by = by.reset_index().rename(columns={"ai_intent": "Intent", "count": "Events", "mean": "Avg score"})
+            by["Avg score"] = by["Avg score"].round().astype(int)
+            by["Events"] = by["Events"].astype(int)
+            by["Value"] = by["Intent"].map(lambda i: "low" if i in LOW_VALUE else "high")
+            st.dataframe(by, hide_index=True, width="stretch")
+    with b:
+        st.markdown("<div class='ob ob-sec held'><span class='dot'></span><span class='t'>Where the AI and keywords disagree"
+                    "</span></div>", unsafe_allow_html=True)
+        caught = trace[(trace["filter_category"] == "AI: low relevance")]
+        if caught.empty:
+            st.markdown("<div class='ob empty'>None yet.</div>", unsafe_allow_html=True)
+        else:
+            st.caption("Free events no keyword rule would catch, filtered for their intent:")
+            st.dataframe(pd.DataFrame({"Event": caught["title"], "Intent": caught["ai_intent"],
+                                       "Score": caught["ai_score"].astype(int), "Why": caught["ai_reason"]}),
+                         hide_index=True, width="stretch")
+
+    # 4. The feedback loop, made visible
+    st.markdown("<div class='ob ob-sec rec' style='margin-top:26px'><span class='dot'></span>"
+                "<span class='t'>What the AI is learning from</span></div>", unsafe_allow_html=True)
+    shots = feedback.few_shots(fb_rows)
+    if not shots:
+        st.markdown(
+            "<div class='ob teach'><p class='teach-lead'>Every thumb becomes an example the AI reads next time.</p>"
+            "<p>After a few votes, this is what gets added to its instructions:</p>"
+            "<div class='teach-ex'><span class='chk no'>Team said no</span> <b>Free Wealth Building Workshop</b>"
+            "<span class='teach-why'>AI had scored it 62. Lesson: free seminars that pitch a service are sales funnels.</span>"
+            "</div><div class='teach-ex'><span class='chk ok'>Team said yes</span> <b>Ravenna Creek Cleanup</b>"
+            "<span class='teach-why'>AI had scored it 66. Lesson: small volunteer events with a named host belong on the list.</span>"
+            "</div><p class='teach-foot'>Example only. Your real votes replace it.</p></div>",
+            unsafe_allow_html=True)
+    else:
+        st.caption(f"The {len(shots)} most recent votes are added to the classifier's instructions as examples:")
+        st.code(feedback.few_shot_text(shots), language=None, wrap_lines=True)
+    if team and fb_rows:
+        with st.expander(f"All votes · {len(fb_rows)}"):
+            log = pd.DataFrame([{"Vote": "▲" if int(r["vote"]) > 0 else "▼", "Event": r["title"],
+                                 "AI score then": r.get("model_score"), "AI intent then": r.get("model_intent"),
+                                 "Note": r.get("note", ""), "When": str(r.get("created_at", ""))[:10]}
+                                for r in reversed(fb_rows)])
+            st.dataframe(log, hide_index=True, width="stretch")
+    with st.expander("The classifier's full instructions"):
+        st.code(build_messages([], shots)[0]["content"], language=None, wrap_lines=True)
 
 
 # ---------- filters page ----------
@@ -762,12 +1094,20 @@ with nav_box:
                           type="primary" if state.view == v else "tertiary")
     st.button("Ontology of events", key="nav-onto", width="stretch", on_click=go_to, args=("ontology",),
               type="primary" if state.section == "ontology" else "secondary")
+    st.button("AI curation", key="nav-curation", width="stretch", on_click=go_to, args=("curation",),
+              type="primary" if state.section == "curation" else "secondary")
+    st.button("Clients", key="nav-clients", width="stretch", on_click=go_to, args=("clients",),
+              type="primary" if state.section == "clients" else "secondary")
     st.button(f"Filters  ·  {int((trace['status'] == FILTERED).sum())}", key="nav-filters", width="stretch",
               on_click=go_to, args=("filters",),
               type="primary" if state.section == "filters" else "secondary")
 
 # ---------- page ----------
-if state.section == "filters":
+if state.section == "curation":
+    render_curation_page()
+elif state.section == "clients":
+    crm_view.render(team)
+elif state.section == "filters":
     render_filters_page()
 elif state.section == "ontology":
     st.markdown("<div class='ob ob-title'><h1>Ontology of events</h1>"

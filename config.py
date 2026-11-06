@@ -74,4 +74,8 @@ DEFAULT_FILTERS = {
         ],
     },
     "allow": [],                 # events kept on the list even though a filter matched
+    "curation": {                # the AI classifier's operating point (0-100 relevance)
+        "keep_at": 70,           # at or above: on the list
+        "drop_below": 40,        # below: filtered out; in between: held for review
+    },
 }

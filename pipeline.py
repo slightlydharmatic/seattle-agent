@@ -1,6 +1,7 @@
-"""The six-step agent pipeline, wired together with LangGraph."""
+"""The seven-step agent pipeline, wired together with LangGraph."""
 from langgraph.graph import END, StateGraph
 
+from agents.curator import curate
 from agents.extractor import extract
 from agents.normalizer import normalize
 from agents.reasoner import reason
@@ -13,6 +14,7 @@ STEPS = [
     ("extractor", extract),
     ("normalizer", normalize),
     ("validator", validate),
+    ("curator", curate),
     ("reasoner", reason),
     ("synthesizer", synthesize),
 ]

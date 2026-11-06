@@ -31,6 +31,9 @@ def categorize(e: dict) -> str:
 def score_breakdown(e: dict) -> list[tuple[str, int]]:
     """Points an event earns toward being featured, with the reason for each."""
     parts = []
+    ai = e.get("ai")
+    if ai:
+        parts.append((f"AI relevance {ai['score']}", ai["score"] // 10))
     if e.get("time"):
         parts.append(("Start time listed", 1))
     if e.get("neighborhood"):

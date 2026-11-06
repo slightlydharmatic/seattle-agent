@@ -1,0 +1,26 @@
+name: Client email sync
+
+on:
+  schedule:
+    - cron: "23 * * * *"   # every hour
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: python -m crm.gmail_sync
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          GMAIL_TOKEN_JSON: ${{ secrets.GMAIL_TOKEN_JSON }}
+          GMAIL_QUERY: ${{ vars.GMAIL_QUERY }}
+          GMAIL_SELF: ${{ vars.GMAIL_SELF }}
+          TEAM_EMAILS: ${{ vars.TEAM_EMAILS }}
+          TEAM_DOMAINS: ${{ vars.TEAM_DOMAINS }}
+          LARGE_CLIENT_DOMAINS: ${{ vars.LARGE_CLIENT_DOMAINS }}

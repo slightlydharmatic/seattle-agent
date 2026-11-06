@@ -9,7 +9,7 @@ from datetime import date, datetime, timezone
 from config import PROJECT_DIR
 
 PATH = PROJECT_DIR / "snapshots" / "latest.json"
-KEEP = ("events_raw", "pages", "source_urls", "pages_failed", "query")
+KEEP = ("events_raw", "pages", "source_urls", "pages_failed", "query", "curation")
 
 
 def save(raw: dict) -> dict:
