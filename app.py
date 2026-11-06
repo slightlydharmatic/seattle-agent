@@ -204,7 +204,7 @@ details[open] > summary .chev{transform:rotate(90deg)}
 .aud-foot p{font-size:15px;color:var(--dim);margin:0;line-height:1.55}
 .aud-foot b{color:var(--text);font-weight:600}
 @media (max-width:900px){.aud-grid{grid-template-columns:1fr 1fr}}
-.aud-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-8px 0 22px;font-size:14px;color:var(--dim)}
+.aud-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0;font-size:14px;color:var(--dim)}
 .aud-line .aud-k{color:var(--muted);margin-right:2px}
 .aud-line b{color:var(--text);font-weight:600;margin-right:4px}
 .aud-line span:not(.aud-k){background:var(--blue-bg);color:var(--blue);padding:3px 10px;border-radius:999px;font-size:13px}
@@ -213,6 +213,32 @@ details[open] > summary .chev{transform:rotate(90deg)}
 .breaker p.br-lead{font-weight:700;color:var(--red);font-size:16px}
 .breaker ul{margin:4px 0 8px 18px;padding:0}.breaker li{font-size:15px;color:var(--text);line-height:1.6}
 .breaker p.br-meta{font-size:13px;color:var(--dim);margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:4px;align-content:start}
+.step .sn{width:26px;height:26px;border-radius:50%;background:var(--blue-bg);color:var(--blue);font-weight:700;
+  font-size:14px;display:grid;place-items:center;margin-bottom:4px}
+.step b{font-size:16px;color:var(--text)}
+.step p{font-size:14px;color:var(--dim);margin:0;line-height:1.5}
+.band{display:flex;gap:4px;border-radius:12px;overflow:hidden}
+.band .seg{padding:12px 14px;min-width:0;display:grid;gap:2px}
+.band .seg b{font-size:24px;font-weight:700;line-height:1.1}
+.band .seg span{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.band .lo{background:var(--red-bg)}.band .lo b,.band .lo span{color:var(--red)}
+.band .mid{background:rgba(143,98,20,.1)}.band .mid b,.band .mid span{color:var(--orange)}
+.band .hi{background:var(--green-bg)}.band .hi b,.band .hi span{color:var(--green)}
+.aud-line{margin:0}
+.venn-wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 24px}
+.venn svg{width:100%;max-width:520px;height:auto;display:block;margin:0 auto}
+.venn-side{display:grid;gap:18px}
+.vs-k{display:block;font-size:14px;font-weight:600;color:var(--dim);margin-bottom:8px}
+.vs-k.never{color:var(--red)}.vs-k.ok{color:var(--green)}
+.vs-chips{display:flex;flex-wrap:wrap;gap:6px}
+.vs-chips span{font-size:14px;padding:4px 12px;border-radius:999px}
+.vs-chips.never span{background:var(--red-bg);color:var(--red)}
+.vs-chips.ok span{background:var(--green-bg);color:var(--green)}
+.vs-block p{font-size:14px;color:var(--dim);margin:6px 0 0;line-height:1.5}
+@media (max-width:900px){.steps,.venn-wrap{grid-template-columns:1fr}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -804,51 +830,36 @@ def render_ontology(trace_rows: list[dict], month_labels: list[str]) -> None:
 
 
 # ---------- AI curation page ----------
-POLICY_FAVORS = ["Festivals", "Markets", "Art walks", "Volunteering", "Cleanups", "Potlucks",
-                 "Neighborhood celebrations", "Free classes taught for their own sake",
-                 "Meetups with a clear host and agenda"]
-POLICY_AVOIDS = [
-    ("Salesy", "Events that mainly exist to sell, collect leads, recruit, or upsell: free seminars, "
-               "consultations, \"limited spots\" webinars, product demos, multi-level marketing."),
-    ("Religious services", "Worship services, revivals, prayer meetings, scripture study, and events meant "
-                           "to bring people into a faith."),
-    ("Divisive or partisan", "Campaign events, events for or against a candidate or party, protests or rallies "
-                             "on hot-button issues, and debates built around a deeply divisive topic. "
-                             "Every side is treated the same way."),
-]
-POLICY_KEEPS = ("Cultural festivals with religious roots that everyone celebrates stay in (Diwali, Lunar New Year, "
-                "Day of the Dead, holiday tree lightings and markets), as do widely shared civic commemorations "
-                "(MLK Day, Juneteenth) and nonpartisan civic events like voter registration.")
+def venn_svg() -> str:
+    """What makes a pick: free, community, and adventure. The pick is where all three meet."""
+    t = "fill:var(--text)"
+    d = "fill:var(--dim)"
+    return f"""
+<svg viewBox="0 0 580 440" role="img" aria-label="Venn diagram: free, community, and adventure overlap in the pick">
+  <circle cx="210" cy="160" r="135" style="fill:var(--blue);fill-opacity:.13;stroke:var(--blue);stroke-width:1.5"/>
+  <circle cx="370" cy="160" r="135" style="fill:var(--green);fill-opacity:.13;stroke:var(--green);stroke-width:1.5"/>
+  <circle cx="290" cy="290" r="135" style="fill:var(--orange);fill-opacity:.13;stroke:var(--orange);stroke-width:1.5"/>
+  <g font-family="Figtree,sans-serif" text-anchor="middle">
+    <text x="135" y="120" font-size="17" font-weight="700" style="fill:var(--blue)">Community</text>
+    <text x="135" y="140" font-size="13" style="{d}">brings people</text>
+    <text x="135" y="156" font-size="13" style="{d}">together</text>
+    <text x="445" y="120" font-size="17" font-weight="700" style="fill:var(--green)">Free</text>
+    <text x="445" y="140" font-size="13" style="{d}">no cost, no</text>
+    <text x="445" y="156" font-size="13" style="{d}">upsell</text>
+    <text x="290" y="372" font-size="17" font-weight="700" style="fill:var(--orange)">Adventure</text>
+    <text x="290" y="392" font-size="13" style="{d}">new places, outdoors,</text>
+    <text x="290" y="408" font-size="13" style="{d}">first-time things</text>
+    <text x="290" y="100" font-size="13" style="{t}">Potlucks</text>
+    <text x="290" y="117" font-size="13" style="{t}">Cleanups</text>
+    <text x="203" y="252" font-size="13" style="{t}">Festivals</text>
+    <text x="203" y="269" font-size="13" style="{t}">Art walks</text>
+    <text x="377" y="252" font-size="13" style="{t}">Trail days</text>
+    <text x="377" y="269" font-size="13" style="{t}">Free classes</text>
+    <text x="290" y="200" font-size="18" font-weight="700" style="{t}">The pick</text>
+    <text x="290" y="218" font-size="12" style="{d}">all three</text>
+  </g>
+</svg>"""
 
-
-def render_policy() -> None:
-    """The curation story: what the AI looks for and what it steers away from."""
-    favors = "".join(f"<span>{esc(f)}</span>" for f in POLICY_FAVORS)
-    avoids = "".join(f"<div class='pol-avoid'><b>{esc(k)}</b><p>{esc(v)}</p></div>" for k, v in POLICY_AVOIDS)
-    st.markdown(f"""
-<div class='ob policy'>
-  <div class='pol-mission'>
-    <span class='pol-k'>The mission</span>
-    <p>Seattle Unlocked stands for <b>community</b>: events where neighbors meet, make, celebrate, learn,
-    or help out together, <b>with nothing to sell</b>. The AI's instructions open with this.</p>
-  </div>
-  <div class='pol-grid'>
-    <div class='pol-col good'>
-      <span class='pol-k'>What the AI favors</span>
-      <p class='pol-sub'>Top scores go to events whose main purpose is bringing people together.</p>
-      <div class='pol-chips'>{favors}</div>
-    </div>
-    <div class='pol-col bad'>
-      <span class='pol-k'>What it scores low, even when free</span>
-      {avoids}
-    </div>
-  </div>
-  <div class='pol-foot'>
-    <p><b>What stays in.</b> {esc(POLICY_KEEPS)}</p>
-    <p><b>Gray areas go to a person.</b> Events like an interfaith dinner or a debate night usually land in the
-    review band, and the team's votes on them become the AI's best examples.</p>
-  </div>
-</div>""", unsafe_allow_html=True)
 
 def render_breaker() -> None:
     """Team only: a run the circuit breaker held back, with publish / discard."""
@@ -874,71 +885,78 @@ def render_breaker() -> None:
 
 
 def teach_empty(n: int) -> None:
-    """Empty state for the precision/recall chart: what it will show, and how to unlock it."""
+    """Empty state for the precision/recall chart: one line, a progress bar, and the way to fill it."""
     need = 10
     st.markdown(
-        "<div class='ob teach'>"
-        "<p class='teach-lead'>Vote on 10 events and this becomes a chart of how often the AI agrees with you.</p>"
-        "<p>Each thumbs up or down is a label. Once there are enough, this section plots two numbers at every "
-        "score cutoff: <b>precision</b> (of the events the AI kept, how many you'd keep) and <b>recall</b> "
-        "(of the events you'd keep, how many the AI found).</p>"
+        "<div class='ob teach'><p class='teach-lead'>Vote on 10 events to see how often the AI agrees with you.</p>"
         f"<div class='teach-bar'><i style='width:{min(n, need) / need:.0%}'></i></div>"
         f"<p class='teach-count'>{n} of {need} votes</p></div>", unsafe_allow_html=True)
     if team:
         st.button("Start voting on events", type="primary", icon=":material/thumb_up:",
                   on_click=go_to, args=("events",))
-    else:
-        st.caption("Team members vote on events after signing in.")
 
 
 def render_curation_page() -> None:
     rules = filters.load()
     op = rules.get("curation", {"keep_at": 70, "drop_below": 40})
+    lo, hi = op["drop_below"], op["keep_at"]
     st.markdown("<div class='ob ob-title'><h1>AI curation</h1>"
-                "<p>An LLM reads every event and judges its intent and value, not its keywords. "
-                "Your team's thumbs override it and teach it.</p></div>", unsafe_allow_html=True)
-    traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
-    st.markdown(f"<div class='ob aud-line'><span class='aud-k'>Curating for</span>"
-                f"<b>Seattle locals, 28 to 52</b>{traits}</div>", unsafe_allow_html=True)
+                "<p>AI scores every free event. The team makes the close calls.</p></div>", unsafe_allow_html=True)
 
     scored = trace[trace["ai_score"].notna()]
     decided = trace[trace["status"] != MERGED]
-    n_kept = int(((decided["ai_score"] >= op["keep_at"]) & decided["status"].isin([PICK, PUBLISH])).sum())
+    n_kept = int(((decided["ai_score"] >= hi) & decided["status"].isin([PICK, PUBLISH])).sum())
     n_unsure = int(decided["why"].astype(str).str.startswith("AI unsure").sum())
     n_low = int((decided["filter_category"] == "AI: low relevance").sum())
-    n_team = sum(1 for k in decided["key"] if k in votes)
-    stats = [("Events scored", len(scored)), ("Kept by AI", n_kept), ("AI unsure, held", n_unsure),
-             ("AI filtered", n_low), ("Team votes", len(fb_rows)), ("Prompt", PROMPT_VERSION)]
-    st.markdown("<div class='ob'><div class='ob-stats'>" + "".join(
-        f"<div class='ob-stat'><span>{k}</span><b style='font-size:{18 if k == 'Prompt' else 22}px'>{v}</b></div>"
-        for k, v in stats) + "</div></div>", unsafe_allow_html=True)
+
+    # 1. What we're doing
+    st.markdown("<div class='ob ob-sec'><span class='t'>What we're doing</span></div>", unsafe_allow_html=True)
+    st.markdown(f"""
+<div class='ob steps'>
+  <div class='step'><span class='sn'>1</span><b>Rules clear the obvious</b><p>Paid, ticketed, and real estate events are removed.</p></div>
+  <div class='step'><span class='sn'>2</span><b>AI scores the rest</b><p>0 to 100, by what the event is for, not its keywords.</p></div>
+  <div class='step'><span class='sn'>3</span><b>The team decides close calls</b><p>Every thumb teaches the AI.</p></div>
+</div>
+<div class='ob band'>
+  <div class='seg lo' style='flex:{lo}'><b>{n_low}</b><span>Filtered · under {lo}</span></div>
+  <div class='seg mid' style='flex:{hi - lo}'><b>{n_unsure}</b><span>Team reviews · {lo} to {hi - 1}</span></div>
+  <div class='seg hi' style='flex:{100 - hi}'><b>{n_kept}</b><span>On the list · {hi}+</span></div>
+</div>""", unsafe_allow_html=True)
     if scored.empty:
-        st.markdown("<div class='ob teach'><p class='teach-lead'>No AI scores yet.</p><p>"
-                    + ("Press <b>Re-curate with AI</b> in the sidebar. It reads every event once and costs a few cents."
-                       if team else "Scores appear after the next weekly refresh.") + "</p></div>",
-                    unsafe_allow_html=True)
-
-    # 1. Operating point
-    st.markdown("<div class='ob ob-sec' style='margin-top:26px'><span class='dot'></span>"
-                "<span class='t'>Operating point: precision vs recall</span></div>", unsafe_allow_html=True)
-    st.markdown(
-        "<div class='ob empty' style='color:var(--dim);line-height:1.6'>"
-        f"Events scoring <b>{op['keep_at']}+</b> go on the list. Below <b>{op['drop_below']}</b> they're filtered. "
-        "In between, a person decides. The public list is tuned for <b>precision</b>, because one spammy pick costs "
-        "reader trust. <b>Recall</b> is protected by the review band, so borderline events reach a person instead of "
-        "disappearing.</div>", unsafe_allow_html=True)
+        st.caption("No AI scores yet. " + ("Press Re-curate with AI in the sidebar." if team
+                                           else "They appear after the next weekly refresh."))
     if team:
-        with st.form("op"):
-            keep_at, drop_below = st.slider("Review band (drop below, keep at)", 0, 100,
-                                            (op["drop_below"], op["keep_at"]), step=5)
-            if st.form_submit_button("Save operating point", type="primary"):
-                rules["curation"] = {"keep_at": keep_at, "drop_below": drop_below}
-                filters.save(rules)
-                st.rerun()
+        with st.expander("Adjust the cutoffs"):
+            with st.form("op", border=False):
+                keep_at, drop_below = st.slider("Filter below, keep at", 0, 100, (lo, hi), step=5)
+                st.caption("Higher keep line: fewer bad picks, more events for the team to review.")
+                if st.form_submit_button("Save", type="primary"):
+                    rules["curation"] = {"keep_at": keep_at, "drop_below": drop_below}
+                    filters.save(rules)
+                    st.rerun()
 
-    # 2. Measured against the team's thumbs
-    st.markdown("<div class='ob ob-sec rec' style='margin-top:26px'><span class='dot'></span>"
-                "<span class='t'>How the AI does against your thumbs</span></div>", unsafe_allow_html=True)
+    # 2. Who we curate for
+    traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
+    st.markdown("<div class='ob ob-sec'><span class='t'>Who we curate for</span></div>"
+                f"<div class='ob aud-line'><b>Seattle locals, 28 to 52</b>{traits}</div>", unsafe_allow_html=True)
+
+    # 3. What makes a pick
+    st.markdown(f"""
+<div class='ob ob-sec'><span class='t'>What makes a pick</span></div>
+<div class='ob venn-wrap'>
+  <div class='venn'>{venn_svg()}</div>
+  <div class='venn-side'>
+    <div class='vs-block'><span class='vs-k never'>Never on the list</span>
+      <div class='vs-chips never'><span>Sales pitches</span><span>Religious services</span><span>Partisan events</span></div></div>
+    <div class='vs-block'><span class='vs-k ok'>Still welcome</span>
+      <div class='vs-chips ok'><span>Diwali</span><span>Lunar New Year</span><span>MLK Day</span><span>Holiday markets</span></div>
+      <p>Cultural and civic celebrations everyone shares.</p></div>
+    <div class='vs-block'><span class='vs-k'>Gray areas</span><p>Go to the team, and their votes become the AI's best examples.</p></div>
+  </div>
+</div>""", unsafe_allow_html=True)
+
+    # 4. How well it's working
+    st.markdown("<div class='ob ob-sec'><span class='t'>How well it's working</span></div>", unsafe_allow_html=True)
     labeled = [r for r in fb_rows if r.get("model_score") is not None]
     if len(labeled) < 10:
         teach_empty(len(labeled))
@@ -954,60 +972,42 @@ def render_curation_page() -> None:
             pts += [{"threshold": th, "metric": "Precision", "value": prec},
                     {"threshold": th, "metric": "Recall", "value": rec}]
         curve = pd.DataFrame(pts).dropna()
-        at = curve[curve["threshold"] == op["keep_at"] // 5 * 5].set_index("metric")["value"]
+        at = curve[curve["threshold"] == hi // 5 * 5].set_index("metric")["value"]
         c1, c2, c3 = st.columns(3)
-        c1.metric("Precision at keep line", f"{at.get('Precision', 0):.0%}")
-        c2.metric("Recall at keep line", f"{at.get('Recall', 0):.0%}")
-        c3.metric("Labeled events", len(lab))
+        c1.metric("Picks the team agrees with", f"{at.get('Precision', 0):.0%}", help="Precision at the keep line")
+        c2.metric("Good events the AI found", f"{at.get('Recall', 0):.0%}", help="Recall at the keep line")
+        c3.metric("Votes", len(lab))
         line = alt.Chart(curve).mark_line(point=True).encode(
-            x=alt.X("threshold:Q", title="Keep threshold (AI score)"),
+            x=alt.X("threshold:Q", title="Keep line (AI score)"),
             y=alt.Y("value:Q", title=None, axis=alt.Axis(format="%"), scale=alt.Scale(domain=[0, 1])),
             color=alt.Color("metric:N", scale=alt.Scale(range=["#A04D74", "#5E8C7A"]), title=None))
-        rule = alt.Chart(pd.DataFrame({"x": [op["keep_at"]]})).mark_rule(color="#D29A3A", strokeDash=[4, 4]).encode(x="x:Q")
-        st.altair_chart((line + rule).properties(height=260), width="stretch")
-        st.caption("Raising the keep line usually raises precision and lowers recall. The dashed line is where you are.")
+        rule = alt.Chart(pd.DataFrame({"x": [hi]})).mark_rule(color="#D29A3A", strokeDash=[4, 4]).encode(x="x:Q")
+        st.altair_chart((line + rule).properties(height=240), width="stretch")
 
-    # 3. What the AI thinks the events are
-    a, b = st.columns(2, gap="large")
-    with a:
-        st.markdown("<div class='ob ob-sec'><span class='dot'></span><span class='t'>Events by intent</span></div>",
-                    unsafe_allow_html=True)
-        if not scored.empty:
+    caught = trace[(trace["filter_category"] == "AI: low relevance")]
+    if not caught.empty:
+        st.markdown("<div class='ob ob-sec'><span class='t'>Caught by AI, missed by keywords</span>"
+                    f"<span class='c'>{len(caught)}</span></div>", unsafe_allow_html=True)
+        st.dataframe(pd.DataFrame({"Event": caught["title"], "AI says": caught["ai_intent"],
+                                   "Score": caught["ai_score"].astype(int), "Why": caught["ai_reason"]}),
+                     hide_index=True, width="stretch")
+
+    # 5. Under the hood: for the team and the curious
+    st.markdown("<div class='ob ob-sec'><span class='t'>Under the hood</span></div>", unsafe_allow_html=True)
+    shots = feedback.few_shots(fb_rows)
+    if not scored.empty:
+        with st.expander("Events by intent"):
             by = scored.groupby("ai_intent")["ai_score"].agg(["count", "mean"]).reindex(INTENTS).dropna()
             by = by.reset_index().rename(columns={"ai_intent": "Intent", "count": "Events", "mean": "Avg score"})
             by["Avg score"] = by["Avg score"].round().astype(int)
             by["Events"] = by["Events"].astype(int)
             by["Value"] = by["Intent"].map(lambda i: "low" if i in LOW_VALUE else "high")
             st.dataframe(by, hide_index=True, width="stretch")
-    with b:
-        st.markdown("<div class='ob ob-sec held'><span class='dot'></span><span class='t'>Where the AI and keywords disagree"
-                    "</span></div>", unsafe_allow_html=True)
-        caught = trace[(trace["filter_category"] == "AI: low relevance")]
-        if caught.empty:
-            st.markdown("<div class='ob empty'>None yet.</div>", unsafe_allow_html=True)
+    with st.expander(f"What the AI is learning from · {len(shots)} votes"):
+        if shots:
+            st.code(feedback.few_shot_text(shots), language=None, wrap_lines=True)
         else:
-            st.caption("Free events no keyword rule would catch, filtered for their intent:")
-            st.dataframe(pd.DataFrame({"Event": caught["title"], "Intent": caught["ai_intent"],
-                                       "Score": caught["ai_score"].astype(int), "Why": caught["ai_reason"]}),
-                         hide_index=True, width="stretch")
-
-    # 4. The feedback loop, made visible
-    st.markdown("<div class='ob ob-sec rec' style='margin-top:26px'><span class='dot'></span>"
-                "<span class='t'>What the AI is learning from</span></div>", unsafe_allow_html=True)
-    shots = feedback.few_shots(fb_rows)
-    if not shots:
-        st.markdown(
-            "<div class='ob teach'><p class='teach-lead'>Every thumb becomes an example the AI reads next time.</p>"
-            "<p>After a few votes, this is what gets added to its instructions:</p>"
-            "<div class='teach-ex'><span class='chk no'>Team said no</span> <b>Free Wealth Building Workshop</b>"
-            "<span class='teach-why'>AI had scored it 62. Lesson: free seminars that pitch a service are sales funnels.</span>"
-            "</div><div class='teach-ex'><span class='chk ok'>Team said yes</span> <b>Ravenna Creek Cleanup</b>"
-            "<span class='teach-why'>AI had scored it 66. Lesson: small volunteer events with a named host belong on the list.</span>"
-            "</div><p class='teach-foot'>Example only. Your real votes replace it.</p></div>",
-            unsafe_allow_html=True)
-    else:
-        st.caption(f"The {len(shots)} most recent votes are added to the classifier's instructions as examples:")
-        st.code(feedback.few_shot_text(shots), language=None, wrap_lines=True)
+            st.caption("The most recent thumbs are added to the AI's instructions as examples. None yet.")
     if team and fb_rows:
         with st.expander(f"All votes · {len(fb_rows)}"):
             log = pd.DataFrame([{"Vote": "▲" if int(r["vote"]) > 0 else "▼", "Event": r["title"],
@@ -1015,13 +1015,8 @@ def render_curation_page() -> None:
                                  "Note": r.get("note", ""), "When": str(r.get("created_at", ""))[:10]}
                                 for r in reversed(fb_rows)])
             st.dataframe(log, hide_index=True, width="stretch")
-    with st.expander("The classifier's full instructions"):
+    with st.expander(f"The AI's full instructions · {PROMPT_VERSION}"):
         st.code(build_messages([], shots)[0]["content"], language=None, wrap_lines=True)
-
-
-    st.markdown("<div class='ob ob-sec' style='margin-top:40px'><span class='dot'></span>"
-                "<span class='t'>The policy behind the scores</span></div>", unsafe_allow_html=True)
-    render_policy()
 
 
 # ---------- filters page ----------
