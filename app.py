@@ -17,7 +17,7 @@ import streamlit.components.v1 as components
 import custom_events
 import feedback
 import filters
-from agents.curator import INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
+from agents.curator import AUDIENCE, INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
 from crm import view as crm_view
 import ontology
 import snapshot
@@ -191,6 +191,18 @@ details[open] > summary .chev{transform:rotate(90deg)}
 .teach-ex .chk{margin:0 8px 0 0}
 .teach-why{display:block;font-size:14px;color:var(--dim);margin-top:4px}
 .teach p.teach-foot{font-size:13px;color:var(--muted);margin:10px 0 0}
+.audience{border:1px solid var(--line);border-radius:14px;background:var(--panel);box-shadow:var(--shadow);
+  padding:22px 26px;margin-bottom:18px}
+.audience h3{font-size:24px;font-weight:700;letter-spacing:-.015em;color:var(--text);margin:0;padding:0}
+.audience .aud-who{font-size:16px;color:var(--dim);margin:4px 0 16px}
+.aud-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.aud-t{background:var(--blue-bg);border-radius:10px;padding:12px 14px}
+.aud-t b{font-size:15px;color:var(--blue)}
+.aud-t p{font-size:14px;color:var(--text);margin:4px 0 0;line-height:1.5}
+.aud-foot{margin-top:14px;display:grid;gap:4px}
+.aud-foot p{font-size:15px;color:var(--dim);margin:0;line-height:1.55}
+.aud-foot b{color:var(--text);font-weight:600}
+@media (max-width:900px){.aud-grid{grid-template-columns:1fr 1fr}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -424,7 +436,7 @@ def event_row(n, t: pd.Series, held: bool = False) -> str:
         props_html += f"<span class='ai-why'><i>ai</i>{esc(t['ai_reason'])}</span>"
     extra = f"<div>{checks_html(t)}</div>" if held else ""
     icon_cls = "held" if held else ("mine" if t["custom"] else "")
-    right = day_label(t["date"]) if held else esc(t["id"])
+    right = day_label(t["date"]) if held else ""
     if isinstance(n, str):
         right = esc(n)
     return (f"<div class='ob-row'><div class='ob-ic {icon_cls}'>{ICON}</div><div>"
@@ -565,7 +577,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
                     f"<span class='hint'>thumbs teach the AI curator</span></div>", unsafe_allow_html=True)
         for d, group in available.groupby("_d", sort=True):
             label_d = f"{d:%a %B} {d.day}" if isinstance(d, date) and d != date.max else "No date"
-            with st.expander(f"{label_d} · {len(group)} events", expanded=not collapse):
+            with st.expander(f"{label_d} · {len(group)} event{'s' if len(group) != 1 else ''}", expanded=not collapse):
                 team_rows(group, held=False)
     else:
         st.markdown(f"<details class='ob ob-acc' open><summary class='ob-sec'><span class='chev'></span>"
@@ -790,7 +802,16 @@ def render_policy() -> None:
     """The curation story: what the AI looks for and what it steers away from."""
     favors = "".join(f"<span>{esc(f)}</span>" for f in POLICY_FAVORS)
     avoids = "".join(f"<div class='pol-avoid'><b>{esc(k)}</b><p>{esc(v)}</p></div>" for k, v in POLICY_AVOIDS)
+    traits = "".join(f"<div class='aud-t'><b>{esc(k)}</b><p>{esc(v)}</p></div>" for k, v in AUDIENCE["traits"])
     st.markdown(f"""
+<div class='ob audience'>
+  <span class='pol-k'>Who we curate for</span>
+  <h3>{esc(AUDIENCE['name'])}</h3>
+  <p class='aud-who'>{esc(AUDIENCE['who'])}</p>
+  <div class='aud-grid'>{traits}</div>
+  <div class='aud-foot'><p><b>They want</b> {esc(AUDIENCE['wants'][0].lower() + AUDIENCE['wants'][1:])}</p>
+  <p><b>We lose them with</b> {esc(AUDIENCE['loses_them'][0].lower() + AUDIENCE['loses_them'][1:])}</p></div>
+</div>
 <div class='ob policy'>
   <div class='pol-mission'>
     <span class='pol-k'>The mission</span>
@@ -1115,7 +1136,8 @@ elif state.section == "ontology":
                 unsafe_allow_html=True)
     render_ontology(res["trace"], labels)
 else:
-    st.markdown("<div class='ob ob-title'><h1>Seattle Free Events</h1><p>Curated list</p></div>",
+    st.markdown("<div class='ob ob-title'><h1>Seattle Free Events</h1><p>Free things worth leaving the house for, "
+                "picked for outgoing, community-minded Seattleites. No sales pitches.</p></div>",
                 unsafe_allow_html=True)
     v = state.view
     if v in labels:

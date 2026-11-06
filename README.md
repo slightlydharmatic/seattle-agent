@@ -4,6 +4,20 @@ Finding free events for Seattle Unlocked used to take about two hours every cycl
 
 Every event either passes all checks or goes to a person for review with a written reason. Nothing is silently dropped.
 
+## Who it's for
+
+**Readers: the curious local.** Adults 28 to 52 in and around Seattle, Washington who are:
+
+- **Outgoing:** like meeting new people and show up, often with a friend.
+- **Community-minded:** want to know their neighbors and support local makers, artists, and causes.
+- **Low-cost:** free first, and want real value, not a cheap teaser for something paid.
+- **Adventurous:** try new neighborhoods, get outdoors, and say yes to first-time experiences.
+- **Not interested in sales pitches:** they leave the moment an event turns into a pitch or a funnel.
+
+They want a short list they can trust for this week. One salesy or vague pick loses them. The AI curator's instructions describe this same reader (`AUDIENCE` in `agents/curator.py`).
+
+**The team** curates: reviews held events, votes, and confirms picks. **Brand clients** partner with Seattle Unlocked and see only the client view.
+
 ## How it works
 
 ```

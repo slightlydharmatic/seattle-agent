@@ -30,8 +30,23 @@ from config import OPENAI_MODEL
 
 log = logging.getLogger(__name__)
 
-PROMPT_VERSION = "curator-v2"
+PROMPT_VERSION = "curator-v3"
 BATCH = 20
+
+# Who we curate for. The app's AI curation page and the README describe the same reader.
+AUDIENCE = {
+    "name": "The curious local",
+    "who": "Adults 28 to 52 who live in or around Seattle, Washington.",
+    "traits": [
+        ("Outgoing", "Likes meeting new people and shows up, often with a friend."),
+        ("Community-minded", "Wants to know their neighbors and support local makers, artists, and causes."),
+        ("Low-cost", "Free first. Wants real value, not a cheap teaser for something paid."),
+        ("Adventurous", "Tries new neighborhoods, gets outdoors, says yes to first-time experiences."),
+        ("No sales pitches", "Leaves the moment an event turns into a pitch, a demo, or a sign-up funnel."),
+    ],
+    "wants": "A short list they can trust for this week, with enough detail to just go.",
+    "loses_them": "One salesy or vague pick. Events built mainly for young kids or for college students are a weaker fit.",
+}
 
 INTENTS = [
     "Community gathering",
@@ -53,6 +68,12 @@ LOW_VALUE = {"Marketing pitch", "Sales funnel", "Vague or low effort", "Not open
 SYSTEM = """You curate free events for Seattle Unlocked, a guide about 80,000 Seattle locals trust \
 to find free things genuinely worth leaving the house for. What we stand for: community. \
 Events where neighbors meet, make, celebrate, learn, or help out together, with nothing to sell.
+
+Who you are choosing for: adults 28 to 52 in and around Seattle who are outgoing, community-minded, \
+low-cost, and adventurous. They love meeting people, exploring new neighborhoods, getting outdoors, and \
+trying things for the first time. They have no patience for sales pitches. Ask of every event: would this \
+person be glad they went? Events built mainly for young kids or for college students are a weaker fit \
+(family events adults also enjoy are fine).
 
 Judge each event on its intent and value to a curious local, not on keywords.
 The same words can mean very different things: a community "AI meetup" with named \

@@ -316,3 +316,10 @@ def test_prompt_states_the_policy_and_old_scores_get_rescored(monkeypatch):
     old = {k: {**v, "version": "curator-v1"} for k, v in sample_state()["curation"].items()}
     build_graph(skip_until="normalizer").invoke(sample_state(window_days=90, curate_live=True, curation=old))
     assert set(old) <= set(seen) or len(seen) >= len(old) - 2  # v1 scores are re-scored
+
+
+def test_curator_prompt_names_the_audience():
+    from agents.curator import AUDIENCE, build_messages
+    system = " ".join(build_messages([], [])[0]["content"].split())
+    assert "adults 28 to 52" in system and "sales pitches" in system
+    assert len(AUDIENCE["traits"]) == 5
