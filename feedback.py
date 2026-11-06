@@ -7,10 +7,9 @@ so it can be used three ways:
   3. Evaluation: votes are the labels for measuring precision and recall.
 
 Saved to Supabase table `feedback` when SUPABASE_URL / SUPABASE_SERVICE_KEY are
-set (see crm/schema.sql), otherwise to data/feedback.json.
+set (see sql/schema.sql), otherwise to data/feedback.json.
 """
 import json
-import os
 from datetime import datetime, timezone
 
 from config import PROJECT_DIR
@@ -20,11 +19,8 @@ FIELDS = ("title", "description", "venue", "neighborhood", "cost", "category", "
 
 
 def _supabase():
-    url, key = os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_SERVICE_KEY")
-    if not (url and key):
-        return None
-    from supabase import create_client
-    return create_client(url, key).table("feedback")
+    import kvstore
+    return kvstore.client().table("feedback") if kvstore.is_connected() else None
 
 
 def load() -> list[dict]:

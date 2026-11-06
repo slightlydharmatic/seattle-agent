@@ -11,9 +11,13 @@ import logging
 import sys
 from datetime import date
 
+import breaker
 import filters
 import snapshot
 from pipeline import build_graph
+
+
+HELD_EXIT = 3  # tells the weekly job the run was held, so GitHub emails you
 
 
 def three_months_out(today: date) -> date:
@@ -26,9 +30,12 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     try:
         raw = build_graph(stop_after="extractor").invoke({"query": "free events in Seattle", "max_pages": 20})
-        if not raw.get("events_raw"):
-            sys.exit("No events came back, so the existing snapshot was kept.")
         old = snapshot.load() or {}
+        if not raw.get("events_raw"):
+            result = breaker.check(raw, old)
+            breaker.hold(snapshot.build(raw), result)
+            print("Circuit breaker: no events came back, so the public list was NOT changed.")
+            sys.exit(HELD_EXIT)
         rules = filters.load()
         curated = build_graph(skip_until="normalizer", stop_after="curator").invoke({
             **raw, "curation": old.get("curation") or {}, "curate_live": True,
@@ -37,6 +44,18 @@ if __name__ == "__main__":
         })
     except RuntimeError as err:
         sys.exit(f"Setup problem: {err}")
-    snap = snapshot.save({**raw, "curation": curated["curation"]})
+    snap = snapshot.build({**raw, "curation": curated["curation"]})
+    result = breaker.check(raw, old, curated)
+    for w in result["warnings"]:
+        print("Warning:", w)
+    if result["tripped"]:
+        breaker.hold(snap, result)
+        print("Circuit breaker held this run. The public list was NOT changed.")
+        for r in result["reasons"]:
+            print(" -", r)
+        print("Open the app (signed in) to publish anyway or discard.")
+        sys.exit(HELD_EXIT)
+    breaker.clear()
+    snapshot.write(snap)
     print(f"Saved {len(snap['events_raw'])} events from {len(snap['pages'] or [])} pages; "
           f"{len(snap['curation'])} events have AI scores.")

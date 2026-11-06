@@ -16,6 +16,7 @@ import streamlit.components.v1 as components
 
 import custom_events
 import feedback
+import breaker
 import filters
 from agents.curator import AUDIENCE, INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
 from crm import view as crm_view
@@ -203,6 +204,15 @@ details[open] > summary .chev{transform:rotate(90deg)}
 .aud-foot p{font-size:15px;color:var(--dim);margin:0;line-height:1.55}
 .aud-foot b{color:var(--text);font-weight:600}
 @media (max-width:900px){.aud-grid{grid-template-columns:1fr 1fr}}
+.aud-line{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-8px 0 22px;font-size:14px;color:var(--dim)}
+.aud-line .aud-k{color:var(--muted);margin-right:2px}
+.aud-line b{color:var(--text);font-weight:600;margin-right:4px}
+.aud-line span:not(.aud-k){background:var(--blue-bg);color:var(--blue);padding:3px 10px;border-radius:999px;font-size:13px}
+.breaker{border:1px solid rgba(177,74,64,.3);background:var(--red-bg);border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.breaker p{font-size:15px;color:var(--text);margin:0 0 6px;line-height:1.5}
+.breaker p.br-lead{font-weight:700;color:var(--red);font-size:16px}
+.breaker ul{margin:4px 0 8px 18px;padding:0}.breaker li{font-size:15px;color:var(--text);line-height:1.6}
+.breaker p.br-meta{font-size:13px;color:var(--dim);margin:0}
 </style>
 """, unsafe_allow_html=True)
 
@@ -216,8 +226,13 @@ CATEGORY_OPTIONS = ["Auto"] + list(CATEGORIES) + ["Community"]
 def fetch_live(query: str) -> dict:
     """Steps 1 to 2: the slow, paid part. Team only, and it saves a new snapshot."""
     raw = build_graph(stop_after="extractor").invoke({"query": query})
-    if raw.get("events_raw"):
-        snapshot.save(raw)
+    old = snapshot.load()
+    result = breaker.check(raw, old)
+    if result["tripped"]:
+        breaker.hold(snapshot.build(raw), result)  # readers keep the last good list
+        return {}
+    breaker.clear()
+    snapshot.save(raw)
     return raw
 
 
@@ -315,7 +330,8 @@ if go:
             st.error(str(err))
             st.stop()
     if not fetched.get("events_raw"):
-        st.warning("That run found no events, so the last snapshot is still showing.")
+        st.warning("The circuit breaker held that run, so readers still see the last good list. "
+                   "Details are at the top of the Events page.")
     snap, use_sample = snapshot.load(), False
     st.session_state.curate_now = "new"
 
@@ -359,6 +375,13 @@ with st.sidebar:
         for p in pages:
             st.write(f"{site(p['url'])} · {p['events'] if p['status'] == 'read' else p['status']}")
     st.caption("Sample data" if is_sample else f"Updated {as_of:%b} {as_of.day}, {as_of.year}" if as_of else "")
+    if team:
+        import kvstore
+        if kvstore.is_connected():
+            st.caption(":material/cloud_done: Team work saved to Supabase")
+        else:
+            st.caption(":material/warning: Votes and filter edits are saved on this server only "
+                       "and reset when the app restarts. Connect Supabase to keep them.")
 
     st.divider()
     if team:
@@ -802,16 +825,7 @@ def render_policy() -> None:
     """The curation story: what the AI looks for and what it steers away from."""
     favors = "".join(f"<span>{esc(f)}</span>" for f in POLICY_FAVORS)
     avoids = "".join(f"<div class='pol-avoid'><b>{esc(k)}</b><p>{esc(v)}</p></div>" for k, v in POLICY_AVOIDS)
-    traits = "".join(f"<div class='aud-t'><b>{esc(k)}</b><p>{esc(v)}</p></div>" for k, v in AUDIENCE["traits"])
     st.markdown(f"""
-<div class='ob audience'>
-  <span class='pol-k'>Who we curate for</span>
-  <h3>{esc(AUDIENCE['name'])}</h3>
-  <p class='aud-who'>{esc(AUDIENCE['who'])}</p>
-  <div class='aud-grid'>{traits}</div>
-  <div class='aud-foot'><p><b>They want</b> {esc(AUDIENCE['wants'][0].lower() + AUDIENCE['wants'][1:])}</p>
-  <p><b>We lose them with</b> {esc(AUDIENCE['loses_them'][0].lower() + AUDIENCE['loses_them'][1:])}</p></div>
-</div>
 <div class='ob policy'>
   <div class='pol-mission'>
     <span class='pol-k'>The mission</span>
@@ -835,6 +849,29 @@ def render_policy() -> None:
     review band, and the team's votes on them become the AI's best examples.</p>
   </div>
 </div>""", unsafe_allow_html=True)
+
+def render_breaker() -> None:
+    """Team only: a run the circuit breaker held back, with publish / discard."""
+    h = breaker.held() if team else None
+    if not h:
+        return
+    b, m = h["breaker"], h["breaker"]["metrics"]
+    items = "".join(f"<li>{esc(r)}</li>" for r in b["reasons"])
+    st.markdown(
+        "<div class='ob breaker'><p class='br-lead'>Circuit breaker: the latest run was held back</p>"
+        "<p>Readers still see the last good list. The new run looked broken:</p>"
+        f"<ul>{items}</ul><p class='br-meta'>Checked {esc(b['checked_at'][:10])} · {m['events']} events found "
+        f"(last time {m['events_last']}) · {m['pages_failed']} of {m['pages']} pages failed</p></div>",
+        unsafe_allow_html=True)
+    x, y, _ = st.columns([1, 1, 3])
+    if x.button("Publish anyway", type="primary", help="Make the held run the public list."):
+        snapshot.write(h["snapshot"])
+        breaker.clear()
+        st.rerun()
+    if y.button("Discard held run"):
+        breaker.clear()
+        st.rerun()
+
 
 def teach_empty(n: int) -> None:
     """Empty state for the precision/recall chart: what it will show, and how to unlock it."""
@@ -860,8 +897,9 @@ def render_curation_page() -> None:
     st.markdown("<div class='ob ob-title'><h1>AI curation</h1>"
                 "<p>An LLM reads every event and judges its intent and value, not its keywords. "
                 "Your team's thumbs override it and teach it.</p></div>", unsafe_allow_html=True)
-
-    render_policy()
+    traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
+    st.markdown(f"<div class='ob aud-line'><span class='aud-k'>Curating for</span>"
+                f"<b>Seattle locals, 28 to 52</b>{traits}</div>", unsafe_allow_html=True)
 
     scored = trace[trace["ai_score"].notna()]
     decided = trace[trace["status"] != MERGED]
@@ -981,7 +1019,14 @@ def render_curation_page() -> None:
         st.code(build_messages([], shots)[0]["content"], language=None, wrap_lines=True)
 
 
+    st.markdown("<div class='ob ob-sec' style='margin-top:40px'><span class='dot'></span>"
+                "<span class='t'>The policy behind the scores</span></div>", unsafe_allow_html=True)
+    render_policy()
+
+
 # ---------- filters page ----------
+
+
 def render_filters_page() -> None:
     rules = filters.load()
     st.markdown("<div class='ob ob-title'><h1>Filters</h1>"
@@ -1136,6 +1181,7 @@ elif state.section == "ontology":
                 unsafe_allow_html=True)
     render_ontology(res["trace"], labels)
 else:
+    render_breaker()
     st.markdown("<div class='ob ob-title'><h1>Seattle Free Events</h1><p>Free things worth leaving the house for, "
                 "picked for outgoing, community-minded Seattleites. No sales pitches.</p></div>",
                 unsafe_allow_html=True)

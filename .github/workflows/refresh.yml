@@ -17,14 +17,24 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - run: python refresh.py
+      - name: Fetch, curate, and check
+        id: run
+        continue-on-error: true   # a held run still commits held.json so the team can review it
+        run: python refresh.py
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}            # so the weekly run uses the team's filters and votes
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
       - name: Commit the new snapshot
         run: |
           git config user.name "event-refresh-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add snapshots/latest.json
+          git add -A snapshots/
           git diff --cached --quiet || git commit -m "Weekly event refresh"
           git push
+      - name: Fail loudly if the run was held or broke
+        if: steps.run.outcome == 'failure'
+        run: |
+          echo "::error::The refresh was held by the circuit breaker or hit a setup problem. Readers still see last week's list. Check the run log and the app."
+          exit 1

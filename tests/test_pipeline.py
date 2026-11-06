@@ -208,7 +208,10 @@ def test_ontology_links_every_event_to_its_things():
 
 def test_filters_are_editable_and_allow_list_survives_reruns(tmp_path, monkeypatch):
     import filters
-    monkeypatch.setattr(filters, "PATH", tmp_path / "filters.json")
+    import kvstore
+    monkeypatch.setattr(kvstore, "DATA", tmp_path)
+    monkeypatch.delenv("SUPABASE_URL", raising=False)
+    kvstore._cache.clear()
     rules = filters.load()
     # Turn off the price rule: the $15 rehearsal is no longer filtered.
     rules["price_listed"] = False

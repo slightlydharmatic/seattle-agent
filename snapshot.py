@@ -12,12 +12,21 @@ PATH = PROJECT_DIR / "snapshots" / "latest.json"
 KEEP = ("events_raw", "pages", "source_urls", "pages_failed", "query", "curation")
 
 
-def save(raw: dict) -> dict:
+def build(raw: dict) -> dict:
     snap = {k: raw.get(k) for k in KEEP}
     snap["fetched_at"] = datetime.now(timezone.utc).isoformat(timespec="minutes")
+    return snap
+
+
+def write(snap: dict) -> dict:
+    """Publish: this becomes what readers see."""
     PATH.parent.mkdir(parents=True, exist_ok=True)
     PATH.write_text(json.dumps(snap, indent=1, default=str))
     return snap
+
+
+def save(raw: dict) -> dict:
+    return write(build(raw))
 
 
 def load() -> dict | None:

@@ -1,22 +1,15 @@
-"""Events you add by hand. Saved to data/custom_events.json so they survive restarts."""
-import json
+"""Events you add by hand. Saved to Supabase (app_settings: custom_events) or data/custom_events.json."""
 import uuid
 
-from config import PROJECT_DIR
-
-PATH = PROJECT_DIR / "data" / "custom_events.json"
+import kvstore
 
 
 def load() -> list[dict]:
-    try:
-        return json.loads(PATH.read_text())
-    except (FileNotFoundError, json.JSONDecodeError):
-        return []
+    return list(kvstore.get("custom_events") or [])
 
 
 def save(events: list[dict]) -> None:
-    PATH.parent.mkdir(parents=True, exist_ok=True)
-    PATH.write_text(json.dumps(events, indent=2))
+    kvstore.put("custom_events", events)
 
 
 def add(event: dict) -> list[dict]:

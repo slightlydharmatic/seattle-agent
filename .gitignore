@@ -10,3 +10,8 @@ output/
 data/
 .streamlit/secrets.toml
 Claude outputs/
+
+# JavaScript packages (this project is Python; not needed)
+node_modules/
+package.json
+package-lock.json

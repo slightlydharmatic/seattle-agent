@@ -1,12 +1,10 @@
-"""Filter rules the team can edit. Saved to data/filters.json."""
+"""Filter rules the team can edit. Saved to Supabase (app_settings: filters) or data/filters.json."""
 import copy
-import json
 import re
 from functools import lru_cache
 
-from config import DEFAULT_FILTERS, PROJECT_DIR
-
-PATH = PROJECT_DIR / "data" / "filters.json"
+import kvstore
+from config import DEFAULT_FILTERS
 
 # Reason categories, in the order the app shows them.
 PRICE, TICKETS, PRICE_TEXT = "Price listed", "Tickets required", "Price in description"
@@ -14,17 +12,13 @@ PRICE, TICKETS, PRICE_TEXT = "Price listed", "Tickets required", "Price in descr
 
 def load() -> dict:
     rules = copy.deepcopy(DEFAULT_FILTERS)
-    try:
-        saved = json.loads(PATH.read_text())
-        rules.update({k: v for k, v in saved.items() if k in rules})
-    except (FileNotFoundError, json.JSONDecodeError):
-        pass
+    saved = kvstore.get("filters") or {}
+    rules.update({k: v for k, v in saved.items() if k in rules})
     return rules
 
 
 def save(rules: dict) -> None:
-    PATH.parent.mkdir(parents=True, exist_ok=True)
-    PATH.write_text(json.dumps(rules, indent=2))
+    kvstore.put("filters", rules)
 
 
 def reset() -> dict:

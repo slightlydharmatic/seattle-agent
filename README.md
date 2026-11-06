@@ -91,6 +91,16 @@ Set it up once: in the GitHub repo, **Settings > Secrets and variables > Actions
 
 Note: events added in the app are saved on the server and reset when Streamlit restarts the app. Connecting the Google Sheet will make them permanent.
 
+## Saving the team's work (Supabase)
+
+Votes, filter rules, allowed events, the AI operating point, and hand-added events are saved to Supabase when `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` are set. Without them they go to `data/`, which Streamlit Cloud wipes on every restart. Signed-in team members see which one is active in the sidebar.
+
+1. Create a free project at supabase.com.
+2. SQL editor > New query > paste `sql/schema.sql` > Run.
+3. Project settings > API Keys: copy the project URL and the **secret** (or legacy `service_role`) key. Never the publishable / anon key, and never commit it.
+4. Put both in `.env`, then run `python check_supabase.py`. It checks the tables, tests a write, and copies up anything saved locally.
+5. Add both to Streamlit secrets and to GitHub Actions secrets.
+
 ## Client tracker
 
 The **Clients** page shows every client and where each deal stands:
