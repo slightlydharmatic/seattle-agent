@@ -17,6 +17,8 @@ import streamlit.components.v1 as components
 import custom_events
 import feedback
 import breaker
+from config import CURATOR_MODEL, MONTHLY_PAGES, OPENAI_MODEL, SOURCE_PAGES
+import illustrations
 import filters
 from agents.curator import AUDIENCE, INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
 from crm import view as crm_view
@@ -32,7 +34,7 @@ st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
 # Look: a dark, dense object explorer. Each event is an object with properties.
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fredoka:wght@500;600&display=swap');
 /* Look: light and quiet like Stripe, warmer and softer. Warm white, plum accent, sage for good, coral for held. */
 :root{--bg:#FBF9F7;--panel:#FFFFFF;--panel2:#F6F2EF;--line:#ECE6E1;--line2:#E2DAD4;
       --text:#2A2433;--dim:#6E6676;--muted:#706877;
@@ -239,6 +241,21 @@ details[open] > summary .chev{transform:rotate(90deg)}
 .vs-chips.ok span{background:var(--green-bg);color:var(--green)}
 .vs-block p{font-size:14px;color:var(--dim);margin:6px 0 0;line-height:1.5}
 @media (max-width:900px){.steps,.venn-wrap{grid-template-columns:1fr}}
+.cute h1, .ob-sec.cute .t, .journey h3{font-family:'Fredoka','Figtree',sans-serif !important;font-weight:600;letter-spacing:0}
+.ob-sec.cute{margin-top:44px}
+.journey{display:grid;gap:18px;margin:6px 0 10px;position:relative}
+.j-step{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:28px;align-items:center;
+  background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:14px 28px 14px 14px;box-shadow:var(--shadow)}
+.j-step.flip{grid-template-columns:minmax(0,1fr) minmax(0,300px);padding:14px 14px 14px 28px}
+.j-step.flip .j-art{order:2}
+.j-art svg{width:100%;height:auto;display:block;border-radius:18px}
+.j-txt{display:grid;gap:6px;justify-items:start}
+.j-n{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font:600 15px 'Fredoka',sans-serif;
+  display:grid;place-items:center}
+.journey h3{font-size:24px;color:var(--text);margin:2px 0 0;padding:0;line-height:1.2}
+.j-txt p{font-size:16px;color:var(--dim);margin:0;line-height:1.5;max-width:46ch}
+.j-chip{margin-top:4px;font-size:13px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:4px 12px;border-radius:999px}
+@media (max-width:760px){.j-step,.j-step.flip{grid-template-columns:1fr;padding:14px}.j-step.flip .j-art{order:0}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -840,12 +857,12 @@ def venn_svg() -> str:
   <circle cx="370" cy="160" r="135" style="fill:var(--green);fill-opacity:.13;stroke:var(--green);stroke-width:1.5"/>
   <circle cx="290" cy="290" r="135" style="fill:var(--orange);fill-opacity:.13;stroke:var(--orange);stroke-width:1.5"/>
   <g font-family="Figtree,sans-serif" text-anchor="middle">
-    <text x="135" y="120" font-size="17" font-weight="700" style="fill:var(--blue)">Community</text>
-    <text x="135" y="140" font-size="13" style="{d}">brings people</text>
-    <text x="135" y="156" font-size="13" style="{d}">together</text>
-    <text x="445" y="120" font-size="17" font-weight="700" style="fill:var(--green)">Free</text>
-    <text x="445" y="140" font-size="13" style="{d}">no cost, no</text>
-    <text x="445" y="156" font-size="13" style="{d}">upsell</text>
+    <text x="150" y="120" font-size="17" font-weight="700" style="fill:var(--blue)">Community</text>
+    <text x="150" y="140" font-size="13" style="{d}">brings people</text>
+    <text x="150" y="156" font-size="13" style="{d}">together</text>
+    <text x="430" y="120" font-size="17" font-weight="700" style="fill:var(--green)">Free</text>
+    <text x="430" y="140" font-size="13" style="{d}">no cost, no</text>
+    <text x="430" y="156" font-size="13" style="{d}">upsell</text>
     <text x="290" y="372" font-size="17" font-weight="700" style="fill:var(--orange)">Adventure</text>
     <text x="290" y="392" font-size="13" style="{d}">new places, outdoors,</text>
     <text x="290" y="408" font-size="13" style="{d}">first-time things</text>
@@ -900,8 +917,8 @@ def render_curation_page() -> None:
     rules = filters.load()
     op = rules.get("curation", {"keep_at": 70, "drop_below": 40})
     lo, hi = op["drop_below"], op["keep_at"]
-    st.markdown("<div class='ob ob-title'><h1>AI curation</h1>"
-                "<p>AI scores every free event. The team makes the close calls.</p></div>", unsafe_allow_html=True)
+    st.markdown("<div class='ob ob-title cute'><h1>How a pick is made</h1>"
+                "<p>From a messy list of listings to Seattle showing up together.</p></div>", unsafe_allow_html=True)
 
     scored = trace[trace["ai_score"].notna()]
     decided = trace[trace["status"] != MERGED]
@@ -909,14 +926,53 @@ def render_curation_page() -> None:
     n_unsure = int(decided["why"].astype(str).str.startswith("AI unsure").sum())
     n_low = int((decided["filter_category"] == "AI: low relevance").sum())
 
-    # 1. What we're doing
-    st.markdown("<div class='ob ob-sec'><span class='t'>What we're doing</span></div>", unsafe_allow_html=True)
+    raw_events = (raw or {}).get("events_raw") or []
+    n_sites = len({urlparse(e.get("source") or "").netloc for e in raw_events} - {""}) or len(SOURCE_PAGES) + len(MONTHLY_PAGES)
+    upgraded = CURATOR_MODEL != OPENAI_MODEL
+    steps = [
+        ("We pull the listings", f"Every Monday the agent reads {n_sites} Seattle event sites.",
+         f"{len(raw_events)} events found"),
+        ("A low-cost model tidies them up", f"{OPENAI_MODEL} turns messy pages into clean events: date, place, cost.",
+         f"{len(trace)} events after removing repeats"),
+        ("A stronger model finds the gems",
+         (f"{CURATOR_MODEL} reads what each event is really for and scores how much our people would love it."
+          if upgraded else "Reads what each event is really for and scores how much our people would love it. "
+          "Ready for a stronger model."), f"{n_kept} made the list"),
+        ("Our team teaches it", "Thumbs up and down override the AI and become its examples next time.",
+         f"{len(fb_rows)} team votes"),
+        ("Picks become our graphic", "The week's picks go into the Seattle Unlocked template.", "Team step"),
+        ("We post it", "The graphic goes up on Instagram for 80k Seattle locals.", "@seattle_forfree"),
+        ("Seattle shows up", "Neighbors meet, try something new, and the city gets a little closer.", "The whole point"),
+    ]
+    cards = "".join(
+        f"<div class='j-step{' flip' if i % 2 else ''}'>"
+        f"<div class='j-art'>{illustrations.SCENES[i]()}</div>"
+        f"<div class='j-txt'><span class='j-n'>{i + 1}</span><h3>{esc(t)}</h3><p>{esc(d)}</p>"
+        f"<span class='j-chip'>{esc(c)}</span></div></div>"
+        for i, (t, d, c) in enumerate(steps))
+    st.markdown(f"<div class='ob journey'>{cards}</div>", unsafe_allow_html=True)
+
+    # Who we curate for, and what makes a pick
+    traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
     st.markdown(f"""
-<div class='ob steps'>
-  <div class='step'><span class='sn'>1</span><b>Rules clear the obvious</b><p>Paid, ticketed, and real estate events are removed.</p></div>
-  <div class='step'><span class='sn'>2</span><b>AI scores the rest</b><p>0 to 100, by what the event is for, not its keywords.</p></div>
-  <div class='step'><span class='sn'>3</span><b>The team decides close calls</b><p>Every thumb teaches the AI.</p></div>
-</div>
+<div class='ob ob-sec cute'><span class='t'>Who we curate for</span></div>
+<div class='ob aud-line'><b>Seattle locals, 28 to 52</b>{traits}</div>
+<div class='ob ob-sec cute'><span class='t'>What makes a pick</span></div>
+<div class='ob venn-wrap'>
+  <div class='venn'>{venn_svg()}</div>
+  <div class='venn-side'>
+    <div class='vs-block'><span class='vs-k never'>Never on the list</span>
+      <div class='vs-chips never'><span>Sales pitches</span><span>Religious services</span><span>Partisan events</span></div></div>
+    <div class='vs-block'><span class='vs-k ok'>Still welcome</span>
+      <div class='vs-chips ok'><span>Diwali</span><span>Lunar New Year</span><span>MLK Day</span><span>Holiday markets</span></div>
+      <p>Cultural and civic celebrations everyone shares.</p></div>
+    <div class='vs-block'><span class='vs-k'>Gray areas</span><p>Go to the team, and their votes become the AI's best examples.</p></div>
+  </div>
+</div>""", unsafe_allow_html=True)
+
+    # This week's numbers
+    st.markdown(f"""
+<div class='ob ob-sec cute'><span class='t'>This week's numbers</span></div>
 <div class='ob band'>
   <div class='seg lo' style='flex:{lo}'><b>{n_low}</b><span>Filtered · under {lo}</span></div>
   <div class='seg mid' style='flex:{hi - lo}'><b>{n_unsure}</b><span>Team reviews · {lo} to {hi - 1}</span></div>
@@ -935,28 +991,8 @@ def render_curation_page() -> None:
                     filters.save(rules)
                     st.rerun()
 
-    # 2. Who we curate for
-    traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
-    st.markdown("<div class='ob ob-sec'><span class='t'>Who we curate for</span></div>"
-                f"<div class='ob aud-line'><b>Seattle locals, 28 to 52</b>{traits}</div>", unsafe_allow_html=True)
-
-    # 3. What makes a pick
-    st.markdown(f"""
-<div class='ob ob-sec'><span class='t'>What makes a pick</span></div>
-<div class='ob venn-wrap'>
-  <div class='venn'>{venn_svg()}</div>
-  <div class='venn-side'>
-    <div class='vs-block'><span class='vs-k never'>Never on the list</span>
-      <div class='vs-chips never'><span>Sales pitches</span><span>Religious services</span><span>Partisan events</span></div></div>
-    <div class='vs-block'><span class='vs-k ok'>Still welcome</span>
-      <div class='vs-chips ok'><span>Diwali</span><span>Lunar New Year</span><span>MLK Day</span><span>Holiday markets</span></div>
-      <p>Cultural and civic celebrations everyone shares.</p></div>
-    <div class='vs-block'><span class='vs-k'>Gray areas</span><p>Go to the team, and their votes become the AI's best examples.</p></div>
-  </div>
-</div>""", unsafe_allow_html=True)
-
     # 4. How well it's working
-    st.markdown("<div class='ob ob-sec'><span class='t'>How well it's working</span></div>", unsafe_allow_html=True)
+    st.markdown("<div class='ob ob-sec cute'><span class='t'>How well it's working</span></div>", unsafe_allow_html=True)
     labeled = [r for r in fb_rows if r.get("model_score") is not None]
     if len(labeled) < 10:
         teach_empty(len(labeled))
@@ -993,7 +1029,7 @@ def render_curation_page() -> None:
                      hide_index=True, width="stretch")
 
     # 5. Under the hood: for the team and the curious
-    st.markdown("<div class='ob ob-sec'><span class='t'>Under the hood</span></div>", unsafe_allow_html=True)
+    st.markdown("<div class='ob ob-sec cute'><span class='t'>Under the hood</span></div>", unsafe_allow_html=True)
     shots = feedback.few_shots(fb_rows)
     if not scored.empty:
         with st.expander("Events by intent"):

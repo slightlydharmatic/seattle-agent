@@ -26,7 +26,7 @@ import json
 import logging
 
 import feedback
-from config import OPENAI_MODEL
+from config import CURATOR_MODEL
 
 log = logging.getLogger(__name__)
 
@@ -154,7 +154,7 @@ def classify_batch(events: list[dict], examples: list[dict]) -> dict[str, dict]:
     """One model call for up to BATCH events."""
     from agents import clients
     reply = clients.openai().chat.completions.create(
-        model=OPENAI_MODEL, temperature=0, response_format={"type": "json_object"},
+        model=CURATOR_MODEL, temperature=0, response_format={"type": "json_object"},
         messages=build_messages(events, examples))
     return parse(reply.choices[0].message.content, [e["key"] for e in events])
 

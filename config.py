@@ -36,7 +36,10 @@ def month_pages(today, months_ahead: int = 3) -> list[str]:
     return [tpl.format(month=n) for tpl in MONTHLY_PAGES for n in names]
 
 
-OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")  # low-cost: reads pages into event rows
+# The curator judges meaning, so it can use a stronger model. Set CURATOR_MODEL to upgrade;
+# until then it uses the same low-cost model.
+CURATOR_MODEL = os.getenv("CURATOR_MODEL", OPENAI_MODEL)
 OUTPUT_DIR = PROJECT_DIR / "output"
 
 
