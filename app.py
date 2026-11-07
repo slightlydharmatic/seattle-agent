@@ -18,7 +18,7 @@ import custom_events
 import feedback
 import breaker
 from config import CURATOR_MODEL, MONTHLY_PAGES, OPENAI_MODEL, SOURCE_PAGES
-import illustrations
+import story
 import filters
 from agents.curator import AUDIENCE, INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
 from crm import view as crm_view
@@ -34,7 +34,7 @@ st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
 # Look: a dark, dense object explorer. Each event is an object with properties.
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fredoka:wght@500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&display=swap');
 /* Look: light and quiet like Stripe, warmer and softer. Warm white, plum accent, sage for good, coral for held. */
 :root{--bg:#FBF9F7;--panel:#FFFFFF;--panel2:#F6F2EF;--line:#ECE6E1;--line2:#E2DAD4;
       --text:#2A2433;--dim:#6E6676;--muted:#706877;
@@ -241,7 +241,7 @@ details[open] > summary .chev{transform:rotate(90deg)}
 .vs-chips.ok span{background:var(--green-bg);color:var(--green)}
 .vs-block p{font-size:14px;color:var(--dim);margin:6px 0 0;line-height:1.5}
 @media (max-width:900px){.steps,.venn-wrap{grid-template-columns:1fr}}
-.cute h1, .ob-sec.cute .t, .journey h3{font-family:'Fredoka','Figtree',sans-serif !important;font-weight:600;letter-spacing:0}
+.cute h1, .ob-sec.cute .t{font-family:'Bodoni Moda',Didot,Georgia,serif !important;font-style:italic;font-weight:400;font-size:30px;letter-spacing:0;color:#1E2A47}
 .ob-sec.cute{margin-top:44px}
 .journey{display:grid;gap:18px;margin:6px 0 10px;position:relative}
 .j-step{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:28px;align-items:center;
@@ -853,17 +853,17 @@ def venn_svg() -> str:
     d = "fill:var(--dim)"
     return f"""
 <svg viewBox="0 0 580 440" role="img" aria-label="Venn diagram: free, community, and adventure overlap in the pick">
-  <circle cx="210" cy="160" r="135" style="fill:var(--blue);fill-opacity:.13;stroke:var(--blue);stroke-width:1.5"/>
-  <circle cx="370" cy="160" r="135" style="fill:var(--green);fill-opacity:.13;stroke:var(--green);stroke-width:1.5"/>
-  <circle cx="290" cy="290" r="135" style="fill:var(--orange);fill-opacity:.13;stroke:var(--orange);stroke-width:1.5"/>
+  <circle cx="210" cy="160" r="135" style="fill:#6C7FD1;fill-opacity:.14;stroke:#6C7FD1;stroke-width:1.5"/>
+  <circle cx="370" cy="160" r="135" style="fill:#7FAED8;fill-opacity:.16;stroke:#5F8FBF;stroke-width:1.5"/>
+  <circle cx="290" cy="290" r="135" style="fill:#E3A6C0;fill-opacity:.2;stroke:#C77F9F;stroke-width:1.5"/>
   <g font-family="Figtree,sans-serif" text-anchor="middle">
-    <text x="150" y="120" font-size="17" font-weight="700" style="fill:var(--blue)">Community</text>
+    <text x="150" y="120" font-size="17" font-weight="700" style="fill:#4F5FB0">Community</text>
     <text x="150" y="140" font-size="13" style="{d}">brings people</text>
     <text x="150" y="156" font-size="13" style="{d}">together</text>
-    <text x="430" y="120" font-size="17" font-weight="700" style="fill:var(--green)">Free</text>
+    <text x="430" y="120" font-size="17" font-weight="700" style="fill:#3F6E9C">Free</text>
     <text x="430" y="140" font-size="13" style="{d}">no cost, no</text>
     <text x="430" y="156" font-size="13" style="{d}">upsell</text>
-    <text x="290" y="372" font-size="17" font-weight="700" style="fill:var(--orange)">Adventure</text>
+    <text x="290" y="372" font-size="17" font-weight="700" style="fill:#A65A7D">Adventure</text>
     <text x="290" y="392" font-size="13" style="{d}">new places, outdoors,</text>
     <text x="290" y="408" font-size="13" style="{d}">first-time things</text>
     <text x="290" y="100" font-size="13" style="{t}">Potlucks</text>
@@ -917,8 +917,6 @@ def render_curation_page() -> None:
     rules = filters.load()
     op = rules.get("curation", {"keep_at": 70, "drop_below": 40})
     lo, hi = op["drop_below"], op["keep_at"]
-    st.markdown("<div class='ob ob-title cute'><h1>How a pick is made</h1>"
-                "<p>From a messy list of listings to Seattle showing up together.</p></div>", unsafe_allow_html=True)
 
     scored = trace[trace["ai_score"].notna()]
     decided = trace[trace["status"] != MERGED]
@@ -929,28 +927,33 @@ def render_curation_page() -> None:
     raw_events = (raw or {}).get("events_raw") or []
     n_sites = len({urlparse(e.get("source") or "").netloc for e in raw_events} - {""}) or len(SOURCE_PAGES) + len(MONTHLY_PAGES)
     upgraded = CURATOR_MODEL != OPENAI_MODEL
+    n_votes = len(fb_rows)
     steps = [
-        ("We pull the listings", f"Every Monday the agent reads {n_sites} Seattle event sites.",
-         f"{len(raw_events)} events found"),
-        ("A low-cost model tidies them up", f"{OPENAI_MODEL} turns messy pages into clean events: date, place, cost.",
-         f"{len(trace)} events after removing repeats"),
-        ("A stronger model finds the gems",
-         (f"{CURATOR_MODEL} reads what each event is really for and scores how much our people would love it."
-          if upgraded else "Reads what each event is really for and scores how much our people would love it. "
-          "Ready for a stronger model."), f"{n_kept} made the list"),
-        ("Our team teaches it", "Thumbs up and down override the AI and become its examples next time.",
-         f"{len(fb_rows)} team votes"),
-        ("Picks become our graphic", "The week's picks go into the Seattle Unlocked template.", "Team step"),
-        ("We post it", "The graphic goes up on Instagram for 80k Seattle locals.", "@seattle_forfree"),
-        ("Seattle shows up", "Neighbors meet, try something new, and the city gets a little closer.", "The whole point"),
+        {"title": "we pull the listings", "image": "steps/s1.png",
+         "text": f"Every Monday the agent reads {n_sites} Seattle event sites, so the team starts from everything, not a guess.",
+         "stats": [(len(raw_events), "events found"), (n_sites, "sites read")]},
+        {"title": "a low-cost model tidies them up", "image": "steps/s2.png",
+         "text": f"{OPENAI_MODEL} turns messy pages into clean events, merges repeats, and checks each one has a date, a place, and no price.",
+         "stats": [(len(trace), "unique events"), (max(len(raw_events) - len(trace), 0), "repeats merged")]},
+        {"title": "a stronger model finds the gems", "image": "steps/s3.png",
+         "text": ("Reads what each event is really for. Sales pitches, religious services, and partisan events "
+                  "score low, even when they're free.")
+                 + (f" Runs on {CURATOR_MODEL}." if upgraded else ""),
+         "stats": [(n_kept, "made the list"), (n_low, "caught by AI")]},
+        {"title": "our team teaches it", "image": "steps/s4.png",
+         "text": "Thumbs up and down override the AI right away and become its examples on the next run.",
+         "stats": [(n_votes, "team votes"), (n_unsure, "close calls")]},
+        {"title": "picks become our graphic", "quiet": "the week's picks, in our template",
+         "text": "The team drops the week's picks into the Seattle Unlocked template.",
+         "stats": [(min(n_kept, 6), "picks this week")]},
+        {"title": "we post it", "quiet": "@seattle_forfree",
+         "text": "The graphic goes up on Instagram for Seattle locals who want something to do this week.",
+         "stats": [("80k", "followers")]},
+        {"title": "seattle shows up", "quiet": "see you there.",
+         "text": "Neighbors meet, try something new, and the city gets a little closer. That's the whole point.",
+         "stats": []},
     ]
-    cards = "".join(
-        f"<div class='j-step{' flip' if i % 2 else ''}'>"
-        f"<div class='j-art'>{illustrations.SCENES[i]()}</div>"
-        f"<div class='j-txt'><span class='j-n'>{i + 1}</span><h3>{esc(t)}</h3><p>{esc(d)}</p>"
-        f"<span class='j-chip'>{esc(c)}</span></div></div>"
-        for i, (t, d, c) in enumerate(steps))
-    st.markdown(f"<div class='ob journey'>{cards}</div>", unsafe_allow_html=True)
+    components.html(story.render(steps), height=story.HEIGHT)
 
     # Who we curate for, and what makes a pick
     traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
