@@ -67,9 +67,9 @@ def render(ctx) -> None:
         return f"{x:.0%}" if isinstance(x, (int, float)) else "—"
     green, amber, red = ("#E6F2EC", "#2F6B53"), ("#F8EDD6", "#7A5A16"), ("#F8E4E1", "#A8423A")
     nodes = [
-        {"id": "find", "col": 1, "row": 1, "step": "01", "title": "Find", "count": f"{found} found", "sub": f"{n_sites} trusted Seattle sites, weekly",
+        {"id": "find", "col": 1, "row": 1, "step": "01", "title": "Find", "count": f"{found} found", "sub": "Choose trusted data sources, then pull every listing",
          "specs": [["tool", "search"], ["cost", "~1 credit/pg"]],
-         "more": "An agent searches and reads each listing page, only from sites we trust."},
+         "more": "We decide which sources to trust, like event sites and city calendars. Every week an agent pulls every listing from them."},
         {"id": "read", "col": 2, "row": 1, "step": "02", "title": "Read", "count": f"{len(decided)}", "sub": "Messy pages into clean events", "ai": True,
          "specs": [["model", OPENAI_MODEL], ["cost", f"{m(est['extract']['usd'])}/run"], ["speed", "batch"],
                    ["why", "volume"]], "img": "steps/s2.png",
