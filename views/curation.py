@@ -10,7 +10,7 @@ import costs
 import feedback
 import filters
 from agents.curator import INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
-from agents.synthesizer import FILTERED, MERGED, PICK, PUBLISH, REVIEW
+from agents.synthesizer import MERGED, PICK, PUBLISH
 from config import CURATOR_MODEL, MONTHLY_PAGES, OPENAI_MODEL, SOURCE_PAGES
 from ui import flow, hero, howitworks
 from ui.nav import go_to
@@ -54,12 +54,7 @@ def render(ctx) -> None:
 
     def m(v):
         return howitworks.money(v)
-    rule_cats = ["AI: low relevance", "Downvoted by team"]
     found = len(raw_events)
-    clean = int((decided["status"] != FILTERED).sum()
-                + ((decided["status"] == FILTERED) & decided["filter_category"].isin(rule_cats)).sum())
-    on_list = int(decided["status"].isin([PICK, PUBLISH]).sum())
-    to_people = int((decided["status"] == REVIEW).sum())
     n_picks = int((decided["status"] == PICK).sum())
     judged = not scored.empty
 
@@ -67,44 +62,44 @@ def render(ctx) -> None:
         return f"{x:.0%}" if isinstance(x, (int, float)) else "—"
     green, amber, red = ("#E6F2EC", "#2F6B53"), ("#F8EDD6", "#7A5A16"), ("#F8E4E1", "#A8423A")
     nodes = [
-        {"id": "find", "col": 1, "row": 1, "step": "01", "title": "Find", "count": f"{found} found", "sub": "Choose trusted data sources, then pull every listing",
+        {"id": "find", "col": 1, "row": 1, "step": "01", "title": "Sources", "sub": "Choose trusted sources, pull every listing",
          "specs": [["tool", "search"], ["cost", "~1 credit/pg"]],
          "more": "We decide which sources to trust, like event sites and city calendars. Every week an agent pulls every listing from them."},
-        {"id": "read", "col": 2, "row": 1, "step": "02", "title": "Read", "count": f"{len(decided)}", "sub": "Messy pages into clean events", "ai": True,
+        {"id": "read", "col": 2, "row": 1, "step": "02", "title": "Extractor", "sub": "Turn messy pages into clean events", "ai": True,
          "specs": [["model", OPENAI_MODEL], ["cost", f"{m(est['extract']['usd'])}/run"], ["speed", "batch"],
                    ["why", "volume"]], "img": "steps/s2.png",
          "more": "Cheapest model that's good enough: it only pulls out title, date, place, cost, and link. Repeats are merged."},
-        {"id": "rules", "col": 3, "row": 1, "step": "03", "title": "Rules", "count": f"{clean}", "sub": "Free only. No tickets or real estate.",
+        {"id": "rules", "col": 3, "row": 1, "step": "03", "title": "Rules", "sub": "Drop paid, ticketed, and off-topic events",
          "specs": [["model", "none"], ["cost", "$0"]],
          "more": "Simple rules run before any AI, so we never pay a model to look at an obvious no."},
-        {"id": "judge", "col": 4, "row": 1, "step": "04", "title": "Judge", "sub": "Is this worth our readers' time?", "ai": True,
+        {"id": "judge", "col": 4, "row": 1, "step": "04", "title": "AI judge", "sub": "Score each event for our readers", "ai": True,
          "specs": [["model", CURATOR_MODEL], ["cost", f"{m(est['curate']['usd'])}/run"], ["speed", "batch, cached"],
                    ["why", "quality"]], "img": "steps/s3.png",
          "more": "Reads what each event is for, not its keywords. Returns an intent, a 0 to 100 score, and one line on why. "
                  "This is the step worth a stronger model; it's set up to swap one in."
                  + ("" if judged else " (This snapshot hasn't been scored yet.)")},
-        {"id": "decide", "col": 5, "row": 1, "step": "05", "title": "Decide", "count": f"{on_list} live", "sub": "Where we set the bar",
+        {"id": "decide", "col": 5, "row": 1, "step": "05", "title": "Threshold", "sub": "Set the bar for going live",
          "band": [[f"{hi}+ live", *green], [f"{lo}–{hi - 1} us", *amber], [f"<{lo} out", *red]],
          "specs": [["precision", f"{hi}+ live"], ["recall", f"{lo}–{hi - 1} → us"]],
          "more": "Tuned for precision: one spammy pick costs more trust than a missed event. "
                  "The middle band goes to people, so good borderline events aren't lost (that protects recall)."},
-        {"id": "publish", "col": 6, "row": 1, "step": "06", "title": "Publish", "sub": "The weekly list", "img": "steps/s1.png",
+        {"id": "publish", "col": 6, "row": 1, "step": "06", "title": "Snapshot", "sub": "Save the weekly list for readers", "img": "steps/s1.png",
          "specs": [["cost", "$0"], ["speed", "instant"]],
          "more": "Readers load a saved snapshot, so the public page is instant and never calls a paid API."},
-        {"id": "validate", "col": 2, "row": 2, "lane": "guard", "title": "Validate", "sub": "No date or place? Held, never guessed.",
+        {"id": "validate", "col": 2, "row": 2, "lane": "guard", "title": "Validator", "sub": "Hold events missing a date or place",
          "tag": "no AI", "tagc": "free"},
-        {"id": "memory", "col": 4, "row": 2, "lane": "guard", "title": "Memory", "sub": "Our latest votes, as examples",
-         "tag": f"12 votes · {PROMPT_VERSION}", "more": "8 recent thumbs down and 4 thumbs up are added to the judge's instructions every run."},
-        {"id": "breaker", "col": 6, "row": 2, "lane": "guard", "title": "Circuit breaker", "sub": "A broken run never goes live",
+        {"id": "memory", "col": 4, "row": 2, "lane": "guard", "title": "Memory", "sub": "Feed our latest votes back as examples",
+         "tag": "12 latest votes", "more": "8 recent thumbs down and 4 thumbs up are added to the judge's instructions every run."},
+        {"id": "breaker", "col": 6, "row": 2, "lane": "guard", "title": "Circuit breaker", "sub": "Hold any run that looks broken",
          "tag": "no AI", "tagc": "free",
          "more": "Holds a run if events halve, most pages fail, sources go quiet, or the AI drops 60%+. Readers keep last week's list."},
-        {"id": "evals", "col": 3, "row": 3, "lane": "guard", "title": "Evals", "sub": "Graded on our votes, from vote 10",
+        {"id": "evals", "col": 3, "row": 3, "lane": "guard", "title": "Evals", "sub": "Grade the AI against our votes",
          "specs": [["precision", pct(cs_metrics.get("precision"))], ["recall", pct(cs_metrics.get("recall"))]],
          "more": "Every vote is a label. Next: a hand-labeled test set every prompt change has to pass."},
-        {"id": "team", "col": 5, "row": 3, "lane": "human", "title": "Team review", "count": f"{to_people}", "sub": "Close calls, thumbs up or down",
-         "tag": "overrides the AI", "tagc": "ppl", "img": "steps/s4.png", "more": "A vote overrides the AI right away."},
-        {"id": "post", "col": 6, "row": 3, "lane": "human", "title": "Post", "count": f"{n_picks} picks", "sub": "Our template, our voice",
-         "tag": "Instagram", "tagc": "ppl", "img": "posts/01-january.jpg" if posts else None,
+        {"id": "team", "col": 5, "row": 3, "lane": "human", "title": "Team review", "sub": "Make the close calls",
+         "tag": "people", "tagc": "ppl", "img": "steps/s4.png", "more": "A vote overrides the AI right away."},
+        {"id": "post", "col": 6, "row": 3, "lane": "human", "title": "Instagram", "sub": "Design and post the picks",
+         "tag": "people", "tagc": "ppl", "img": "posts/01-january.jpg" if posts else None,
          "more": "The AI never posts. People design and publish the list."},
     ]
     edges = [("find", "read"), ("read", "rules"), ("rules", "judge"), ("judge", "decide"), ("decide", "publish"),
