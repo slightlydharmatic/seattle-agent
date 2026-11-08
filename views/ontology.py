@@ -1,160 +1,113 @@
-"""Ontology of events: how categories, neighborhoods, venues, and sources connect."""
-from collections import Counter
+"""Ontology of events: when Seattle's free events happen, what they are, and who hosts them."""
 from datetime import date
 
-import pandas as pd
 import streamlit as st
-import streamlit.components.v1 as components
 
 import ontology
-from agents.synthesizer import MERGED
-from config import PROJECT_DIR
+from ui.components import esc
+
+FULL_DAY = dict(zip(ontology.DAYS, ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]))
+INK, PERI, SOFT = "#1E2A47", "#5469C4", "#D9DEF3"
+
+CSS = """<style>
+.on-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin:6px 0 30px}
+.on-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+.on-k{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#5469C4}
+.on-h{font-size:19px;font-weight:600;color:#1E2A47;margin:6px 0 16px;line-height:1.3;letter-spacing:-.01em}
+.on-days{display:flex;align-items:flex-end;gap:8px;height:230px}
+.on-days div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+.on-days i{display:block;width:100%;border-radius:6px 6px 3px 3px;min-height:3px}
+.on-days b{font-size:12px;font-weight:600;color:#1E2A47;font-variant-numeric:tabular-nums}
+.on-days span{font-size:12px;color:var(--dim)}
+.on-bar{display:grid;grid-template-columns:1fr 34px;align-items:center;gap:10px;margin:0 0 9px}
+.on-bar .l{position:relative;font-size:14px;color:#1E2A47;padding:5px 10px;border-radius:6px;overflow:hidden;
+           white-space:nowrap;text-overflow:ellipsis}
+.on-bar .l i{position:absolute;inset:0 auto 0 0;border-radius:6px;z-index:0}
+.on-bar .l span{position:relative;z-index:1}
+.on-bar b{font-size:13px;font-weight:600;color:#1E2A47;text-align:right;font-variant-numeric:tabular-nums}
+.on-bar.dim .l, .on-bar.dim b{color:var(--dim)}
+.on-note{font-size:12.5px;color:var(--dim);margin-top:12px;line-height:1.45}
+.on-sec{font-size:19px;font-weight:600;color:#1E2A47;margin:4px 0 2px;letter-spacing:-.01em}
+.on-sub{font-size:14px;color:var(--dim);margin:0 0 14px}
+.on-heat{width:100%;border-collapse:separate;border-spacing:4px;font-size:13px;border:none !important}
+.on-heat tr, .on-heat th, .on-heat td{border:none !important;background-clip:padding-box}
+.on-heat tr:nth-child(even){background:transparent !important}
+.on-heat th{font-weight:600;color:var(--dim);text-align:center;padding:2px 0}
+.on-heat th:first-child{text-align:left}
+.on-heat td{text-align:center;border-radius:6px;height:34px;font-variant-numeric:tabular-nums}
+.on-heat td:first-child{text-align:left;color:#1E2A47;font-weight:500;padding-right:10px;white-space:nowrap}
+.on-empty{color:var(--dim);font-size:15px;padding:30px 0}
+</style>"""
 
 
 def render(ctx) -> None:
     st.markdown("<div class='ob ob-title'><h1>Ontology of events</h1>"
-                "<p>How Seattle's free events connect: categories, neighborhoods, venues, and sources.</p></div>",
-                unsafe_allow_html=True)
-    render_ontology(ctx.res["trace"], ctx.labels)
-
-
-@st.cache_resource
-def vis_js() -> str:
-    """The vis-network library, bundled in assets/ so the graph never depends on a CDN."""
-    return (PROJECT_DIR / "assets" / "vis-network.min.js").read_text()
-
-
-TYPE_COLOR = {"Category": "#A04D74", "Neighborhood": "#5E8C7A", "Source": "#D29A3A", "Venue": "#B9AFBF"}
-
-
-def graph_html(graph: dict, show_venues: bool, live_only: bool) -> str:
-    """An interactive network of categories, neighborhoods, sources (and venues)."""
-    nodes = {n["id"]: n for n in graph["nodes"]}
-    weight = "live" if live_only else "events"
-    keep_types = {"Category", "Neighborhood", "Source"} | ({"Venue"} if show_venues else set())
-    # Roll event-level edges up into thing-to-thing links, weighted by events in common.
-    ev_links: dict[str, dict[str, list]] = {}
-    for e in graph["edges"]:
-        src = nodes.get(e["source"])
-        if src and src["type"] == "Event" and (src["live"] or not live_only):
-            ev_links.setdefault(e["source"], {}).setdefault(e["rel"], []).append(e["target"])
-    pair = Counter()
-    for links in ev_links.values():
-        cat = (links.get("IS_A") or [None])[0]
-        hood = (links.get("IN_AREA") or [None])[0]
-        srcn = (links.get("FOUND_ON") or [None])[0]
-        venue = (links.get("HAPPENS_AT") or [None])[0]
-        if cat and hood:
-            pair[(cat, hood)] += 1
-        if srcn and cat:
-            pair[(srcn, cat)] += 1
-        if show_venues and venue and hood:
-            pair[(venue, hood)] += 1
-    used = {a for a, _ in pair} | {b for _, b in pair}
-    # Keep the graph readable: top neighborhoods and venues only.
-    def top(kind, k):
-        cand = [n for n in nodes.values() if n["type"] == kind and n["id"] in used and n[weight] > 0]
-        return {n["id"] for n in sorted(cand, key=lambda n: -n[weight])[:k]}
-    allowed = ({n["id"] for n in nodes.values() if n["type"] in ("Category", "Source") and n[weight] > 0}
-               | top("Neighborhood", 22) | (top("Venue", 25) if show_venues else set()))
-    vis_nodes = [{"id": nid, "label": nodes[nid]["label"], "group": nodes[nid]["type"],
-                  "value": max(nodes[nid][weight], 1),
-                  "title": f"{nodes[nid]['type']} · {nodes[nid][weight]} events",
-                  "color": TYPE_COLOR[nodes[nid]["type"]]}
-                 for nid in allowed if nodes[nid]["type"] in keep_types]
-    ids = {n["id"] for n in vis_nodes}
-    vis_edges = [{"from": a, "to": b, "value": k, "title": f"{k} events"}
-                 for (a, b), k in pair.items() if a in ids and b in ids]
-    import json as _json
-    return """
-<div id="net" style="width:100%;height:560px;background:#FFFFFF;border:1px solid #ECE6E1;border-radius:12px"></div>
-<div style="font:13px Figtree,sans-serif;color:#6E6676;margin-top:8px;display:flex;gap:16px">
-  <span><b style="color:#A04D74">●</b> Category</span><span><b style="color:#5E8C7A">●</b> Neighborhood</span>
-  <span><b style="color:#D29A3A">●</b> Source</span>""" + (
-        '<span><b style="color:#B9AFBF">●</b> Venue</span>' if show_venues else "") + """
-</div>
-<script>VISJS</script>
-<script>
-const data = {nodes: new vis.DataSet(NODES), edges: new vis.DataSet(EDGES)};
-const net = new vis.Network(document.getElementById('net'), data, {
-  nodes: {shape: 'dot', scaling: {min: 6, max: 34, label: {enabled: true, min: 11, max: 18}},
-          font: {color: '#2A2433', face: 'Figtree, sans-serif', strokeWidth: 4, strokeColor: '#FFFFFF'},
-          borderWidth: 0},
-  edges: {color: {color: 'rgba(110,102,118,0.18)', highlight: '#A04D74'}, scaling: {min: 1, max: 7},
-          smooth: {type: 'continuous'}},
-  physics: {barnesHut: {gravitationalConstant: -6000, springLength: 120, centralGravity: 0.35},
-            stabilization: {iterations: 400}},
-  interaction: {hover: true, tooltipDelay: 120}
-});
-const refit = () => { net.setSize('100%', '560px'); net.redraw(); net.fit({animation: false}); };
-net.once('stabilizationIterationsDone', () => { net.setOptions({physics: false}); refit(); });
-window.addEventListener('resize', refit);
-setTimeout(refit, 600); setTimeout(refit, 1800);
-</script>""".replace("NODES", _json.dumps(vis_nodes)).replace("EDGES", _json.dumps(vis_edges)).replace("VISJS", vis_js())
-
-
-def render_ontology(trace_rows: list[dict], month_labels: list[str]) -> None:
-    st.markdown(
-        "<div class='ob'><div class='ob-head'><h2>Graph</h2>"
-        f"<span class='ob-type'>{len(trace_rows)} events</span></div></div>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns([2, 2, 1])
-    month = c1.selectbox("Month", ["All months"] + month_labels, key="onto-month")
+                "<p>What Seattle's free events look like: when they happen, what they are, and who puts them on.</p>"
+                "</div>", unsafe_allow_html=True)
+    c1, c2 = st.columns([1, 1])
+    month = c1.selectbox("Month", ["All months"] + ctx.labels, key="onto-month")
     scope = c2.radio("Events", ["Free and live", "Everything pulled"], horizontal=True, key="onto-scope")
-    show_venues = c3.toggle("Venues", key="onto-venues")
-    rows = [t for t in trace_rows if month == "All months"
+    rows = [t for t in ctx.res["trace"] if month == "All months"
             or (isinstance(t.get("date"), date) and f"{t['date']:%B %Y}" == month)]
-    graph = ontology.build(rows)
-    sm = ontology.summary(graph)
-    live_only = scope == "Free and live"
-    counts = Counter(n["type"] for n in graph["nodes"] if n["live"] or not live_only)
-    live_events = {n["id"] for n in graph["nodes"] if n["type"] == "Event" and (n["live"] or not live_only)}
-    n_links = sum(1 for e in graph["edges"] if e["source"] in live_events)
+    p = ontology.profile(rows, live_only=scope == "Free and live")
+    if not p["n"]:
+        st.markdown(CSS + "<div class='on-empty'>No events here yet. Try another month, or switch to everything pulled."
+                    "</div>", unsafe_allow_html=True)
+        return
+    st.markdown(CSS + "<div class='on-grid'>" + days_card(p["days"]) + kinds_card(p["kinds"]) + hosts_card(p["hosts"])
+                + "</div>" + heatmap(p["day_kind"], p["kinds"]), unsafe_allow_html=True)
 
-    stats = [("Events", counts["Event"]), ("Categories", counts["Category"]), ("Venues", counts["Venue"]),
-             ("Neighborhoods", counts["Neighborhood"]), ("Sources", counts["Source"]),
-             ("Links", n_links)]
-    st.markdown("<div class='ob'><div class='ob-stats'>" + "".join(
-        f"<div class='ob-stat'><span>{k}</span><b>{v}</b></div>" for k, v in stats) + "</div></div>",
-        unsafe_allow_html=True)
-    st.write("")
-    components.html(graph_html(graph, show_venues, live_only), height=600)
 
-    hood_cat = sm["hood_cat"] if live_only else Counter(
-        (r["neighborhood"], r["category"]) for r in sm["rows"] if r["neighborhood"] and r["status"] != MERGED)
+def days_card(days: dict) -> str:
+    top = max(days.values()) or 1
+    peak = max(days, key=days.get)
+    cols = "".join(
+        f"<div><b>{n or ''}</b><i style='height:{max(n / top * 100, 2):.0f}%;background:{PERI if d == peak else SOFT}'>"
+        f"</i><span>{d}</span></div>" for d, n in days.items())
+    weekend = days["Fri"] + days["Sat"] + days["Sun"]
+    total = sum(days.values()) or 1
+    return (f"<div class='on-card'><div class='on-k'>When</div><div class='on-h'>{FULL_DAY[peak]} is the busiest day</div>"
+            f"<div class='on-days'>{cols}</div>"
+            f"<div class='on-note'>{weekend / total:.0%} land Friday to Sunday.</div></div>")
 
-    a, b = st.columns(2, gap="large")
-    with a:
-        st.markdown("<div class='ob ob-sec'><span class='dot'></span><span class='t'>Where free events happen</span>"
-                    "</div>" if live_only else "<div class='ob ob-sec'><span class='dot'></span>"
-                    "<span class='t'>Where events happen</span></div>", unsafe_allow_html=True)
-        if hood_cat:
-            df = pd.Series(hood_cat).unstack(fill_value=0)
-            df = df.loc[df.sum(axis=1).sort_values(ascending=False).index[:12]]
-            df = df[df.sum().sort_values(ascending=False).index[:7]]
-            top_v = max(int(df.values.max()), 1)
-            heat = lambda v: (f"background-color: rgba(160,77,116,{0.08 + 0.6 * v / top_v:.2f}); "
-                              f"color: {'#FFFFFF' if v / top_v > .55 else '#2A2433'}" if v else "color: #706877")
-            st.dataframe(df.style.map(heat), width="stretch")
-    with b:
-        st.markdown("<div class='ob ob-sec'><span class='dot'></span><span class='t'>Repeat venues</span>"
-                    "<span class='c'>partnership leads</span></div>", unsafe_allow_html=True)
-        st.dataframe(pd.DataFrame(sm["repeat_venues"][:15], columns=["Venue", "Neighborhood", "Free events"]),
-                     hide_index=True, width="stretch")
 
-    a, b = st.columns(2, gap="large")
-    with a:
-        st.markdown("<div class='ob ob-sec rec'><span class='dot'></span><span class='t'>Sources</span></div>",
-                    unsafe_allow_html=True)
-        src = pd.DataFrame([{"Source": k, "Found": v["found"], "Free and live": v["live"],
-                             "Only here": v["unique"], "Repeats": v["repeats"], "Paid": v["paid"]}
-                            for k, v in sm["sources"].items()]).sort_values("Found", ascending=False)
-        st.dataframe(src, hide_index=True, width="stretch")
-    with b:
-        st.markdown("<div class='ob ob-sec held'><span class='dot'></span><span class='t'>Free vs paid by category"
-                    "</span></div>", unsafe_allow_html=True)
-        cat = pd.DataFrame([{"Category": k, "Free": v["free"], "Paid": v["paid"], "Held": v["held"]}
-                            for k, v in sm["categories"].items()])
-        if not cat.empty:
-            cat["Free share"] = (cat["Free"] / (cat["Free"] + cat["Paid"]).replace(0, pd.NA)).map(
-                lambda x: "" if pd.isna(x) else f"{x:.0%}")
-            st.dataframe(cat.sort_values("Free", ascending=False), hide_index=True, width="stretch")
+def bars(counts, k: int = 8, dim: str | None = None) -> str:
+    items = [(name, n) for name, n in counts.most_common() if name != dim][:k]
+    if dim and counts.get(dim):
+        items.append((dim, counts[dim]))
+    top = max((n for _, n in items), default=1)
+    return "".join(
+        f"<div class='on-bar{' dim' if name == dim else ''}'><div class='l'>"
+        f"<i style='width:{n / top * 100:.0f}%;background:{'#EEEDF0' if name == dim else SOFT if i else '#C4CCEE'}'></i>"
+        f"<span>{esc(name)}</span></div><b>{n}</b></div>" for i, (name, n) in enumerate(items))
+
+
+def kinds_card(kinds) -> str:
+    top = kinds.most_common(1)[0][0]
+    return (f"<div class='on-card'><div class='on-k'>What</div><div class='on-h'>{esc(top)} leads</div>"
+            f"{bars(kinds)}</div>")
+
+
+def hosts_card(hosts) -> str:
+    known = [(h, n) for h, n in hosts.most_common() if h != ontology.UNSURE]
+    head = f"{known[0][0]} host the most" if known else "Hosts still unknown"
+    return (f"<div class='on-card'><div class='on-k'>Who hosts</div><div class='on-h'>{esc(head)}</div>"
+            f"{bars(hosts, dim=ontology.UNSURE)}"
+            "<div class='on-note'>Read from the venue name. Next: the AI judge tags the host directly.</div></div>")
+
+
+def heatmap(day_kind, kinds, k: int = 7) -> str:
+    types = [t for t, _ in kinds.most_common(k)]
+    top = max(day_kind.values(), default=1) or 1
+    head = "<tr><th></th>" + "".join(f"<th>{d}</th>" for d in ontology.DAYS) + "</tr>"
+
+    def cell(n):
+        if not n:
+            return "<td style='background:#F6F5F8;color:#B8B4BF'>·</td>"
+        a = 0.12 + 0.78 * n / top
+        return f"<td style='background:rgba(84,105,196,{a:.2f});color:{'#fff' if a > .55 else INK}'>{n}</td>"
+    body = "".join(f"<tr><td>{esc(t)}</td>" + "".join(cell(day_kind.get((t, d), 0)) for d in ontology.DAYS)
+                   + "</tr>" for t in types)
+    return ("<div class='on-card'><div class='on-sec'>What happens each day</div>"
+            "<div class='on-sub'>Darker means more events. Read across to plan a week.</div>"
+            f"<table class='on-heat'>{head}{body}</table></div>")

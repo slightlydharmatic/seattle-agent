@@ -2,6 +2,7 @@
 
     build(trace)      -> {"nodes": [...], "edges": [...]}   the full graph, one node per thing
     summary(graph)    -> the question-answering tables the app shows
+    profile(trace)    -> when events happen, what they are, and who hosts them (the Ontology page)
 
 Node types:  Event, Category, Venue, Neighborhood, Source, Month, Status
 Edge types:  IS_A (Event -> Category)          HAPPENS_AT (Event -> Venue)
@@ -153,3 +154,60 @@ def summary(graph: dict) -> dict:
 
 def _is_paid(nodes: dict, eid: str) -> bool:
     return nodes[eid].get("filter_kind") == "paid"
+
+
+# Who puts the event on, by kind of host. Read from the venue name first, then the title.
+# First match wins, so the order matters (a hotel ballroom "fair" is a hotel, not a market).
+HOSTS = [
+    ("Libraries", ("library",)),
+    ("Hotels", ("hotel", "sheraton", "westin", "hyatt", "embassy suites", "fairmont", "w seattle", "w bellevue")),
+    ("Museums & galleries", ("museum", "gallery", "galleries", "art walk", "frye", "aquarium", "conservatory",
+                             "chihuly", "design center")),
+    ("Parks & outdoors", ("park", "beach", "trail", "garden", "arboretum", "zoo", "preserve", "nature", "environmental",
+                          "lake", "waterfront", "pier", "marina", "cruise", "golf", "fountain")),
+    ("Markets & fairs", ("market", "fairground", " fair ", "bazaar", "pop-up", "convention", "farm")),
+    ("Bars, cafes & restaurants", ("brew", " bar ", "taproom", "tavern", " pub", "cafe", "café", "coffee", "cellars",
+                                   "winery", "wines", "restaurant", "mcmenamins", "alehouse", "lounge", "kitchen",
+                                   "distillery", "oyster", "steak", "sushi", "the cove", "jazz alley")),
+    ("Music & theater venues", ("theatre", "theater", " hall", "crocodile", "triple door", "cinema", "siff", "arena",
+                                "dome", "stadium", "field", "performing", "performance", "auditorium", "kexp",
+                                "productions", "showbox", "neptune", "neumos", "armory", "club", "arts center",
+                                "center for the arts", "avenue arts", "film forum", "comedy", "pledge", "music", "dance",
+                                "trapeze", "rink", "downs", "gameworks")),
+    ("Schools & universities", ("university of", "college", "school", "institute")),
+    ("Community & faith groups", ("church", "temple", "cathedral", "sons of norway", "cultural", "community", "nordic",
+                                  "jewish", "mosque", "parish", "st. ", "saint", "shepherd", "spiritual",
+                                  "phinney center", "foundation", "longhouse")),
+    ("Shops & local businesses", ("shop", "store", "camera", "book", "studio", "salon", "therapy", "boutique", "chamber",
+                                  "boxyard", "collective", "regus", "extraslice", "lululemon")),
+    ("City & public spaces", ("seattle center", "westlake", "city of", "discover", "district", "downtown", "plaza",
+                              "square", "tower", "village", "street", " way")),
+]
+UNSURE = "Not sure yet"
+DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+
+def host_type(venue: str, title: str = "") -> str:
+    """The kind of host behind an event, e.g. "Libraries" or "Bars, cafes & restaurants"."""
+    for text in (venue, title):
+        low = f" {_clean(text)} ".lower()
+        for name, words in HOSTS:
+            if any(w in low for w in words):
+                return name
+    return UNSURE
+
+
+def profile(trace: list[dict], live_only: bool = True) -> dict:
+    """When events happen, what they are, and who hosts them. Repeats are counted once."""
+    rows = [t for t in trace if t.get("status") != "Duplicate" and (not live_only or t.get("status") in LIVE)]
+    days, kinds, hosts, day_kind = Counter(), Counter(), Counter(), Counter()
+    for t in rows:
+        kind = t.get("category") or categorize(t)
+        kinds[kind] += 1
+        hosts[host_type(t.get("venue"), t.get("title"))] += 1
+        if isinstance(t.get("date"), date):
+            day = DAYS[t["date"].weekday()]
+            days[day] += 1
+            day_kind[(kind, day)] += 1
+    return {"n": len(rows), "days": {d: days[d] for d in DAYS}, "kinds": kinds, "hosts": hosts,
+            "day_kind": day_kind}

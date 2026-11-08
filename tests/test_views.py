@@ -58,3 +58,20 @@ def test_imports_flow_one_way():
 def test_components_are_pure():
     src = (ROOT / "ui" / "components.py").read_text()
     assert "import streamlit" not in src and "st." not in src
+
+
+def test_ontology_profile_counts_days_types_and_hosts():
+    import ontology
+    assert ontology.host_type("Seattle Public Library, Central") == "Libraries"
+    assert ontology.host_type("Flying Lion Brewing") == "Bars, cafes & restaurants"
+    assert ontology.host_type("", "Mystery night") == ontology.UNSURE
+    trace = [{"title": "Jazz night", "venue": "The Triple Door", "date": date(2026, 11, 7), "status": "Pick",
+              "category": "Music"},
+             {"title": "Jazz night", "venue": "The Triple Door", "date": date(2026, 11, 7), "status": "Duplicate",
+              "category": "Music"},
+             {"title": "Paid gala", "venue": "Hotel Andra", "date": date(2026, 11, 9), "status": "Filtered",
+              "category": "Community"}]
+    p = ontology.profile(trace)
+    assert p["n"] == 1 and p["days"]["Sat"] == 1 and p["kinds"]["Music"] == 1
+    assert p["hosts"]["Music & theater venues"] == 1 and p["day_kind"][("Music", "Sat")] == 1
+    assert ontology.profile(trace, live_only=False)["hosts"]["Hotels"] == 1
