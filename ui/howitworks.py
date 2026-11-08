@@ -16,12 +16,12 @@ CSS = """
 .hw-top .h1{font-size:clamp(44px,6vw,72px) !important;line-height:1 !important;margin:0}
 .hw-top .h1 em{font-style:italic}
 .hw-top p{font-size:19px;color:var(--dim);max-width:52ch;line-height:1.45;margin:0}
-.hw-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);margin-top:22px}
-.hw-kpis div{padding:14px 16px 0 0}
-.hw-kpis b{display:block;font:400 40px/1 var(--serif) !important}
-.hw-kpis span{font-size:14px;color:var(--dim);line-height:1.35;display:block;margin-top:6px}
+.hw-line{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-top:20px;padding-top:16px;
+  border-top:1px solid var(--ink);font-size:16px;color:var(--dim)}
+.hw-line b{font:400 30px/1 var(--serif) !important;color:var(--ink);margin-right:4px}
+.hw-line .hw-arr,.hw-line .hw-dot{color:var(--soft);font-size:20px}
 .hw-cost{position:relative;cursor:pointer;outline:none}
-.hw-cost u{text-decoration:none;border-bottom:1px dashed var(--soft)}
+.hw-cost > b{border-bottom:1px dashed var(--soft)}
 .hw-cost:hover b,.hw-cost:focus-within b{color:var(--peri)}
 .hw-pop{position:absolute;z-index:20;left:-12px;top:calc(100% + 10px);width:440px;max-width:86vw;background:#fff;border:1px solid var(--hair);
   border-radius:14px;box-shadow:0 24px 60px rgba(20,30,70,.18);padding:16px 18px;opacity:0;visibility:hidden;transform:translateY(6px);
@@ -31,8 +31,8 @@ CSS = """
 .hw .hw-pop span.hw-pop-s{display:block;font-size:13px;color:var(--soft);margin:4px 0 8px}
 .hw-pop .hw-table{font-size:13.5px}
 .hw-pop ul{margin:10px 0 0;padding-left:16px;font-size:13px;line-height:1.45;color:var(--dim)}
-.hw-kpis .hw-pop li b{display:inline;font:500 13px/1.45 var(--sans) !important;color:var(--ink)}
-.hw-kpis div.hw-pop{padding:16px 18px}
+.hw-line .hw-pop li b{display:inline;font:500 13px/1.45 var(--sans) !important;color:var(--ink)}
+.hw-line .hw-pop b.hw-pop-t{font:400 22px/1.1 var(--serif) !important;margin:0}
 .hw .hw-pop span.hw-pop-f{display:block;font-size:12px;color:var(--soft);margin-top:8px}
 .hw-h{display:flex;align-items:baseline;gap:14px;margin:52px 0 14px;flex-wrap:wrap}
 .hw-h .h2{font-size:34px !important;line-height:1.05 !important;margin:0}
@@ -61,14 +61,18 @@ CSS = """
 .hw-metrics b{display:block;font:400 30px/1 var(--serif) !important}
 .hw-metrics span{font-size:13px;color:var(--dim);display:block;margin-top:6px}
 .ok{color:#2F6B53 !important;font-weight:500}.no{color:#A8423A !important;font-weight:500}
-.hw-broke{display:grid;gap:0}
-.hw-broke div{display:grid;grid-template-columns:minmax(0,1fr) 22px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--hair);font-size:14.5px;line-height:1.4}
-.hw-broke div span:first-child{color:var(--dim)}
-.hw-broke div span:nth-child(2){color:var(--soft);text-align:center}
+.hw-broke{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hw-bk{background:#fff;border:1px solid var(--hair);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;
+  justify-content:space-between;gap:14px;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.hw-bk:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(30,50,110,.10)}
+.hw .hw-bk p{margin:0}
+.hw .hw-bk p.was{font:400 18px/1.3 var(--serif) !important;color:var(--ink)}
+.hw .hw-bk p.fix{font-size:14px;color:#2F6B53;display:flex;gap:8px;align-items:baseline;padding-top:12px;border-top:1px solid var(--hair)}
+.hw-bk p.fix span{font-weight:600}
 .hw-next{margin-top:36px;padding:16px 20px;background:var(--tint);border-radius:14px;font-size:15px;line-height:1.5}
 .hw-next b{font-weight:500}
-@media (max-width:900px){.hw-kpis,.hw-levers,.hw-metrics{grid-template-columns:1fr 1fr}.hw-calls{grid-template-columns:1fr}
-  .hw-broke div{grid-template-columns:1fr}.hw-broke div span:nth-child(2){display:none}}
+@media (max-width:900px){.hw-levers,.hw-metrics{grid-template-columns:1fr 1fr}.hw-calls{grid-template-columns:1fr}
+  .hw-broke{grid-template-columns:1fr}}
 </style>
 """
 
@@ -88,11 +92,10 @@ def top(n_sites: int, est: dict, views: str) -> str:
 <div class='hw'><div class='hw-top'>
   <div class='h1'>How it <em>works</em></div>
   <p>The AI workflow that turns unstructured data into a list with taste, generating 1M+ views a month.</p>
-  <div class='hw-kpis'>
-    <div><b>5+ hrs</b><span>a week by hand, before</span></div>
-    <div><b>2 models</b><span>a cheap one reads, a stronger one judges</span></div>
-    <div class='hw-cost' tabindex='0'><b>~{money(est['total'])}</b><span>per weekly run · <u>see the math</u></span>{cost_panel(est)}</div>
-    <div><b>{e(views)}</b><span>views on our last 5 lists</span></div>
+  <div class='hw-line'>
+    <span><b>5+ hrs</b> by hand</span><span class='hw-arr'>→</span>
+    <span class='hw-cost' tabindex='0'><b>~{money(est['total'])}</b> by agent{cost_panel(est)}</span>
+    <span class='hw-dot'>·</span><span><b>{e(views)}</b> views</span>
   </div>
 </div>
 <div class='hw-h'><div class='h2'>The <em>system</em></div><span>Hover a step for what it does, what it costs, and the real screen.</span></div></div>"""
@@ -149,15 +152,16 @@ def calls(keep_at: int, drop_below: int, metrics: dict, examples: list[tuple]) -
 
 def broke() -> str:
     items = [
-        ("Keywords let a \"free AI webinar\" sales call through", "Added an AI judge for intent"),
-        ("A source quietly returned zero events", "Circuit breaker plus per-source warnings"),
-        ("One site served last month's events", "Read month-specific pages instead"),
+        ("Keyword rules let a free AI webinar, really a sales pitch, through", "An AI judge that reads intent"),
+        ("A source quietly returned zero events", "Circuit breaker and per-source alerts"),
+        ("One site served last month's events", "Read month-specific pages"),
         ("Long pages got cut off mid-list", "Read in overlapping chunks"),
-        ("\"Free\" events had ticket links in the details", "Rules for ticket language and prices in text"),
-        ("Team votes vanished when the app restarted", "Moved them to a database (Supabase)"),
+        ("\"Free\" events hid ticket links", "Rules for ticket language and prices"),
+        ("Team votes vanished on restart", "Moved to a database (Supabase)"),
     ]
-    rows = "".join(f"<div><span>{e(a)}</span><span>→</span><span>{e(b)}</span></div>" for a, b in items)
+    cards = "".join(f"<div class='hw-bk'><p class='was'>{e(a)}</p><p class='fix'><span>✓</span>{e(b)}</p></div>"
+                    for a, b in items)
     return f"""
-<div class='hw'><div class='hw-h'><div class='h2'>What <em>broke</em></div><span>and what changed</span></div>
-<div class='hw-broke'>{rows}</div>
+<div class='hw'><div class='hw-h'><div class='h2'>What <em>broke</em></div><span>and how we fixed it</span></div>
+<div class='hw-broke'>{cards}</div>
 <div class='hw-next'><b>Next:</b> a hand-labeled golden set every prompt change must pass, real token logging, and click tracking to see which picks people actually go to.</div></div>"""
