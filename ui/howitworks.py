@@ -20,6 +20,20 @@ CSS = """
 .hw-kpis div{padding:14px 16px 0 0}
 .hw-kpis b{display:block;font:400 40px/1 var(--serif) !important}
 .hw-kpis span{font-size:14px;color:var(--dim);line-height:1.35;display:block;margin-top:6px}
+.hw-cost{position:relative;cursor:pointer;outline:none}
+.hw-cost u{text-decoration:none;border-bottom:1px dashed var(--soft)}
+.hw-cost:hover b,.hw-cost:focus-within b{color:var(--peri)}
+.hw-pop{position:absolute;z-index:20;left:-12px;top:calc(100% + 10px);width:440px;max-width:86vw;background:#fff;border:1px solid var(--hair);
+  border-radius:14px;box-shadow:0 24px 60px rgba(20,30,70,.18);padding:16px 18px;opacity:0;visibility:hidden;transform:translateY(6px);
+  transition:opacity .2s,transform .25s,visibility .2s;cursor:default}
+.hw-cost:hover .hw-pop,.hw-cost:focus-within .hw-pop{opacity:1;visibility:visible;transform:none}
+.hw-pop b.hw-pop-t{display:block;font:400 22px/1.1 var(--serif) !important;color:var(--ink)}
+.hw .hw-pop span.hw-pop-s{display:block;font-size:13px;color:var(--soft);margin:4px 0 8px}
+.hw-pop .hw-table{font-size:13.5px}
+.hw-pop ul{margin:10px 0 0;padding-left:16px;font-size:13px;line-height:1.45;color:var(--dim)}
+.hw-kpis .hw-pop li b{display:inline;font:500 13px/1.45 var(--sans) !important;color:var(--ink)}
+.hw-kpis div.hw-pop{padding:16px 18px}
+.hw .hw-pop span.hw-pop-f{display:block;font-size:12px;color:var(--soft);margin-top:8px}
 .hw-h{display:flex;align-items:baseline;gap:14px;margin:52px 0 14px;flex-wrap:wrap}
 .hw-h .h2{font-size:34px !important;line-height:1.05 !important;margin:0}
 .hw-h .h2 em{font-style:italic}
@@ -73,37 +87,33 @@ def top(n_sites: int, est: dict, views: str) -> str:
     return f"""
 <div class='hw'><div class='hw-top'>
   <div class='h1'>How it <em>works</em></div>
-  <p>An AI workflow that turns {n_sites} event sites into one weekly list our followers trust, with my team in the loop.</p>
+  <p>The AI workflow that turns unstructured data into a list with taste, generating 1M+ views a month.</p>
   <div class='hw-kpis'>
     <div><b>5+ hrs</b><span>a week by hand, before</span></div>
     <div><b>2 models</b><span>a cheap one reads, a stronger one judges</span></div>
-    <div><b>~{money(est['total'])}</b><span>per weekly run, estimated</span></div>
+    <div class='hw-cost' tabindex='0'><b>~{money(est['total'])}</b><span>per weekly run · <u>see the math</u></span>{cost_panel(est)}</div>
     <div><b>{e(views)}</b><span>views on our last 5 lists</span></div>
   </div>
 </div>
 <div class='hw-h'><div class='h2'>The <em>system</em></div><span>Hover a step for what it does, what it costs, and the real screen.</span></div></div>"""
 
 
-def cost(est: dict) -> str:
+def cost_panel(est: dict) -> str:
+    """The cost breakdown, shown when someone hovers or taps the cost number."""
     x, c = est["extract"], est["curate"]
-    rows = (f"<tr><td>Read pages</td><td><code>{e(x['model'])}</code></td><td class='num'>{x['in'] / 1000:.0f}K in · {x['out'] / 1000:.0f}K out</td>"
-            f"<td class='num'>{money(x['usd'])}</td></tr>"
-            f"<tr><td>Judge events</td><td><code>{e(c['model'])}</code></td><td class='num'>{c['in'] / 1000:.0f}K in · {c['out'] / 1000:.0f}K out</td>"
-            f"<td class='num'>{money(c['usd'])}</td></tr>"
-            f"<tr><td>Rules, dedupe, breaker</td><td><code>no model</code></td><td class='num'>0</td><td class='num'>$0</td></tr>"
-            f"<tr class='tot'><td>Per weekly run</td><td></td><td class='num'>{est['pages']} pages · {est['events']} events · {est['calls']} judge calls</td>"
+    rows = (f"<tr><td>Read pages</td><td><code>{e(x['model'])}</code></td><td class='num'>{money(x['usd'])}</td></tr>"
+            f"<tr><td>Judge events</td><td><code>{e(c['model'])}</code></td><td class='num'>{money(c['usd'])}</td></tr>"
+            f"<tr><td>Rules, dedupe, breaker</td><td><code>no model</code></td><td class='num'>$0</td></tr>"
+            f"<tr class='tot'><td>Per weekly run</td><td>{est['pages']} pages · {est['events']} events</td>"
             f"<td class='num'>~{money(est['total'])}</td></tr>")
-    return f"""
-<div class='hw'><div class='hw-h'><div class='h2'>What it <em>costs</em></div><span>~{money(est['month'])} a month in model calls, plus search credits</span></div>
-<table class='hw-table'><thead><tr><th>Step</th><th>Model</th><th class='num'>Tokens per run</th><th class='num'>Est.</th></tr></thead>
-<tbody>{rows}</tbody></table>
-<div class='hw-foot'>Estimate from list prices and written-out token assumptions (costs.py). Next: log real usage from every API response.</div>
-<div class='hw-levers'>
-  <div><b>Right model per job</b>Volume goes to the cheap model. Only judgment gets the stronger one.</div>
-  <div><b>Rules before models</b>Paid or ticketed events never reach a paid call.</div>
-  <div><b>Batch and cache</b>20 events per call. Each event is judged once per prompt version.</div>
-  <div><b>Readers cost $0</b>The public page reads a saved snapshot, never the APIs.</div>
-</div></div>"""
+    return f"""<div class='hw-pop'>
+<b class='hw-pop-t'>What it costs</b><span class='hw-pop-s'>~{money(est['month'])} a month in model calls, plus search credits</span>
+<table class='hw-table'><tbody>{rows}</tbody></table>
+<ul><li><b>Right model per job.</b> Volume goes to the cheap model; only judgment gets the stronger one.</li>
+<li><b>Rules before models.</b> Paid or ticketed events never reach a paid call.</li>
+<li><b>Batch and cache.</b> 20 events per call, each judged once per prompt version.</li>
+<li><b>Readers cost $0.</b> The public page reads a saved snapshot.</li></ul>
+<span class='hw-pop-f'>Estimated from list prices and token assumptions in costs.py.</span></div>"""
 
 
 def calls(keep_at: int, drop_below: int, metrics: dict, examples: list[tuple]) -> str:
@@ -124,7 +134,7 @@ def calls(keep_at: int, drop_below: int, metrics: dict, examples: list[tuple]) -
     votes = metrics.get("votes", 0)
     ex = "".join(f"<tr><td>{e(t)}</td><td>passes</td><td class='{'ok' if ok else 'no'}'>{e(v)}</td></tr>" for t, v, ok in examples)
     return f"""
-<div class='hw'><div class='hw-h'><div class='h2'>The calls <em>I made</em></div></div>
+<div class='hw'><div class='hw-h'><div class='h2'>Our AI <em>product calls</em></div></div>
 <div class='hw-calls'>{c}</div>
 <div class='hw-h'><div class='h2'>Keywords vs. <em>meaning</em></div><span>Why a model is worth paying for here</span></div>
 <table class='hw-table'><thead><tr><th>Event (test set)</th><th>Keyword rules</th><th>AI judge</th></tr></thead><tbody>{ex}</tbody></table>

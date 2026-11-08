@@ -11,7 +11,7 @@ from datetime import date
 
 from ui.story import ASSETS, _b64, _font
 
-HEIGHT = 720
+HEIGHT = 560  # short enough that the next section shows; the phone peeks off the bottom
 POST_COLORS = ["#C9D4F7", "#F5D3E3", "#CFE6F7", "#F6E7C8", "#D9D2F3", "#E3EEDF"]
 
 
@@ -125,6 +125,9 @@ html,body{{background:transparent;font-family:var(--sans);color:var(--ink)}}
 @keyframes bob{{50%{{margin-top:-8px}}}}
 .foot{{position:absolute;left:34px;right:34px;bottom:24px;display:flex;justify-content:space-between;font-size:15px;z-index:5;color:var(--dim)}}
 .foot b{{font:italic 400 19px var(--serif);color:var(--ink)}}
+.cue{{color:var(--ink);font-weight:500}}
+.cue i{{display:inline-block;font-style:normal;margin-left:6px;animation:nudge 1.6s ease-in-out infinite}}
+@keyframes nudge{{50%{{transform:translateY(5px)}}}}
 @media (max-width:760px){{.giant{{font-size:110px;top:120px}}.chip{{display:none}}.bar{{padding:18px}}.bar span{{display:none}}}}
 @media (prefers-reduced-motion:reduce){{*{{animation:none!important;transition:none!important}}}}
 </style></head><body>
@@ -139,7 +142,7 @@ html,body{{background:transparent;font-family:var(--sans);color:var(--ink)}}
       <div class="feed" id="feed"></div></div></div>
     {''.join(f'<div class="chip c{i + 1}" data-d="{(i + 1) * 9}">{html.escape(c)}</div>' for i, c in enumerate(chips))}
   </div>
-  <div class="foot"><span><b>free</b> &nbsp;no tickets, no sales pitches</span><span>picked by people who live here</span></div>
+  <div class="foot"><span class="cue">scroll to see how it works <i>↓</i></span><span>picked by people who live here</span></div>
 </div>
 <script>
 const IMGS = {json.dumps(images)}, CARDS = {json.dumps(cards)};
