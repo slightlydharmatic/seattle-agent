@@ -2,11 +2,9 @@
 
     streamlit run app.py
 """
-import calendar
 import hmac
-import os
 from collections import Counter
-from datetime import date, timedelta
+from datetime import date
 from urllib.parse import urlparse
 
 import pandas as pd
@@ -27,10 +25,8 @@ import ontology
 import snapshot
 from agents.reasoner import CATEGORIES
 from agents.synthesizer import FILTERED, MERGED, PICK, PUBLISH, REVIEW, SHEET_COLUMNS
-from pipeline import build_graph
-from tests.sample_events import sample_state
-from ui import theme
-from ui.components import add_months, day_label, esc, event_row, filtered_row, sheet_rows, site
+from ui import data, theme
+from ui.components import day_label, esc, event_row, filtered_row, sheet_rows, site
 
 st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
 
@@ -41,40 +37,6 @@ CATEGORY_OPTIONS = ["Auto"] + list(CATEGORIES) + ["Community"]
 
 
 # ---------- data ----------
-def fetch_live(query: str) -> dict:
-    """Steps 1 to 2: the slow, paid part. Team only, and it saves a new snapshot."""
-    raw = build_graph(stop_after="extractor").invoke({"query": query})
-    old = snapshot.load()
-    result = breaker.check(raw, old)
-    if result["tripped"]:
-        breaker.hold(snapshot.build(raw), result)  # readers keep the last good list
-        return {}
-    breaker.clear()
-    snapshot.save(raw)
-    return raw
-
-
-def team_password() -> str:
-    try:
-        return str(st.secrets.get("TEAM_PASSWORD", "")) or os.getenv("TEAM_PASSWORD", "")
-    except Exception:  # no secrets file locally
-        return os.getenv("TEAM_PASSWORD", "")
-
-
-def finish(raw: dict, custom: list[dict], end: date, picks: int, include_paid: bool,
-           fb_rows: list[dict] | None = None, live: bool = False) -> dict:
-    """Steps 3 to 7: fast, so they rerun whenever settings, votes, or your events change.
-
-    The AI curator only calls the model when live=True (team buttons); otherwise it
-    reuses the scores saved in the snapshot.
-    """
-    rules = filters.load()
-    state = {**raw, "custom_events": custom, "window_end": end, "filters": rules,
-             "max_picks": picks, "free_only": not include_paid, "curate_live": live,
-             **rules.get("curation", {})}
-    if fb_rows is not None:
-        state["feedback_rows"] = fb_rows
-    return build_graph(skip_until="normalizer").invoke(state)
 
 
 @st.dialog("Add an event")
@@ -132,50 +94,13 @@ with st.sidebar:
         use_sample, query, n_months, picks, include_paid, go = snap is None, "", 3, 6, False, False
 
 if go:
-    with st.spinner("Reading listing pages..."):
-        try:
-            fetched = fetch_live(query)
-        except RuntimeError as err:  # missing keys, no credits, and similar setup problems
-            st.error(str(err))
-            st.stop()
-    if not fetched.get("events_raw"):
-        st.warning("The circuit breaker held that run, so readers still see the last good list. "
-                   "Details are at the top of the Events page.")
-    snap, use_sample = snapshot.load(), False
-    st.session_state.curate_now = "new"
+    snap, use_sample = data.run_live_search(query), False
 
-# Team: score events with the AI curator (new ones, or everything again with the latest votes)
-if st.session_state.pop("curate_now", None) and snap is not None:
-    mode = st.session_state.pop("curate_mode", "new")
-    base = {**snap, "curation": {} if mode == "all" else (snap.get("curation") or {})}
-    with st.spinner("The AI curator is reading the events..."):
-        try:
-            done = finish(base, custom_events.load(), date.today().replace(day=28) + timedelta(days=95),
-                          6, False, live=True)
-            snapshot.save({**snap, "curation": done["curation"]})
-            snap = snapshot.load()
-            st.toast(f"Curated {len(done['curation'])} events")
-        except RuntimeError as err:
-            st.error(str(err))
-
-if use_sample or snap is None:
-    raw, as_of, is_sample = sample_state(), None, True
-else:
-    raw, as_of, is_sample = snap, snapshot.fetched_on(snap), False
-
-today = raw.get("today") if is_sample else date.today()
-months = [add_months(today.replace(day=1), i) for i in range(n_months)]
-last = months[-1]
-end = last.replace(day=calendar.monthrange(last.year, last.month)[1])
-
-mine = custom_events.load()
-fb_rows = feedback.load()
-res = finish(raw, mine, end, picks, include_paid, fb_rows=fb_rows)
-votes = feedback.votes_by_key(fb_rows)
-trace = pd.DataFrame(res["trace"])
-trace["month"] = trace["date"].map(lambda d: (d.year, d.month) if isinstance(d, date) else None)
-trace["site"] = trace.apply(lambda t: "added by you" if t["custom"] else site(t["source"]), axis=1)
-titles_by_id = dict(zip(trace["id"], trace["title"]))
+snap = data.run_curation(snap)
+ctx = data.load_ctx(snap, use_sample, n_months, picks, include_paid, team)
+raw, as_of, is_sample, months, mine = ctx.raw, ctx.as_of, ctx.is_sample, ctx.months, ctx.mine
+fb_rows, res, votes, trace, titles_by_id = ctx.fb_rows, ctx.res, ctx.votes, ctx.trace, ctx.titles_by_id
+labels, other, views = ctx.labels, ctx.other, ctx.month_views
 
 with st.sidebar:
     pages = res.get("pages") or []
@@ -201,7 +126,7 @@ with st.sidebar:
         with st.expander("Team sign in"):
             pw = st.text_input("Password", type="password", key="pw")
             if st.button("Sign in", width="stretch"):
-                expected = team_password()
+                expected = data.team_password()
                 if expected and hmac.compare_digest(pw, expected):
                     st.session_state.team = True
                     st.rerun()
@@ -740,15 +665,6 @@ def render_curation_page() -> None:
 
 
 # ---------- navigation ----------
-labels = [f"{m:%B %Y}" for m in months]
-in_range = {(m.year, m.month) for m in months}
-other = trace[~trace["month"].isin(in_range)]
-views = [(lab, int((trace["month"] == (m.year, m.month)).sum())) for lab, m in zip(labels, months)]
-if not other.empty:
-    views.append(("Past or undated", len(other)))
-if mine:
-    views.append(("Added by you", len(mine)))
-
 state = st.session_state
 state.setdefault("section", "curation")
 if state.section not in ("curation", "ontology", "events"):
