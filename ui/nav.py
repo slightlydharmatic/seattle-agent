@@ -1,7 +1,7 @@
 """Navigation: session-state only (section + view), same buttons and keys as before. No URL params."""
 import streamlit as st
 
-SECTIONS = ("curation", "ontology", "events")
+SECTIONS = ("curation", "ontology", "press", "events")
 
 
 def go_to(section: str, view: str | None = None) -> None:
@@ -27,6 +27,8 @@ def render(nav_box, month_views: list[tuple]) -> None:
                   type="primary" if state.section == "curation" else "secondary")
         st.button("Ontology of events", key="nav-onto", width="stretch", on_click=go_to, args=("ontology",),
                   type="primary" if state.section == "ontology" else "secondary")
+        st.button("Press and clients", key="nav-press", width="stretch", on_click=go_to, args=("press",),
+                  type="primary" if state.section == "press" else "secondary")
         st.button("End result", key="nav-events", width="stretch", on_click=go_to, args=("events",),
                   type="primary" if state.section == "events" else "secondary")
         if state.section == "events":

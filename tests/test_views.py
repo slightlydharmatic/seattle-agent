@@ -19,7 +19,7 @@ def sample_row(**over) -> pd.Series:
 
 
 def test_each_view_imports_and_exposes_render():
-    for name in ("events", "curation", "ontology"):
+    for name in ("events", "curation", "ontology", "press"):
         mod = importlib.import_module(f"views.{name}")
         assert callable(mod.render), name
 

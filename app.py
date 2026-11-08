@@ -12,6 +12,7 @@ from ui import data, nav, sidebar, theme
 from views import curation as curation_view
 from views import events as events_view
 from views import ontology as ontology_view
+from views import press as press_view
 
 st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
 
@@ -44,5 +45,7 @@ if section == "curation":
     curation_view.render(ctx)
 elif section == "ontology":
     ontology_view.render(ctx)
+elif section == "press":
+    press_view.render(ctx)
 else:
     events_view.render(ctx)

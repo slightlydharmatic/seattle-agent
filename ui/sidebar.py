@@ -6,7 +6,6 @@ import streamlit as st
 
 import custom_events
 from agents.reasoner import CATEGORIES
-from ui.components import site
 from ui.data import team_password
 
 CATEGORY_OPTIONS = ["Auto"] + list(CATEGORIES) + ["Community"]
@@ -67,13 +66,8 @@ def start(team: bool, snap: dict | None):
 
 
 def status(ctx) -> None:
-    """Bottom of the sidebar: pages read, data freshness, where team work is saved, and sign in / out."""
+    """Bottom of the sidebar: data freshness, where team work is saved, and sign in / out."""
     with st.sidebar:
-        pages = ctx.res.get("pages") or []
-        ok = sum(p["status"] == "read" for p in pages)
-        with st.expander(f"Pages read · {ok}/{len(pages)}"):
-            for p in pages:
-                st.write(f"{site(p['url'])} · {p['events'] if p['status'] == 'read' else p['status']}")
         st.caption("Sample data" if ctx.is_sample else f"Updated {ctx.as_of:%b} {ctx.as_of.day}, {ctx.as_of.year}" if ctx.as_of else "")
         if ctx.team:
             import kvstore

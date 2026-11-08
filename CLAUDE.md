@@ -1,6 +1,6 @@
 # Seattle Unlocked event desk
 
-A Streamlit app that finds free Seattle events and curates them for the Seattle Unlocked Instagram (@seattle_forfree). A weekly pipeline (LangGraph, in `agents/` + `pipeline.py`) reads listing sites with Tavily, extracts events with a low-cost model, applies keyword rules, and has an AI curator score each event 0 to 100 with a reason. The team reviews close calls and votes thumbs up or down; votes override the model and become its few-shot examples. The app has three pages: **How it works** (case study: phone hero, system diagram, costs, decisions, plus team controls when signed in), **Ontology of events** (when events happen by day of week, what type they are, and what kind of host puts them on), and **End result** (the list we post, by month, with held and filtered events and why). Readers see a saved snapshot; only signed-in team members trigger paid API calls.
+A Streamlit app that finds free Seattle events and curates them for the Seattle Unlocked Instagram (@seattle_forfree). A weekly pipeline (LangGraph, in `agents/` + `pipeline.py`) reads listing sites with Tavily, extracts events with a low-cost model, applies keyword rules, and has an AI curator score each event 0 to 100 with a reason. The team reviews close calls and votes thumbs up or down; votes override the model and become its few-shot examples. The app has four pages: **How it works** (case study: phone hero, system diagram, costs, decisions, plus team controls when signed in), **Ontology of events** (when events happen by day of week, what type they are, and what kind of host puts them on), and **Press and clients** (client wall; press list appears once assets/press.json has entries), and **End result** (the list we post, by month, with held and filtered events and why). Readers see a saved snapshot; only signed-in team members trigger paid API calls.
 
 ## File map
 
@@ -19,6 +19,7 @@ ui/story.py         asset helpers (_b64, _font, ASSETS) and the older 7-step sto
 views/events.py     End result page: render(ctx)
 views/curation.py   How it works page: render(ctx)
 views/ontology.py   Ontology page: render(ctx)
+views/press.py      Press and clients page: render(ctx); client list in CLIENTS, press in assets/press.json
 
 agents/, pipeline.py, config.py   the pipeline and settings
 filters.py, feedback.py, custom_events.py, kvstore.py, snapshot.py, breaker.py, costs.py, ontology.py
