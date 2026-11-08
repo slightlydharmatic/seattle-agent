@@ -18,6 +18,7 @@ import custom_events
 import feedback
 import breaker
 from config import CURATOR_MODEL, MONTHLY_PAGES, OPENAI_MODEL, SOURCE_PAGES
+import case_study
 import story
 import filters
 from agents.curator import AUDIENCE, INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
@@ -34,7 +35,7 @@ st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
 # Look: a dark, dense object explorer. Each event is an object with properties.
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400&family=Hanken+Grotesk:wght@400;500&display=swap');
 /* Look: light and quiet like Stripe, warmer and softer. Warm white, plum accent, sage for good, coral for held. */
 :root{--bg:#FBF9F7;--panel:#FFFFFF;--panel2:#F6F2EF;--line:#ECE6E1;--line2:#E2DAD4;
       --text:#2A2433;--dim:#6E6676;--muted:#706877;
@@ -953,7 +954,24 @@ def render_curation_page() -> None:
          "text": "Neighbors meet, try something new, and the city gets a little closer. That's the whole point.",
          "stats": []},
     ]
+    # Eval metrics for the case study (precision / recall need 10+ labeled votes)
+    labeled = [r for r in fb_rows if r.get("model_score") is not None]
+    cs_metrics = {"votes": len(labeled),
+                  "close_share": (n_unsure / len(scored)) if len(scored) else None}
+    if len(labeled) >= 10:
+        kept_lab = [r for r in labeled if int(r["model_score"]) >= hi]
+        good = [r for r in labeled if int(r["vote"]) > 0]
+        cs_metrics["precision"] = (sum(int(r["vote"]) > 0 for r in kept_lab) / len(kept_lab)) if kept_lab else None
+        cs_metrics["recall"] = (sum(int(r["model_score"]) >= hi for r in good) / len(good)) if good else None
+
+    st.markdown(case_study.CSS + case_study.hero(n_sites) + case_study.problem()
+                + case_study.architecture(OPENAI_MODEL, CURATOR_MODEL), unsafe_allow_html=True)
     components.html(story.render(steps), height=story.HEIGHT)
+    st.markdown(case_study.moat(PROMPT_VERSION, hi, lo, cs_metrics) + case_study.failures(hi, lo),
+                unsafe_allow_html=True)
+    st.markdown("<div class='cs'><div class='cs-sec' style='grid-template-columns:1fr'><div>"
+                "<h2>The live system</h2><p class='kicker'>Everything below is the working tool my team uses each week.</p>"
+                "</div></div></div>", unsafe_allow_html=True)
 
     # Who we curate for, and what makes a pick
     traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
