@@ -19,6 +19,7 @@ import feedback
 import breaker
 from config import CURATOR_MODEL, MONTHLY_PAGES, OPENAI_MODEL, SOURCE_PAGES
 import case_study
+import hero
 import story
 import filters
 from agents.curator import AUDIENCE, INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
@@ -930,28 +931,28 @@ def render_curation_page() -> None:
     upgraded = CURATOR_MODEL != OPENAI_MODEL
     n_votes = len(fb_rows)
     steps = [
-        {"title": "we pull the listings", "image": "steps/s1.png",
-         "text": f"Every Monday the agent reads {n_sites} Seattle event sites, so the team starts from everything, not a guess.",
-         "stats": [(len(raw_events), "events found"), (n_sites, "sites read")]},
-        {"title": "a low-cost model tidies them up", "image": "steps/s2.png",
-         "text": f"{OPENAI_MODEL} turns messy pages into clean events, merges repeats, and checks each one has a date, a place, and no price.",
-         "stats": [(len(trace), "unique events"), (max(len(raw_events) - len(trace), 0), "repeats merged")]},
-        {"title": "a stronger model finds the gems", "image": "steps/s3.png",
-         "text": ("Reads what each event is really for. Sales pitches, religious services, and partisan events "
-                  "score low, even when they're free.")
-                 + (f" Runs on {CURATOR_MODEL}." if upgraded else ""),
-         "stats": [(n_kept, "made the list"), (n_low, "caught by AI")]},
-        {"title": "our team teaches it", "image": "steps/s4.png",
-         "text": "Thumbs up and down override the AI right away and become its examples on the next run.",
-         "stats": [(n_votes, "team votes"), (n_unsure, "close calls")]},
-        {"title": "picks become our graphic", "quiet": "the week's picks, in our template",
-         "text": "The team drops the week's picks into the Seattle Unlocked template.",
+        {"title": "round up every listing in town", "image": "steps/s1.png",
+         "text": f"Every Monday the agent checks {n_sites} Seattle event sites, so nobody's stuck scrolling at midnight.",
+         "stats": [(len(raw_events), "events found"), (n_sites, "sites checked")]},
+        {"title": "tidy up the mess", "image": "steps/s2.png",
+         "text": "A small, cheap model turns messy listings into clean ones. Same event on three sites? We keep one. "
+                 "No date, no place, or a hidden price? It waits for us.",
+         "stats": [(len(trace), "clean events"), (max(len(raw_events) - len(trace), 0), "repeats tossed")]},
+        {"title": "sniff out the good stuff", "image": "steps/s3.png",
+         "text": "A smarter model reads each event the way we would. Free webinar that's secretly a sales call? Out. "
+                 "Neighborhood art walk? Very in." + (f" (It's {CURATOR_MODEL}.)" if upgraded else ""),
+         "stats": [(n_kept, "made the cut"), (n_low, "sales pitches and such")]},
+        {"title": "let the crew weigh in", "image": "steps/s4.png",
+         "text": "When it gets one wrong, we hit thumbs down. It remembers for next week.",
+         "stats": [(n_votes, "votes from us"), (n_unsure, "close calls for us")]},
+        {"title": "dress it up", "quiet": "this week's picks, looking cute",
+         "text": "Our favorites go into the Seattle Unlocked template. This part stays human, because it's our voice.",
          "stats": [(min(n_kept, 6), "picks this week")]},
-        {"title": "we post it", "quiet": "@seattle_forfree",
-         "text": "The graphic goes up on Instagram for Seattle locals who want something to do this week.",
+        {"title": "hit post", "quiet": "@seattle_forfree",
+         "text": "Up on Instagram for about 80k Seattle locals looking for something to do.",
          "stats": [("80k", "followers")]},
-        {"title": "seattle shows up", "quiet": "see you there.",
-         "text": "Neighbors meet, try something new, and the city gets a little closer. That's the whole point.",
+        {"title": "see you there", "quiet": "see you there.",
+         "text": "People show up, meet their neighbors, and Seattle feels a little smaller. In a good way.",
          "stats": []},
     ]
     # Eval metrics for the case study (precision / recall need 10+ labeled votes)
@@ -964,13 +965,32 @@ def render_curation_page() -> None:
         cs_metrics["precision"] = (sum(int(r["vote"]) > 0 for r in kept_lab) / len(kept_lab)) if kept_lab else None
         cs_metrics["recall"] = (sum(int(r["model_score"]) >= hi for r in good) / len(good)) if good else None
 
-    st.markdown(case_study.CSS + case_study.hero(n_sites) + case_study.problem()
-                + case_study.architecture(OPENAI_MODEL, CURATOR_MODEL), unsafe_allow_html=True)
+    # 1. Hero: the phone with this week's picks
+    live = trace[trace["status"].isin([PICK, PUBLISH])].copy()
+    live["_p"] = (live["status"] != PICK).astype(int)
+    live["_d"] = live["date"].map(lambda d: d if isinstance(d, date) else date.max)
+    live = live[live["_d"] >= date.today()] if (live["_d"] >= date.today()).any() else live
+    picks = live.sort_values(["_p", "_d"]).head(8).to_dict("records")
+    components.html(hero.render(picks), height=hero.HEIGHT)
+
+    # 2. The promise, then how it works
+    st.markdown(case_study.CSS + """
+<div class='cs'><div class='cs-goto'>
+  <h1>The go-to way to find out about <em>Seattle events</em></h1>
+  <p>Free things worth leaving the house for, picked by people who live here. A fresh list every week.</p>
+  <a class='cs-btn' href='https://www.instagram.com/seattle_forfree/' target='_blank' rel='noopener'>Follow @seattle_forfree →</a>
+</div>
+<div class='cs-hiw'><span class='cs-eyebrow'>how it works</span>
+  <h2>From a messy pile of listings to <em>see you there</em></h2>
+  <p>Hover a step to see what happens behind the scenes.</p></div></div>""", unsafe_allow_html=True)
     components.html(story.render(steps), height=story.HEIGHT)
-    st.markdown(case_study.moat(PROMPT_VERSION, hi, lo, cs_metrics) + case_study.failures(hi, lo),
+
+    # 3. The case study
+    st.markdown(case_study.hero(n_sites) + case_study.problem() + case_study.architecture(OPENAI_MODEL, CURATOR_MODEL)
+                + case_study.moat(PROMPT_VERSION, hi, lo, cs_metrics) + case_study.failures(hi, lo),
                 unsafe_allow_html=True)
     st.markdown("<div class='cs'><div class='cs-sec' style='grid-template-columns:1fr'><div>"
-                "<h2>The live system</h2><p class='kicker'>Everything below is the working tool my team uses each week.</p>"
+                "<h2>The tool <em>itself</em></h2><p class='kicker'>This is what my team opens every Monday.</p>"
                 "</div></div></div>", unsafe_allow_html=True)
 
     # Who we curate for, and what makes a pick

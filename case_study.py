@@ -14,8 +14,20 @@ CSS = """
   --peri:#5469C4;--blush:#F5DDE7;--rose:#A65A7D;--serif:'Bodoni Moda',Didot,Georgia,serif;
   --sans:'Hanken Grotesk','Figtree',-apple-system,sans-serif;font-family:var(--sans);color:var(--ink)}
 .cs *{font-family:inherit}
+.cs [data-testid="stHeaderActionElements"], .cs h1 a, .cs h2 a{display:none !important}
 .cs .serif, .cs h1, .cs h2, .cs h3{font-family:var(--serif) !important;font-weight:400;letter-spacing:-.01em;color:var(--ink)}
-.cs-hero{background:var(--blue);border-radius:20px;padding:34px 36px 30px;margin-bottom:8px;position:relative;overflow:hidden}
+.cs-goto{text-align:center;padding:72px 16px 64px;display:grid;justify-items:center;gap:16px}
+.cs-goto h1{font-size:clamp(40px,5.4vw,68px) !important;line-height:1.02 !important;max-width:15ch;margin:0;padding:0 !important;text-wrap:balance}
+.cs-goto h1 em{font-style:italic}
+.cs-goto p{font-size:19px;color:var(--dim);max-width:46ch;line-height:1.5;margin:0}
+.cs-btn{display:inline-block;margin-top:8px;background:var(--ink);color:#fff !important;text-decoration:none !important;border-radius:999px;
+  padding:13px 24px;font-size:16px;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.cs-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(30,42,71,.25)}
+.cs-hiw{padding:24px 0 22px;border-top:1px solid var(--hair);display:grid;gap:8px}
+.cs-hiw h2{font-size:clamp(32px,4vw,46px) !important;line-height:1.05 !important;margin:0;padding:0 !important;max-width:22ch}
+.cs-hiw h2 em{font-style:italic}
+.cs-hiw p{font-size:17px;color:var(--dim);margin:0}
+.cs-hero{background:var(--blue);border-radius:20px;padding:34px 36px 30px;margin:56px 0 8px;position:relative;overflow:hidden}
 .cs-hero:after{content:"";position:absolute;width:420px;height:300px;right:-80px;top:-90px;border-radius:50%;
   background:var(--blush);filter:blur(70px);opacity:.9}
 .cs-hero > *{position:relative;z-index:1}
@@ -50,7 +62,6 @@ CSS = """
 .cs-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(30,50,110,.10)}
 .cs-card .t{font:italic 400 22px/1.15 var(--serif) !important;margin-bottom:8px;display:block}
 .cs-card p{font-size:15px;color:var(--dim);line-height:1.5;margin:0}
-.cs-card .no{display:inline-block;margin-top:12px;font-size:13px;color:var(--rose);background:var(--blush);padding:3px 10px;border-radius:999px}
 .cs-gap{margin-top:16px;padding:16px 20px;border-left:2px solid var(--peri);background:var(--blue2);border-radius:0 12px 12px 0;font-size:17px;line-height:1.5}
 .cs-gap b{font-weight:500}
 
@@ -123,19 +134,21 @@ def e(x) -> str:
     return html.escape(str(x))
 
 
+
+
 def hero(n_sites: int) -> str:
     return f"""
 <div class='cs'><div class='cs-hero'>
-  <div class='cs-eyebrow'>case study · seattle unlocked</div>
+  <div class='cs-eyebrow'>the case study</div>
   <h1>Teaching an AI what <em>worth going to</em> means</h1>
-  <p class='lead'>Curating free Seattle events for 80k followers took me 5+ hours a week, and no tool could tell a
-  community meetup from a sales pitch dressed up as one. I built an agent that does the reading, judges intent
-  instead of keywords, and hands my team only the close calls.</p>
+  <p class='lead'>I run Seattle Unlocked, a free events page with about 80k followers. Every week I spent 5+ hours
+  finding events, checking they were actually free, and weeding out the ones that were secretly sales pitches.
+  So I built an agent to do the first pass. Now my team and I only make the tricky calls.</p>
   <div class='cs-facts'>
-    <div><span>My role</span><b>Product, design, and build</b></div>
-    <div><span>Users</span><b>Seattle locals 28 to 52, and our curation team</b></div>
-    <div><span>System</span><b>{n_sites} sources · 2 models · 1 human review band</b></div>
-    <div><span>Status</span><b>Live, collecting eval labels</b></div>
+    <div><span>What I did</span><b>Product, design, and the build</b></div>
+    <div><span>Who it's for</span><b>Seattle locals 28 to 52, and our curation team</b></div>
+    <div><span>Under the hood</span><b>{n_sites} sites, 2 models, and people for the close calls</b></div>
+    <div><span>Where it's at</span><b>Live, and collecting our votes to grade it</b></div>
   </div>
 </div></div>"""
 
@@ -143,74 +156,72 @@ def hero(n_sites: int) -> str:
 def problem() -> str:
     return """
 <div class='cs'><div class='cs-sec'><div class='cs-num'>01</div><div>
-  <h2>The problem, and the <em>before</em></h2>
-  <p class='kicker'>Finding events was never the hard part. Judging them was. Every week the same three jobs, all by hand.</p>
+  <h2>Where it <em>started</em></h2>
+  <p class='kicker'>Finding events was easy. Deciding which ones deserved a spot on our page took forever.
+  Here's what my week used to look like.</p>
   <div class='cs-before'>
-    <div class='cs-big'><b>5+</b><span>hours a week, every week, before anything was posted</span></div>
+    <div class='cs-big'><b>5+</b><span>hours a week before we posted a single thing</span></div>
     <div class='cs-steps'>
-      <div><i>1</i><span>Search six listing sites, Instagram, and Google<small>Different formats, repeats across sites, pages that silently go stale</small></span></div>
-      <div><i>2</i><span>Check each one is really free<small>"Free" on the listing, a ticket link or cover charge in the details</small></span></div>
-      <div><i>3</i><span>Decide if it's worth our readers' Saturday<small>The slow part: is this a real community event, or a funnel?</small></span></div>
+      <div><i>1</i><span>Dig through six event sites, Instagram, and Google<small>Same event on three sites, in three formats</small></span></div>
+      <div><i>2</i><span>Make sure "free" really meant free<small>A lot of them had a ticket link or a cover charge hiding in the details</small></span></div>
+      <div><i>3</i><span>Ask, would our followers actually want to go?<small>This was the slow part. Lots of "free" events are really there to sell you something.</small></span></div>
     </div>
   </div>
-  <h3>Why the tools I tried didn't work</h3>
+  <h3>What I tried first</h3>
   <div class='cs-three'>
-    <div class='cs-card'><span class='t'>Eventbrite and site filters</span>
-      <p>"Free" is a price field, not a judgment. Webinars that end in a sales call and free-to-RSVP, pay-at-the-door events all pass.</p>
-      <span class='no'>filters price, not intent</span></div>
+    <div class='cs-card'><span class='t'>Eventbrite's free filter</span>
+      <p>It only knows the price. A free webinar that ends in a sales call looks exactly like a neighborhood potluck to it.</p></div>
     <div class='cs-card'><span class='t'>Scrolling Instagram and Google</span>
-      <p>Great for discovery, impossible to make complete or repeatable. No record of what I saw, skipped, or why.</p>
-      <span class='no'>no coverage, no audit trail</span></div>
-    <div class='cs-card'><span class='t'>ChatGPT by hand</span>
-      <p>Could judge one pasted list, but forgot our taste every week, gave different answers to the same event, and couldn't be checked later.</p>
-      <span class='no'>no memory, no consistency</span></div>
+      <p>Fun for finding things, but I could never tell if I'd missed something, and I had no record of why I passed on an event.</p></div>
+    <div class='cs-card'><span class='t'>Pasting lists into ChatGPT</span>
+      <p>It helped one list at a time, then forgot everything we liked by the next week. Every Monday started from scratch.</p></div>
   </div>
-  <div class='cs-gap'><b>The real gap:</b> judgment at volume that remembers our taste, explains itself, and knows when to ask a person.</div>
+  <div class='cs-gap'>What I actually needed was something that could judge events the way we do, remember what we like,
+  and ask us when it wasn't sure.</div>
 </div></div></div>"""
 
 
 def architecture(extract_model: str, curator_model: str) -> str:
-    curator = curator_model if curator_model != extract_model else f"{curator_model} (upgrade ready)"
+    curator = curator_model if curator_model != extract_model else f"{curator_model}, with room to upgrade"
     nodes = [
-        ("", "Inputs", f"6 listing sites + this month's and next two months' pages"),
-        ("", "Extract", f"{extract_model} reads pages in chunks into structured events"),
-        ("guard", "Clean + rules", "Merge repeats, check date and venue, drop paid, ticketed, real estate"),
-        ("", "Curate", f"{curator} judges intent, scores 0 to 100, says why"),
-        ("guard", "Guardrails", "Review band, circuit breaker, every drop logged"),
-        ("human", "Team", "Thumbs override the model and become its examples"),
-        ("human", "Output", "Picks, our template, Instagram"),
+        ("", "Find", "Six Seattle sites, plus pages for this month and the next two"),
+        ("", "Read", f"{extract_model} turns each page into a clean list of events"),
+        ("guard", "Clean up", "Drop repeats, anything paid or ticketed, and real estate pitches"),
+        ("", "Judge", f"{curator} scores each event and says why"),
+        ("guard", "Safety net", "Unsure scores go to us. Broken runs get held."),
+        ("human", "Us", "Thumbs up or down. It learns from every one."),
+        ("human", "Post", "Our picks, our template, our Instagram"),
     ]
     flow = "".join(f"<div class='cs-node {c}'><small>{i + 1:02d}</small><b>{e(t)}</b><p>{e(d)}</p></div>"
                    for i, (c, t, d) in enumerate(nodes))
     stack = [
-        ("LangGraph", "Each step is a node, so cheap steps rerun on their own without re-paying for search and extraction.",
-         "More setup than a single script."),
-        ("Tavily", "Search and clean page text in one API call, from a list of sites I trust.", "Paid per call; some sites block readers."),
-        (extract_model, "Extraction is high volume and structured. A small model does it well for cents.",
-         "Misses nuance, which is why judging is a separate step."),
-        ("Separate curator model", "Judgment is where quality lives, so it gets its own prompt, version, and model setting.",
-         "Costs more per event, so scores are cached and each event is judged once."),
-        ("Streamlit", "One Python codebase from pipeline to team UI. Shipped in days.",
-         "Less design control; I built custom HTML on top."),
-        ("Supabase", "Votes, rules, and allowed events survive restarts. Locked down with row level security.",
-         "One more service and key to manage."),
-        ("GitHub Actions", "Free weekly schedule that commits a snapshot, so readers never trigger API calls.",
-         "Runs on a timer, not on demand."),
-        ("Claude", "Pair-built with Claude for fast prototyping, tests, and refactors.", "I still review every change."),
+        ("LangGraph", "Each step runs on its own, so I can redo the cheap parts without paying to search again.",
+         "Takes more setup than one big script."),
+        ("Tavily", "Searches and reads web pages in one go, only from sites I trust.", "Costs a little per page, and a few sites block it."),
+        (extract_model, "Reading pages is a lot of simple work. A small model does it well for pennies.",
+         "It's not great at nuance, so it doesn't make the judgment calls."),
+        ("A separate judging model", "Judging is where quality matters, so it gets its own instructions and can use a smarter model.",
+         "Costs more per event, so each event only gets judged once."),
+        ("Streamlit", "Everything in Python, from the pipeline to the screen my team uses. Up and running in days.",
+         "Harder to make pretty. I added my own design on top."),
+        ("Supabase", "Our votes and settings stick around when the app restarts, and stay private.",
+         "One more account and key to keep safe."),
+        ("GitHub Actions", "Runs the whole thing every Monday for free, so visitors never cost us anything.",
+         "Weekly, not instant."),
+        ("Claude", "My build partner for prototyping, tests, and cleanup.", "I still read every change."),
     ]
     rows = "".join(f"<tr><td>{e(a)}</td><td>{e(b)}</td><td>{e(c)}</td></tr>" for a, b, c in stack)
     return f"""
 <div class='cs'><div class='cs-sec'><div class='cs-num'>02</div><div>
-  <h2>The architecture, and <em>why</em></h2>
-  <p class='kicker'>Two models with two different jobs. A cheap one reads, a stronger one judges, and deterministic
-  rules sit in front so the model never pays to look at something a keyword can rule out.</p>
+  <h2>How it's <em>built</em></h2>
+  <p class='kicker'>Two AI models with different jobs. A cheap one does the reading. A smarter one does the judging.
+  Simple rules go first so we never pay a model to look at something obviously off.</p>
   <div class='cs-map'>{flow}</div>
-  <div class='cs-legend'><span><i style='background:#1E2A47'></i>machine</span><span><i style='background:#5469C4'></i>guardrail</span>
-    <span><i style='background:#A65A7D'></i>person</span></div>
-  <div class='cs-loop'>↺ Team votes flow back into step 04 as few-shot examples on the next run.</div>
-  <h3>Stack trade-offs</h3>
-  <table class='cs-table'><thead><tr><th>Choice</th><th>Why</th><th>Trade-off</th></tr></thead><tbody>{rows}</tbody></table>
-  <h3>Walk through it</h3>
+  <div class='cs-legend'><span><i style='background:#1E2A47'></i>the agent</span><span><i style='background:#5469C4'></i>safety checks</span>
+    <span><i style='background:#A65A7D'></i>us</span></div>
+  <div class='cs-loop'>↺ Our thumbs go back into step 4, so next week it judges a little more like us.</div>
+  <h3>Why these tools</h3>
+  <table class='cs-table'><thead><tr><th>Tool</th><th>Why I picked it</th><th>The catch</th></tr></thead><tbody>{rows}</tbody></table>
 </div></div></div>"""
 
 
@@ -218,97 +229,100 @@ def moat(prompt_version: str, keep_at: int, drop_below: int, metrics: dict) -> s
     kw = DEFAULT_FILTERS["ticket_terms"][:5] + DEFAULT_FILTERS["topics"]["Real estate"][:3]
     kw_html = ", ".join(f"<code>{e(k)}</code>" for k in kw)
     examples = [
-        ("Free AI Webinar: Grow Your Business 10x", "pass", "Marketing pitch · 14", False),
-        ("Seattle AI Builders Meetup", "pass", "High-value networking · 86", True),
-        ("Sunday Revival Worship Night", "pass", "Religious service · 8", False),
-        ("Diwali Festival of Lights", "pass", "Community gathering · 92", True),
+        ("Free AI Webinar: Grow Your Business 10x", "let it in", "Sales pitch, scored 14", False),
+        ("Seattle AI Builders Meetup", "let it in", "Real meetup, scored 86", True),
+        ("Sunday Revival Worship Night", "let it in", "Religious service, scored 8", False),
+        ("Diwali Festival of Lights", "let it in", "Community festival, scored 92", True),
     ]
-    ex = "".join(f"<tr><td>{e(t)}</td><td>{k}</td><td class='{'v-ok' if ok else 'v-no'}'>{e(a)} · "
-                 f"{'keep' if ok else 'filtered'}</td></tr>" for t, k, a, ok in examples)
+    ex = "".join(f"<tr><td>{e(t)}</td><td>{k}</td><td class='{'v-ok' if ok else 'v-no'}'>{e(a)}, "
+                 f"{'on the list' if ok else 'left off'}</td></tr>" for t, k, a, ok in examples)
     m = metrics
+
     def val(v, fmt="{:.0%}"):
         return fmt.format(v) if isinstance(v, (int, float)) else "—"
+    votes = m.get("votes", 0)
     return f"""
 <div class='cs'><div class='cs-sec'><div class='cs-num'>03</div><div>
-  <h2>The moat: <em>taste</em>, and how it's checked</h2>
-  <p class='kicker'>Anyone can call a model. The product is the layer that decides what good looks like, catches
-  the model when it's wrong, and gets better from my team's judgment.</p>
+  <h2>How I keep it <em>honest</em></h2>
+  <p class='kicker'>Calling an AI is the easy part. The real work is teaching it our taste, catching it when it's
+  wrong, and letting it learn from us.</p>
 
-  <h3>From keywords to meaning</h3>
+  <h3>Words vs. meaning</h3>
   <div class='cs-vs'>
-    <div class='cs-pane old'><span class='lbl'>v0 · keyword rules</span>
-      Matched words like {kw_html}. Fast and predictable, but every event below sails through: none of them
-      mention a price or a banned word.</div>
-    <div class='cs-pane new'><span class='lbl'>{e(prompt_version)} · judged by meaning</span>
-      <blockquote>"Judge each event on its intent and value to a curious local, not on keywords. A community AI meetup
-      with named hosts and talks is high-value networking; a free AI webinar that ends in a product demo is a
-      marketing pitch."</blockquote></div>
+    <div class='cs-pane old'><span class='lbl'>Version 0: keyword rules</span>
+      I started by blocking words like {kw_html}. That caught prices and tickets. But every event in the table
+      below got through, because none of them used a blocked word.</div>
+    <div class='cs-pane new'><span class='lbl'>Today ({e(prompt_version)}): it reads for meaning</span>
+      <blockquote>"Judge each event on its intent and value to a curious local, not on keywords."</blockquote>
+      <p style='margin:10px 0 0'>It's the line I'd give a new teammate: a meetup with real hosts and talks is great;
+      a free webinar that ends in a product demo is an ad.</p></div>
   </div>
-  <table class='cs-table' style='margin-top:14px'><thead><tr><th>Event (test set)</th><th>Keywords</th><th>Curator</th></tr></thead>
+  <table class='cs-table' style='margin-top:14px'><thead><tr><th>Event (from our test set)</th><th>Keyword rules</th><th>The AI</th></tr></thead>
     <tbody>{ex}</tbody></table>
 
-  <h3>How the instructions evolved</h3>
+  <h3>How the instructions grew up</h3>
   <div class='cs-versions'>
-    <div><b>v0</b><p>Keyword rules only. Caught prices and tickets, missed every disguised pitch.</p></div>
-    <div><b>v1</b><p>LLM judges intent and returns a score and a one-line reason, so every decision explains itself.</p></div>
-    <div><b>v2</b><p>Added our mission and a policy: no sales funnels, religious services, or partisan events. Diwali and MLK Day stay in.</p></div>
-    <div><b>v3</b><p>Added the reader: Seattle locals 28 to 52, outgoing, community-minded, low-cost, adventurous. "Would this person be glad they went?"</p></div>
+    <div><b>v0</b><p>Keyword rules. Caught prices, missed every sneaky pitch.</p></div>
+    <div><b>v1</b><p>The AI reads each event, gives it a score, and tells us why in one line.</p></div>
+    <div><b>v2</b><p>I wrote down what we stand for: no sales pitches, religious services, or partisan events. Diwali and MLK Day are still in.</p></div>
+    <div><b>v3</b><p>I described our people: Seattle locals 28 to 52 who love meeting folks and trying new things. Now it asks, would they be glad they went?</p></div>
   </div>
 
-  <h3>Guardrails</h3>
+  <h3>The safety net</h3>
   <div class='cs-guards'>
-    <div><b>Rules before the model</b><p>Price, ticket, and topic rules run first. Cheap, predictable, and they keep obvious misses out of the prompt.</p></div>
-    <div><b>Validation</b><p>An event with no date, no venue, or outside the window is held with a written reason, never guessed at.</p></div>
-    <div><b>A review band, not a cutoff</b><p>The model isn't trusted on close calls. Tuned for precision, because one spammy pick costs reader trust.</p>
-      <span class='rule'>≥ {keep_at} list · {drop_below} to {keep_at - 1} a person decides · &lt; {drop_below} filtered</span></div>
-    <div><b>People outrank the model</b><p>A thumb overrides the score immediately, and the latest votes become few-shot examples on the next run.</p>
-      <span class='rule'>8 recent downvotes + 4 upvotes go into the prompt</span></div>
-    <div><b>Circuit breaker</b><p>A run that looks broken never replaces the public list. It's held for the team to publish or discard.</p>
-      <span class='rule'>trips if events halve, &gt; 50% of pages fail, sources go silent, or the AI drops &gt; 60%</span></div>
-    <div><b>Versioned, cached, logged</b><p>Scores are tied to the prompt version, so a new version re-scores everything. Every filtered event keeps its reason.</p>
-      <span class='rule'>nothing is dropped silently</span></div>
+    <div><b>Simple rules go first</b><p>Price, ticket, and topic rules run before any AI. They're cheap, predictable, and keep the obvious stuff out.</p></div>
+    <div><b>No guessing</b><p>If an event is missing a date or a place, it waits for us with a note explaining why.</p></div>
+    <div><b>The AI doesn't get the close calls</b><p>When it's not sure, we decide. One spammy pick costs more trust than one missed event.</p>
+      <span class='rule'>{keep_at}+ goes on the list · {drop_below} to {keep_at - 1} comes to us · under {drop_below} is left off</span></div>
+    <div><b>We always win</b><p>A thumbs up or down beats the AI's score right away, and our latest votes become examples it learns from.</p>
+      <span class='rule'>our 12 most recent votes go into its instructions</span></div>
+    <div><b>Bad weeks don't go live</b><p>If a run looks broken, it's held. Our followers keep seeing last week's list until we take a look.</p>
+      <span class='rule'>held if events drop by half, most pages fail, sites go quiet, or it rejects 60%+</span></div>
+    <div><b>Everything leaves a trail</b><p>Every skipped event keeps its reason, and new instructions mean every event gets re-judged.</p>
+      <span class='rule'>nothing disappears without a note</span></div>
   </div>
 
-  <h3>Trust metrics</h3>
+  <h3>How we'll know it's working</h3>
   <div class='cs-metrics'>
-    <div class='cs-metric'><b>{val(m.get('precision'))}</b><span>Precision at the keep line</span><small>Of picks, how many the team agrees with</small></div>
-    <div class='cs-metric'><b>{val(m.get('recall'))}</b><span>Recall at the keep line</span><small>Of events the team wants, how many the AI found</small></div>
-    <div class='cs-metric'><b>{val(m.get('close_share'))}</b><span>Sent to a person</span><small>Share of scored events in the review band</small></div>
-    <div class='cs-metric'><b>{m.get('votes', 0)}</b><span>Team labels</span><small>{'Enough to measure' if m.get('votes', 0) >= 10 else 'Measuring starts at 10'}</small></div>
+    <div class='cs-metric'><b>{val(m.get('precision'))}</b><span>Picks we agree with</span><small>Of what the AI put on the list (precision)</small></div>
+    <div class='cs-metric'><b>{val(m.get('recall'))}</b><span>Good events it caught</span><small>Of the events we'd pick (recall)</small></div>
+    <div class='cs-metric'><b>{val(m.get('close_share'))}</b><span>Sent to us</span><small>Events it wasn't sure about</small></div>
+    <div class='cs-metric'><b>{votes}</b><span>Votes so far</span><small>{'Enough to grade it' if votes >= 10 else 'We start grading at 10'}</small></div>
   </div>
 </div></div></div>"""
 
 
 def failures(keep_at: int = 70, drop_below: int = 40) -> str:
     cards = [
-        ("Keywords couldn't read intent", "A \"Free AI Webinar: Grow Your Business 10x\" passed every rule. So did a revival night and a campaign event.",
-         "Added the semantic curator, with keywords kept as a cheap first pass."),
-        ("A source went quiet, and nothing errored", "Greater Seattle on the Cheap started returning zero events. The list just got thinner.",
-         "Circuit breaker plus a per-source warning when a usual source returns nothing."),
-        ("The data was a month old", "One site's main page served last month's events from cache. Valid-looking, completely stale.",
-         "Read that site's month-specific pages for this month and the next two."),
-        ("Long pages got cut off", "Big listing pages blew past what one extraction call could read, so later events vanished.",
-         "Read pages in overlapping chunks, so an event split across a break still shows up whole."),
-        ("\"Free\" wasn't free", "Ticket links, cover charges, and prices buried in descriptions slipped past the cost field.",
-         "Separate rules for ticket language and dollar amounts in the text, each with its own reason."),
-        ("The team's work vanished", "The hosted app wipes its disk on restart, taking votes and filter edits with it.",
-         "Moved votes, rules, and allowed events to Supabase."),
+        ("Keywords missed the point", "\"Free AI Webinar: Grow Your Business 10x\" passed every rule. So did a revival night and a campaign event.",
+         "I added an AI that reads for meaning, and kept the keyword rules as a quick first pass."),
+        ("A site went quiet", "Greater Seattle on the Cheap started sending back nothing. No error, just a shorter list.",
+         "Now a run gets held if sites go quiet, and we get a heads-up when even one usual site comes back empty."),
+        ("Old news", "One site's main page was still showing last month's events. Everything looked fine and was totally out of date.",
+         "It now reads that site's pages for this month and the next two."),
+        ("Long pages got cut off", "Big listing pages were too long to read in one go, so events near the bottom disappeared.",
+         "It reads long pages in overlapping pieces, so nothing falls through a gap."),
+        ("\"Free\" wasn't always free", "Ticket links, cover charges, and prices buried in descriptions slipped right past us.",
+         "I added rules for ticket language and dollar amounts, each with its own reason."),
+        ("Our votes kept vanishing", "Every time the app restarted, our votes and filter changes were gone.",
+         "Moved them into a real database (Supabase), so they stick."),
     ]
     c = "".join(f"<div class='cs-card'><span class='t'>{e(t)}</span><p>{e(p)}</p><div class='fix'>{e(f)}</div></div>"
                 for t, p, f in cards)
     return f"""
 <div class='cs'><div class='cs-sec'><div class='cs-num'>04</div><div>
-  <h2>What failed, and <em>what changed</em></h2>
-  <p class='kicker'>None of the hard failures were dramatic. They were quiet: a thinner list, a stale page, a pitch
-  that looked like a meetup. The fixes are mostly about making the quiet failures loud.</p>
+  <h2>What <em>broke</em></h2>
+  <p class='kicker'>Nothing crashed. Things went wrong quietly, like a shorter list or an old page, which is
+  harder to catch. Here's what happened and what I changed.</p>
   <div class='cs-fail'>{c}</div>
-  <h3>The pivot: where I pulled automation back</h3>
+  <h3>Where I kept people in charge</h3>
   <div class='cs-pivot'>
-    <div><span class='lbl'>Automated</span><ul><li>Reading every site, every week</li><li>Cleaning, merging, and fact checks</li>
-      <li>First-pass judgment with a written reason</li><li>Holding broken runs</li></ul></div>
-    <div><span class='lbl'>Kept human, on purpose</span><ul><li>Every close call (scores {drop_below} to {keep_at - 1})</li><li>Publishing a held run</li>
-      <li>The graphic and the caption, because that's our voice</li><li>Client CRM: built, then paused until the core loop is proven</li></ul></div>
+    <div><span class='lbl'>The agent handles</span><ul><li>Reading every site, every week</li><li>Cleanup and fact checks</li>
+      <li>A first opinion on every event, with a reason</li><li>Holding a run that looks broken</li></ul></div>
+    <div><span class='lbl'>We handle</span><ul><li>Every close call (scores {drop_below} to {keep_at - 1})</li><li>Deciding whether a held run goes live</li>
+      <li>The graphic and the caption, because that's our voice</li><li>Client tracking. I built it, then paused it to focus on this.</li></ul></div>
   </div>
-  <p class='cs-quote'>The AI never posts. It narrows a week of listings down to the decisions only we can make.</p>
-  <div class='cs-end'>Next: a hand-labeled golden set that every prompt change must pass, click tracking on picks, and one-click export into our template.</div>
+  <p class='cs-quote'>The AI never posts. It does the reading so we can do the choosing.</p>
+  <div class='cs-end'>Coming up: a set of hand-picked test events every new version has to pass, tracking which picks people
+  actually click, and a button that drops picks straight into our template.</div>
 </div></div></div>"""

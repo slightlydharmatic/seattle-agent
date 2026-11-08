@@ -97,7 +97,7 @@ h2{{font:italic 400 clamp(30px,3.4vw,42px)/1.05 var(--serif);margin:8px 0 12px;t
 @media (prefers-reduced-motion:reduce){{*{{transition:none!important}}}}
 </style></head><body>
 <div class="wrap">
-  <div class="bar"><span>how a pick is made</span><b>SEATTLE UNLOCKED</b><span>@seattle_forfree</span></div>
+  <div class="bar"><span>how a pick gets made</span><b>SEATTLE UNLOCKED</b><span>@seattle_forfree</span></div>
   <div class="stage" id="stage">
     <div class="glow g1" id="g1"></div><div class="glow g2" id="g2"></div>
     <div class="left fade" id="left"><div class="num" id="num"></div><h2 id="title"></h2><p class="text" id="text"></p>
