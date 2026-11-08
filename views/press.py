@@ -8,8 +8,8 @@ from ui.components import esc
 
 # Order matters: the first row is what people see first.
 CLIENTS = [
-    "Tinder", "Seattle Sounders", "City of Seattle", "The Westin", "Downtown Seattle Association",
-    "Clockout", "Great Big Game Show", "Short Run Comix Festival", "Keiro Northwest", "Baila District",
+    "Tinder", "Seattle Sounders", "City of Seattle", "The Westin", "CBRE", "Downtown Seattle Association",
+    "Junction FC", "aT Center LA", "Clockout", "Great Big Game Show", "Short Run Comix Festival", "Keiro Northwest", "Baila District",
     "MUZ Fest Seattle", "Formosound", "Juice Time", "Goldvine Coffee",
 ]
 PRESS_FILE = PROJECT_DIR / "assets" / "press.json"   # [{"outlet": "...", "title": "...", "url": "...", "date": "..."}]
