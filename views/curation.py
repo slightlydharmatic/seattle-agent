@@ -96,10 +96,10 @@ def render(ctx) -> None:
     loops = [("team", "memory", "votes → examples"), ("team", "evals", "votes → labels")]
     components.html(flow.render(nodes, edges, loops), height=flow.HEIGHT)
 
-    examples = [("Free AI Webinar: Grow Your Business 10x", "Sales pitch · 14 · left off", False),
-                ("Seattle AI Builders Meetup", "Real meetup · 86 · on the list", True),
-                ("Sunday Revival Worship Night", "Religious service · 8 · left off", False),
-                ("Diwali Festival of Lights", "Community festival · 92 · on the list", True)]
+    examples = [("Free AI Webinar: Grow Your Business 10x", "Sales pitch", 14, False),
+                ("Seattle AI Builders Meetup", "Real meetup", 86, True),
+                ("Sunday Revival Worship Night", "Religious service", 8, False),
+                ("Diwali Festival of Lights", "Community festival", 92, True)]
     st.markdown(howitworks.calls(hi, lo, cs_metrics, examples) + howitworks.broke(),
                 unsafe_allow_html=True)
 

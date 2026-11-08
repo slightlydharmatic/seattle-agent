@@ -61,6 +61,31 @@ CSS = """
 .hw-metrics b{display:block;font:400 30px/1 var(--serif) !important}
 .hw-metrics span{font-size:13px;color:var(--dim);display:block;margin-top:6px}
 .ok{color:#2F6B53 !important;font-weight:500}.no{color:#A8423A !important;font-weight:500}
+.kv{display:grid;grid-template-columns:minmax(0,1fr) 120px minmax(0,1fr);gap:10px;align-items:stretch}
+.kv-col{background:#fff;border:1px solid var(--hair);border-radius:16px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.kv-k{font:italic 400 22px var(--serif);color:var(--ink)}
+.hw .kv p.kv-sub{font-size:14px;color:var(--dim);margin:0 0 4px;line-height:1.45}
+.kv-card{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:var(--tint)}
+.kv-card b{font-weight:500;font-size:14.5px;color:var(--ink)}
+.kv-tag{font-size:12.5px;white-space:nowrap;padding:3px 9px;border-radius:999px}
+.kv-tag.pass{color:var(--soft);background:#fff}
+.kv-tag.keep{color:#2F6B53;background:#E6F2EC}.kv-tag.cut{color:#A8423A;background:#F8E4E1}
+.kv-mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;font-size:13px;color:var(--soft)}
+.kv-mid i{font-style:normal;font-size:28px;color:var(--ink)}
+.kv-bucket{display:flex;flex-direction:column;gap:6px}
+.kv-bucket + .kv-bucket{margin-top:6px}
+.kv-bk{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.kv-bucket.keep .kv-bk{color:#2F6B53}.kv-bucket.cut .kv-bk{color:#A8423A}
+.kv-bucket.keep .kv-card{background:#F4FAF6}.kv-bucket.cut .kv-card{background:#FCF4F3}
+.gr{background:#fff;border:1px solid var(--hair);border-radius:16px;padding:18px 20px}
+.hw .gr-wait p{font-size:15.5px;color:var(--ink);margin:0 0 12px;line-height:1.5;max-width:70ch}
+.gr-bar{height:8px;border-radius:999px;background:var(--tint);overflow:hidden;max-width:420px}
+.gr-bar i{display:block;height:100%;background:var(--peri)}
+.gr-wait span{display:block;font-size:13px;color:var(--soft);margin-top:6px}
+.gr-nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.gr-nums b{display:block;font:400 40px/1 var(--serif) !important;color:var(--ink)}
+.gr-nums span{font-size:14px;color:var(--dim);display:block;margin-top:6px}
+@media (max-width:900px){.kv{grid-template-columns:1fr}.kv-mid{flex-direction:row}.kv-mid i{transform:rotate(90deg)}.gr-nums{grid-template-columns:1fr}}
 .hw-broke{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .hw-bk{background:#fff;border:1px solid var(--hair);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;
   justify-content:space-between;gap:14px;transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
@@ -134,20 +159,39 @@ def calls(keep_at: int, drop_below: int, metrics: dict, examples: list[tuple]) -
 
     def pct(v):
         return f"{v:.0%}" if isinstance(v, (int, float)) else "—"
+
+    def card(t, label, score, ok, show_ai):
+        tag = (f"<span class='kv-tag {'keep' if ok else 'cut'}'>{e(label)} · {score}</span>" if show_ai
+               else "<span class='kv-tag pass'>✓ no banned words</span>")
+        return f"<div class='kv-card'><b>{e(t)}</b>{tag}</div>"
+    left = "".join(card(t, w, sc, ok, False) for t, w, sc, ok in examples)
+    keep = "".join(card(t, w, sc, ok, True) for t, w, sc, ok in examples if ok)
+    cut = "".join(card(t, w, sc, ok, True) for t, w, sc, ok in examples if not ok)
+
     votes = metrics.get("votes", 0)
-    ex = "".join(f"<tr><td>{e(t)}</td><td>passes</td><td class='{'ok' if ok else 'no'}'>{e(v)}</td></tr>" for t, v, ok in examples)
+    need = 10
+    if votes >= need:
+        grade = (f"<div class='gr-nums'><div><b>{pct(metrics.get('precision'))}</b><span>of the AI's picks, we'd pick too</span></div>"
+                 f"<div><b>{pct(metrics.get('recall'))}</b><span>of the events we'd pick, the AI found</span></div>"
+                 f"<div><b>{pct(metrics.get('close_share'))}</b><span>sent to us as close calls</span></div></div>")
+    else:
+        grade = (f"<div class='gr-wait'><p>Every thumbs up or down from the team is a grade. After {need}, this shows "
+                 "how often the AI's picks match ours, and how many good events it finds.</p>"
+                 f"<div class='gr-bar'><i style='width:{min(votes, need) / need:.0%}'></i></div>"
+                 f"<span>{votes} of {need} votes</span></div>")
     return f"""
 <div class='hw'><div class='hw-h'><div class='h2'>Our AI <em>product calls</em></div></div>
 <div class='hw-calls'>{c}</div>
-<div class='hw-h'><div class='h2'>Keywords vs. <em>meaning</em></div><span>Why a model is worth paying for here</span></div>
-<table class='hw-table'><thead><tr><th>Event (test set)</th><th>Keyword rules</th><th>AI judge</th></tr></thead><tbody>{ex}</tbody></table>
-<div class='hw-h'><div class='h2'>How I <em>measure</em> it</div><span>graded against my team's votes</span></div>
-<div class='hw-metrics'>
-  <div><b>{pct(metrics.get('precision'))}</b><span>Precision: picks we agree with</span></div>
-  <div><b>{pct(metrics.get('recall'))}</b><span>Recall: good events it found</span></div>
-  <div><b>{pct(metrics.get('close_share'))}</b><span>Sent to a person</span></div>
-  <div><b>{votes}</b><span>{'Votes so far' if votes >= 10 else 'Votes so far · grading starts at 10'}</span></div>
-</div></div>"""
+<div class='hw-h'><div class='h2'>Why a model, <em>not keywords</em></div><span>Four real test events, sorted two ways</span></div>
+<div class='kv'>
+  <div class='kv-col'><span class='kv-k'>A keyword filter</span><p class='kv-sub'>All four are free with no banned words, so it lets every one through.</p>{left}</div>
+  <div class='kv-mid'><span>reads what each<br>event is for</span><i>→</i></div>
+  <div class='kv-col'><span class='kv-k'>Our AI judge</span>
+    <div class='kv-bucket keep'><span class='kv-bk'>On the list</span>{keep}</div>
+    <div class='kv-bucket cut'><span class='kv-bk'>Left off</span>{cut}</div></div>
+</div>
+<div class='hw-h'><div class='h2'>How we <em>grade</em> it</div><span>against our own team's votes</span></div>
+<div class='gr'>{grade}</div></div>"""
 
 
 def broke() -> str:
