@@ -15,16 +15,34 @@ HEIGHT = 720
 POST_COLORS = ["#C9D4F7", "#F5D3E3", "#CFE6F7", "#F6E7C8", "#D9D2F3", "#E3EEDF"]
 
 
-def _posts_from_files() -> list[str]:
+def load_posts() -> list[dict]:
+    """Real Instagram posts in assets/posts/, with their stats from posts.json when present."""
     folder = ASSETS / "posts"
     if not folder.exists():
         return []
+    try:
+        meta = {m["file"]: m for m in json.loads((folder / "posts.json").read_text())}
+    except (FileNotFoundError, json.JSONDecodeError):
+        meta = {}
     out = []
     for p in sorted(folder.iterdir()):
         mime = {".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}.get(p.suffix.lower())
         if mime:
-            out.append(f"data:{mime};base64,{base64.b64encode(p.read_bytes()).decode()}")
+            out.append({**meta.get(p.name, {}), "file": p.name,
+                        "src": f"data:{mime};base64,{base64.b64encode(p.read_bytes()).decode()}"})
     return out[:10]
+
+
+def short(n) -> str:
+    """9594 -> 9.6K, 311000 -> 311K, 1293400 -> 1.3M"""
+    n = float(n or 0)
+    if n >= 1_000_000:
+        return f"{n / 1_000_000:.1f}M".replace(".0M", "M")
+    if n >= 10_000:
+        return f"{n / 1000:.0f}K"
+    if n >= 1000:
+        return f"{n / 1000:.1f}K".replace(".0K", "K")
+    return f"{n:.0f}"
 
 
 def _when(d) -> str:
@@ -33,11 +51,19 @@ def _when(d) -> str:
 
 def render(events: list[dict]) -> str:
     """events: this week's picks, each {title, date, neighborhood, venue, category}."""
-    images = _posts_from_files()
+    images = [{k: p.get(k) for k in ('src', 'caption', 'likes', 'comments', 'shares', 'views')}
+              for p in load_posts()]
     cards = [{"title": e.get("title", ""), "when": _when(e.get("date")), "hood": e.get("neighborhood") or e.get("venue") or "Seattle",
               "cat": (e.get("category") or "free").lower(), "bg": POST_COLORS[i % len(POST_COLORS)]}
              for i, e in enumerate(events[:8])]
-    chips = [f"{c['when'].split(' · ')[0]} · {c['title']}" for c in cards[:3]] or ["free events, every week"]
+    posts = load_posts()
+    if posts:
+        top = max(posts, key=lambda p: p.get("shares", 0))
+        chips = [f"{short(sum(p.get('views', 0) for p in posts))} views on {len(posts)} posts",
+                 f"{short(top.get('shares', 0))} shares on one list",
+                 f"{short(sum(p.get('likes', 0) for p in posts))} likes"]
+    else:
+        chips = [f"{c['when'].split(' · ')[0]} · {c['title']}" for c in cards[:3]] or ["free events, every week"]
     fonts = (_font("Bodoni Moda", "bodoni-moda-latin-400-normal.woff2")
              + _font("Bodoni Moda", "bodoni-moda-latin-400-italic.woff2", style="italic")
              + _font("Hanken Grotesk", "hanken-grotesk-latin-400-normal.woff2")
@@ -82,11 +108,13 @@ html,body{{background:transparent;font-family:var(--sans);color:var(--ink)}}
 .post{{padding:0 0 12px}}
 .sq{{aspect-ratio:1/1;position:relative;display:flex;flex-direction:column;justify-content:space-between;padding:18px 16px;overflow:hidden}}
 .sq img{{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}}
+.sq.photo{{aspect-ratio:auto;padding:0;display:block}}.sq.photo img{{position:static;height:auto;display:block}}
 .sq .k{{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}}
 .sq h4{{font:400 26px/1.02 var(--serif);color:var(--ink);text-wrap:balance}}
 .sq .row{{display:flex;justify-content:space-between;align-items:flex-end;font-size:11.5px;color:var(--dim)}}
 .sq .free{{font:italic 400 15px var(--serif);background:#fff;color:var(--ink);padding:3px 10px;border-radius:999px}}
-.act{{display:flex;gap:12px;padding:9px 14px 2px;font-size:16px;color:var(--ink)}}
+.act{{display:flex;gap:12px;align-items:center;padding:9px 14px 2px;font-size:13px;font-weight:500;color:var(--ink)}}
+.act .v{{margin-left:auto;font-weight:400;color:var(--dim);font-size:11.5px}}
 .cap{{padding:2px 14px;font-size:11.5px;line-height:1.4;color:#3B4363}}
 .cap b{{font-weight:500}}
 .chip{{position:absolute;z-index:4;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.9);
@@ -116,15 +144,18 @@ html,body{{background:transparent;font-family:var(--sans);color:var(--ink)}}
 <script>
 const IMGS = {json.dumps(images)}, CARDS = {json.dumps(cards)};
 const feed = document.getElementById('feed');
-function post(inner, cap) {{
+const fmt = n => n >= 1e6 ? (n / 1e6).toFixed(1) + 'M' : n >= 1e4 ? Math.round(n / 1e3) + 'K' : n >= 1e3 ? (n / 1e3).toFixed(1) + 'K' : String(n);
+function post(inner, cap, m) {{
   const p = document.createElement('div'); p.className = 'post';
-  p.innerHTML = '<div class="sq"></div><div class="act">♡ &nbsp;◯ &nbsp;➤</div><div class="cap"><b>seattle_forfree</b> </div>';
+  p.innerHTML = '<div class="sq"></div><div class="act"></div><div class="cap"><b>seattle_forfree</b> </div>';
+  p.querySelector('.act').innerHTML = m && m.likes ? '<span>♡ ' + fmt(m.likes) + '</span><span>◯ ' + m.comments + '</span><span>➤ ' + fmt(m.shares)
+    + '</span><span class="v">' + fmt(m.views) + ' views</span>' : '♡ &nbsp;◯ &nbsp;➤';
   p.querySelector('.sq').appendChild(inner); p.querySelector('.cap').appendChild(document.createTextNode(cap)); return p;
 }}
 function build() {{
   const items = [];
-  if (IMGS.length) IMGS.forEach(src => {{ const im = new Image(); im.src = src; im.alt = 'Seattle Unlocked post';
-    items.push(post(im, 'free this week. see you there')); }});
+  if (IMGS.length) IMGS.forEach(m => {{ const im = new Image(); im.src = m.src; im.alt = 'Seattle Unlocked post';
+    const it = post(im, m.caption || 'free this week', m); it.querySelector('.sq').classList.add('photo'); items.push(it); }});
   else CARDS.forEach(c => {{
     const f = document.createDocumentFragment(), d = document.createElement('div');
     d.style.cssText = 'display:contents';
@@ -145,3 +176,50 @@ hero.addEventListener('mousemove', e => {{
 }});
 hero.addEventListener('mouseleave', () => {{ phone.style.transform = ''; chips.forEach(c => c.style.transform = ''); }});
 </script></body></html>"""
+
+
+def stats_html(followers: str = "80k") -> str:
+    """'By the numbers' band and a gallery of the real posts with their stats. Uses case_study.CSS."""
+    posts = load_posts()
+    if not posts:
+        return ""
+    views = sum(p.get("views", 0) for p in posts)
+    likes = sum(p.get("likes", 0) for p in posts)
+    shares = sum(p.get("shares", 0) for p in posts)
+    top = max(posts, key=lambda p: p.get("likes", 0))
+    ratio = top.get("shares", 0) / max(top.get("likes", 1), 1)
+    cards = "".join(
+        f"<div class='gp'><div class='gp-img'><img src='{p['src']}' alt='{html.escape(p.get('title', 'post'))}'></div>"
+        f"<b>{html.escape(p.get('title', ''))}</b>"
+        f"<div class='gp-s'><span><i>{short(p.get('views'))}</i>views</span><span><i>{short(p.get('likes'))}</i>likes</span>"
+        f"<span><i>{short(p.get('shares'))}</i>shares</span></div></div>"
+        for p in posts)
+    return f"""
+<style>
+.cs-nums{{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--ink);border-bottom:1px solid var(--hair)}}
+.cs-nums div{{padding:18px 18px 20px 0}}
+.cs-nums b{{display:block;font:400 clamp(40px,4.6vw,60px)/1 var(--serif) !important;color:var(--ink)}}
+.cs-nums span{{font-size:15px;color:var(--dim)}}
+.cs-note{{font:italic 400 24px/1.35 var(--serif) !important;color:var(--ink);max-width:40ch;margin:22px 0 26px}}
+.gallery{{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}}
+.gp{{display:grid;gap:8px;align-content:start;min-width:0}}
+.gp-img{{width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 10px 30px rgba(30,50,110,.10);
+  transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s}}
+.gp-img img{{display:block;max-width:100% !important;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .6s cubic-bezier(.2,.8,.2,1)}}
+.gp:hover .gp-img{{transform:translateY(-6px) rotate(-1deg);box-shadow:0 22px 44px rgba(30,50,110,.18)}}
+.gp:hover .gp-img img{{transform:scale(1.04)}}
+.gp b{{font-weight:500;font-size:14.5px;line-height:1.3;color:var(--ink)}}
+.gp-s{{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;color:var(--soft)}}
+.gp-s i{{font:normal 400 17px var(--serif);color:var(--ink);margin-right:3px}}
+@media (max-width:900px){{.cs-nums{{grid-template-columns:1fr 1fr}}.gallery{{grid-template-columns:1fr 1fr}}}}
+</style>
+<div class='cs'><div class='cs-hiw' style='border-top:none;padding-top:0'><span class='cs-eyebrow'>by the numbers</span></div>
+<div class='cs-nums'>
+  <div><b>{followers}</b><span>followers on @seattle_forfree</span></div>
+  <div><b>{short(views)}</b><span>views on these {len(posts)} posts</span></div>
+  <div><b>{short(likes)}</b><span>likes</span></div>
+  <div><b>{short(shares)}</b><span>times people sent them to a friend</span></div>
+</div>
+<p class='cs-note'>People don't just like these lists, they send them. Our {html.escape(top.get('title', '').replace('Free events in ', ''))}
+list got {top.get('shares', 0):,} shares, about {round(ratio * 10)} for every 10 likes.</p>
+<div class='gallery'>{cards}</div></div>"""

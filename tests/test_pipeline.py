@@ -295,6 +295,10 @@ def test_feedback_store_and_few_shot_prompt(tmp_path, monkeypatch):
     parsed = parse('{"results": [{"key": "z", "intent": "Nope", "score": 140, "reason": "r"}]}', ["z"])
     assert parsed["z"]["score"] == 100 and parsed["z"]["intent"] == "Vague or low effort"
     assert parse("not json", ["z"]) == {}
+    labeled = parse('{"results": [{"key": "z", "intent": "Arts and culture", "score": 80, "reason": "r",'
+                    ' "label": "  Sunset   Photo Walk Downtown "}]}', ["z"])
+    assert labeled["z"]["label"] == "Sunset Photo Walk"  # trimmed to 3 words
+    assert parsed["z"]["label"] == ""  # missing label is fine
 
 
 def test_religious_and_partisan_events_are_filtered_but_cultural_festivals_stay():

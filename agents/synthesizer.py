@@ -61,6 +61,7 @@ def _trace_entry(e: dict, status: str, why: str) -> dict:
         "ai_intent": (e.get("ai") or {}).get("intent", ""),
         "ai_score": (e.get("ai") or {}).get("score"),
         "ai_reason": (e.get("ai") or {}).get("reason", ""),
+        "ai_label": (e.get("ai") or {}).get("label", ""),
         "filter_key": e.get("filter_key", ""),
         "custom_id": e.get("custom_id", ""),
     }

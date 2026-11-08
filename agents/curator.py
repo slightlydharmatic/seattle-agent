@@ -9,6 +9,7 @@ Each event gets:
   intent   one of INTENTS
   score    0-100, how worth featuring it is for Seattle Unlocked's audience
   reason   one short sentence
+  label    1 to 3 words naming what the event is ("Comedy Show", "Photo Walk")
 
 Then the operating point decides what happens:
   score >= keep_at      stays on the list
@@ -30,7 +31,7 @@ from config import CURATOR_MODEL
 
 log = logging.getLogger(__name__)
 
-PROMPT_VERSION = "curator-v3"
+PROMPT_VERSION = "curator-v4"  # v4 adds the short "label"
 BATCH = 20
 
 # Who we curate for. The app's AI curation page and the README describe the same reader.
@@ -105,7 +106,12 @@ Score 0-100:
 
 Intent must be exactly one of: {intents}.
 
-Return JSON: {{"results": [{{"key": "...", "intent": "...", "score": 0, "reason": "one short sentence"}}]}}
+Label: 1 to 3 words, Title Case, naming what the event actually is, so a reader knows at a glance. \
+Be specific to the activity, not the intent. Good: "Comedy Show", "Photo Walk", "Educational Talk", \
+"Art Walk", "Beach Cleanup", "Trivia Night", "Farmers Market", "Book Club", "Dance Class". \
+Bad: "Community Gathering", "Fun Event", "Free Event".
+
+Return JSON: {{"results": [{{"key": "...", "intent": "...", "score": 0, "reason": "one short sentence", "label": "Photo Walk"}}]}}
 with one result for every event you are given, using its key."""
 
 
@@ -131,7 +137,7 @@ def build_messages(events: list[dict], examples: list[dict]) -> list[dict]:
 
 
 def parse(raw: str, keys: list[str]) -> dict[str, dict]:
-    """Model reply -> {key: {intent, score, reason}}. Bad or missing rows are skipped."""
+    """Model reply -> {key: {intent, score, reason, label}}. Bad or missing rows are skipped."""
     try:
         rows = json.loads(raw).get("results", [])
     except (json.JSONDecodeError, AttributeError, TypeError):
@@ -145,8 +151,9 @@ def parse(raw: str, keys: list[str]) -> dict[str, dict]:
         except (TypeError, ValueError):
             continue
         intent = r.get("intent") if r.get("intent") in INTENTS else "Vague or low effort"
+        label = " ".join(str(r.get("label") or "").split()[:3])[:32]
         out[r["key"]] = {"intent": intent, "score": score, "reason": str(r.get("reason") or "")[:160],
-                         "version": PROMPT_VERSION}
+                         "label": label, "version": PROMPT_VERSION}
     return out
 
 

@@ -979,8 +979,8 @@ def render_curation_page() -> None:
   <h1>The go-to way to find out about <em>Seattle events</em></h1>
   <p>Free things worth leaving the house for, picked by people who live here. A fresh list every week.</p>
   <a class='cs-btn' href='https://www.instagram.com/seattle_forfree/' target='_blank' rel='noopener'>Follow @seattle_forfree →</a>
-</div>
-<div class='cs-hiw'><span class='cs-eyebrow'>how it works</span>
+</div></div>""" + hero.stats_html() + """<div class='cs'>
+<div class='cs-hiw' style='margin-top:56px'><span class='cs-eyebrow'>how it works</span>
   <h2>From a messy pile of listings to <em>see you there</em></h2>
   <p>Hover a step to see what happens behind the scenes.</p></div></div>""", unsafe_allow_html=True)
     components.html(story.render(steps), height=story.HEIGHT)
