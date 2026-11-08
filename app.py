@@ -18,12 +18,12 @@ import custom_events
 import feedback
 import breaker
 from config import CURATOR_MODEL, MONTHLY_PAGES, OPENAI_MODEL, SOURCE_PAGES
-import case_study
+import costs
+import flow
 import hero
-import story
+import howitworks
 import filters
-from agents.curator import AUDIENCE, INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
-from crm import view as crm_view
+from agents.curator import INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
 import ontology
 import snapshot
 from agents.reasoner import CATEGORIES
@@ -687,7 +687,7 @@ def render(df: pd.DataFrame, label: str, file_label: str | None) -> None:
     st.markdown(f"<span id='filtered-{abs(hash(label))}'></span>"
                 f"<details class='ob ob-acc'{'' if collapse else ' open'}><summary class='ob-sec filt'>"
                 f"<span class='chev'></span><span class='dot'></span><span class='t'>Filtered out</span>"
-                f"<span class='c'>{len(filt)}</span><span class='hint'>by reason · edit rules on the Filters page"
+                f"<span class='c'>{len(filt)}</span><span class='hint'>by reason"
                 f"</span></summary><div class='ob-list'>{groups}</div></details>", unsafe_allow_html=True)
 
     ai_out = filt[filt["filter_category"].isin(["AI: low relevance", "Downvoted by team"])]
@@ -928,33 +928,6 @@ def render_curation_page() -> None:
 
     raw_events = (raw or {}).get("events_raw") or []
     n_sites = len({urlparse(e.get("source") or "").netloc for e in raw_events} - {""}) or len(SOURCE_PAGES) + len(MONTHLY_PAGES)
-    upgraded = CURATOR_MODEL != OPENAI_MODEL
-    n_votes = len(fb_rows)
-    steps = [
-        {"title": "round up every listing in town", "image": "steps/s1.png",
-         "text": f"Every Monday the agent checks {n_sites} Seattle event sites, so nobody's stuck scrolling at midnight.",
-         "stats": [(len(raw_events), "events found"), (n_sites, "sites checked")]},
-        {"title": "tidy up the mess", "image": "steps/s2.png",
-         "text": "A small, cheap model turns messy listings into clean ones. Same event on three sites? We keep one. "
-                 "No date, no place, or a hidden price? It waits for us.",
-         "stats": [(len(trace), "clean events"), (max(len(raw_events) - len(trace), 0), "repeats tossed")]},
-        {"title": "sniff out the good stuff", "image": "steps/s3.png",
-         "text": "A smarter model reads each event the way we would. Free webinar that's secretly a sales call? Out. "
-                 "Neighborhood art walk? Very in." + (f" (It's {CURATOR_MODEL}.)" if upgraded else ""),
-         "stats": [(n_kept, "made the cut"), (n_low, "sales pitches and such")]},
-        {"title": "let the crew weigh in", "image": "steps/s4.png",
-         "text": "When it gets one wrong, we hit thumbs down. It remembers for next week.",
-         "stats": [(n_votes, "votes from us"), (n_unsure, "close calls for us")]},
-        {"title": "dress it up", "quiet": "this week's picks, looking cute",
-         "text": "Our favorites go into the Seattle Unlocked template. This part stays human, because it's our voice.",
-         "stats": [(min(n_kept, 6), "picks this week")]},
-        {"title": "hit post", "quiet": "@seattle_forfree",
-         "text": "Up on Instagram for about 80k Seattle locals looking for something to do.",
-         "stats": [("80k", "followers")]},
-        {"title": "see you there", "quiet": "see you there.",
-         "text": "People show up, meet their neighbors, and Seattle feels a little smaller. In a good way.",
-         "stats": []},
-    ]
     # Eval metrics for the case study (precision / recall need 10+ labeled votes)
     labeled = [r for r in fb_rows if r.get("model_score") is not None]
     cs_metrics = {"votes": len(labeled),
@@ -965,7 +938,7 @@ def render_curation_page() -> None:
         cs_metrics["precision"] = (sum(int(r["vote"]) > 0 for r in kept_lab) / len(kept_lab)) if kept_lab else None
         cs_metrics["recall"] = (sum(int(r["model_score"]) >= hi for r in good) / len(good)) if good else None
 
-    # 1. Hero: the phone with this week's picks
+    # Hero: the phone with this week's picks and our real posts
     live = trace[trace["status"].isin([PICK, PUBLISH])].copy()
     live["_p"] = (live["status"] != PICK).astype(int)
     live["_d"] = live["date"].map(lambda d: d if isinstance(d, date) else date.max)
@@ -973,44 +946,65 @@ def render_curation_page() -> None:
     picks = live.sort_values(["_p", "_d"]).head(8).to_dict("records")
     components.html(hero.render(picks), height=hero.HEIGHT)
 
-    # 2. The promise, then how it works
-    st.markdown(case_study.CSS + """
-<div class='cs'><div class='cs-goto'>
-  <h1>The go-to way to find out about <em>Seattle events</em></h1>
-  <p>Free things worth leaving the house for, picked by people who live here. A fresh list every week.</p>
-  <a class='cs-btn' href='https://www.instagram.com/seattle_forfree/' target='_blank' rel='noopener'>Follow @seattle_forfree →</a>
-</div></div>""" + hero.stats_html() + """<div class='cs'>
-<div class='cs-hiw' style='margin-top:56px'><span class='cs-eyebrow'>how it works</span>
-  <h2>From a messy pile of listings to <em>see you there</em></h2>
-  <p>Hover a step to see what happens behind the scenes.</p></div></div>""", unsafe_allow_html=True)
-    components.html(story.render(steps), height=story.HEIGHT)
+    posts = hero.load_posts()
+    views = hero.short(sum(p.get("views", 0) for p in posts)) if posts else "80k"
+    est = costs.estimate(len((raw or {}).get("source_urls") or []) or 20, len(trace), OPENAI_MODEL, CURATOR_MODEL)
+    st.markdown(howitworks.CSS + howitworks.top(n_sites, est, views), unsafe_allow_html=True)
 
-    # 3. The case study
-    st.markdown(case_study.hero(n_sites) + case_study.problem() + case_study.architecture(OPENAI_MODEL, CURATOR_MODEL)
-                + case_study.moat(PROMPT_VERSION, hi, lo, cs_metrics) + case_study.failures(hi, lo),
+    def m(v):
+        return howitworks.money(v)
+    green, amber, red = ("#E6F2EC", "#2F6B53"), ("#F8EDD6", "#7A5A16"), ("#F8E4E1", "#A8423A")
+    nodes = [
+        {"id": "find", "col": 1, "row": 1, "step": "01", "title": "Find", "sub": f"{n_sites} Seattle sites + month pages",
+         "tag": "Tavily", "more": "Searches and reads pages, only from sites we trust. Runs every Monday.", "cost": "~1 search credit per page"},
+        {"id": "read", "col": 2, "row": 1, "step": "02", "title": "Read", "sub": "Pages into clean events, in chunks",
+         "tag": OPENAI_MODEL, "tagc": "cheap", "img": "steps/s2.png",
+         "more": "A low-cost model does the high-volume work: title, date, place, cost, link. Repeats across sites are merged.",
+         "cost": f"{m(est['extract']['usd'])} per run · {est['pages']} pages"},
+        {"id": "rules", "col": 3, "row": 1, "step": "03", "title": "Rules", "sub": "Free only, no tickets, no real estate",
+         "tag": "no model · $0", "tagc": "free", "more": "Cheap, predictable checks run first so a paid model never sees an obvious no."},
+        {"id": "judge", "col": 4, "row": 1, "step": "04", "title": "Judge", "sub": "Intent, 0 to 100 score, one-line reason",
+         "tag": CURATOR_MODEL, "tagc": "strong", "img": "steps/s3.png",
+         "more": "Reads what each event is for, not its keywords. Batches of 20, cached per prompt version."
+                 + ("" if CURATOR_MODEL != OPENAI_MODEL else " Set up to swap in a stronger model."),
+         "cost": f"{m(est['curate']['usd'])} per run · {est['calls']} calls"},
+        {"id": "decide", "col": 5, "row": 1, "step": "05", "title": "Decide", "sub": "The operating point",
+         "band": [[f"{hi}+ live", *green], [f"{lo}–{hi - 1} team", *amber], [f"<{lo} out", *red]],
+         "more": "Tuned for precision. The middle band goes to people, so borderline events aren't lost."},
+        {"id": "publish", "col": 6, "row": 1, "step": "06", "title": "Publish", "sub": "Weekly snapshot for the list",
+         "tag": "GitHub Actions · $0", "tagc": "free", "img": "steps/s1.png",
+         "more": "Readers load a saved snapshot, so the public page never calls a paid API."},
+        {"id": "validate", "col": 2, "row": 2, "lane": "guard", "title": "Validate", "sub": "No date or place? Held, with a reason",
+         "tag": "no model", "tagc": "free"},
+        {"id": "memory", "col": 4, "row": 2, "lane": "guard", "title": "Memory", "sub": "Latest 12 votes become examples",
+         "tag": PROMPT_VERSION, "more": "8 recent downvotes and 4 upvotes are added to the judge's instructions every run."},
+        {"id": "breaker", "col": 6, "row": 2, "lane": "guard", "title": "Circuit breaker", "sub": "Holds a run that looks broken",
+         "tag": "no model", "tagc": "free",
+         "more": "Trips if events halve, most pages fail, sources go quiet, or the AI drops 60%+. Readers keep last week's list."},
+        {"id": "evals", "col": 3, "row": 3, "lane": "guard", "title": "Evals", "sub": "Precision and recall vs. our votes",
+         "tag": "golden set next", "more": "Every vote is a label. Prompt changes will have to pass a hand-labeled test set."},
+        {"id": "team", "col": 5, "row": 3, "lane": "human", "title": "Team review", "sub": "Close calls, thumbs up or down",
+         "tag": "people", "tagc": "ppl", "img": "steps/s4.png", "more": "A vote overrides the model right away."},
+        {"id": "post", "col": 6, "row": 3, "lane": "human", "title": "Post", "sub": "Our template, then Instagram",
+         "tag": "Instagram", "tagc": "ppl", "img": "posts/01-january.jpg" if posts else None,
+         "more": "The graphic and caption stay human. That's our voice."},
+    ]
+    edges = [("find", "read"), ("read", "rules"), ("rules", "judge"), ("judge", "decide"), ("decide", "publish"),
+             ("read", "validate"), ("memory", "judge"), ("decide", "team"), ("publish", "breaker"), ("breaker", "post")]
+    loops = [("team", "memory", "votes → examples"), ("team", "evals", "votes → labels")]
+    components.html(flow.render(nodes, edges, loops), height=flow.HEIGHT)
+
+    examples = [("Free AI Webinar: Grow Your Business 10x", "Sales pitch · 14 · left off", False),
+                ("Seattle AI Builders Meetup", "Real meetup · 86 · on the list", True),
+                ("Sunday Revival Worship Night", "Religious service · 8 · left off", False),
+                ("Diwali Festival of Lights", "Community festival · 92 · on the list", True)]
+    st.markdown(howitworks.cost(est) + howitworks.calls(hi, lo, cs_metrics, examples) + howitworks.broke(),
                 unsafe_allow_html=True)
-    st.markdown("<div class='cs'><div class='cs-sec' style='grid-template-columns:1fr'><div>"
-                "<h2>The tool <em>itself</em></h2><p class='kicker'>This is what my team opens every Monday.</p>"
-                "</div></div></div>", unsafe_allow_html=True)
 
-    # Who we curate for, and what makes a pick
-    traits = "".join(f"<span>{esc(k)}</span>" for k, _ in AUDIENCE["traits"])
-    st.markdown(f"""
-<div class='ob ob-sec cute'><span class='t'>Who we curate for</span></div>
-<div class='ob aud-line'><b>Seattle locals, 28 to 52</b>{traits}</div>
-<div class='ob ob-sec cute'><span class='t'>What makes a pick</span></div>
-<div class='ob venn-wrap'>
-  <div class='venn'>{venn_svg()}</div>
-  <div class='venn-side'>
-    <div class='vs-block'><span class='vs-k never'>Never on the list</span>
-      <div class='vs-chips never'><span>Sales pitches</span><span>Religious services</span><span>Partisan events</span></div></div>
-    <div class='vs-block'><span class='vs-k ok'>Still welcome</span>
-      <div class='vs-chips ok'><span>Diwali</span><span>Lunar New Year</span><span>MLK Day</span><span>Holiday markets</span></div>
-      <p>Cultural and civic celebrations everyone shares.</p></div>
-    <div class='vs-block'><span class='vs-k'>Gray areas</span><p>Go to the team, and their votes become the AI's best examples.</p></div>
-  </div>
-</div>""", unsafe_allow_html=True)
-
+    if not team:
+        return
+    st.markdown("<div class='hw'><div class='hw-h'><div class='h2'>Team <em>controls</em></div><span>only visible when signed in</span></div></div>",
+                unsafe_allow_html=True)
     # This week's numbers
     st.markdown(f"""
 <div class='ob ob-sec cute'><span class='t'>This week's numbers</span></div>
@@ -1034,7 +1028,6 @@ def render_curation_page() -> None:
 
     # 4. How well it's working
     st.markdown("<div class='ob ob-sec cute'><span class='t'>How well it's working</span></div>", unsafe_allow_html=True)
-    labeled = [r for r in fb_rows if r.get("model_score") is not None]
     if len(labeled) < 10:
         teach_empty(len(labeled))
     else:
@@ -1096,110 +1089,6 @@ def render_curation_page() -> None:
         st.code(build_messages([], shots)[0]["content"], language=None, wrap_lines=True)
 
 
-# ---------- filters page ----------
-
-
-def render_filters_page() -> None:
-    rules = filters.load()
-    st.markdown("<div class='ob ob-title'><h1>Filters</h1>"
-                "<p>What gets kept off the list, and why. Every filtered event is grouped by its reason.</p></div>",
-                unsafe_allow_html=True)
-    filt = trace[trace["status"] == FILTERED]
-
-    # Filtered events by reason, with an Allow switch for the team
-    st.markdown(f"<div class='ob ob-sec filt'><span class='dot'></span><span class='t'>Filtered events</span>"
-                f"<span class='c'>{len(filt)}</span></div>", unsafe_allow_html=True)
-    if filt.empty:
-        st.markdown("<div class='ob empty'>Nothing filtered this run.</div>", unsafe_allow_html=True)
-    allow_now = set(rules["allow"])
-    for cat_name, grp in sorted(filt.groupby("filter_category"), key=lambda g: -len(g[1])):
-        with st.expander(f"{cat_name} · {len(grp)}"):
-            table = pd.DataFrame({
-                "Allow": False,
-                "Event": grp["title"],
-                "Date": grp["date"].map(day_label),
-                "Matched": grp["why"].map(lambda w: str(w).split(": ", 1)[-1]),
-                "Cost": grp["cost"],
-                "Source": grp["site"],
-                "Link": grp["link"],
-            })
-            if team:
-                edited = st.data_editor(
-                    table, hide_index=True, width="stretch", key=f"allow-{cat_name}",
-                    column_config={"Allow": st.column_config.CheckboxColumn(help="Keep this event on the list"),
-                                   "Link": st.column_config.LinkColumn(display_text="open")},
-                    disabled=[c for c in table.columns if c != "Allow"])
-                picked = grp.loc[edited["Allow"].values, "filter_key"].tolist()
-                if picked and st.button(f"Allow {len(picked)} selected", key=f"allow-btn-{cat_name}",
-                                        type="primary"):
-                    rules["allow"] = sorted(allow_now | set(picked))
-                    filters.save(rules)
-                    st.rerun()
-            else:
-                st.dataframe(table.drop(columns=["Allow"]), hide_index=True, width="stretch",
-                             column_config={"Link": st.column_config.LinkColumn(display_text="open")})
-
-    # The rules themselves
-    st.markdown("<div class='ob ob-sec rec' style='margin-top:26px'><span class='dot'></span>"
-                "<span class='t'>Rules</span></div>", unsafe_allow_html=True)
-    if not team:
-        on = lambda x: "on" if x else "off"
-        st.markdown(
-            f"<div class='ob empty' style='color:var(--dim)'>"
-            f"Price listed: <b>{on(rules['price_listed'])}</b> · Tickets required: <b>{on(rules['tickets'])}</b> · "
-            f"Price in description: <b>{on(rules['price_in_text'])}</b></div>", unsafe_allow_html=True)
-        for topic, terms in rules["topics"].items():
-            st.markdown(f"<div class='ob' style='margin-top:12px'><b>{esc(topic)}</b><div class='rule-chips' "
-                        f"style='margin-top:6px'>" + "".join(f"<span>{esc(t)}</span>" for t in terms)
-                        + "</div></div>", unsafe_allow_html=True)
-        st.caption("Sign in to change the rules.")
-        return
-
-    with st.form("rules"):
-        st.markdown("**Free events only**")
-        c1, c2, c3 = st.columns(3)
-        price = c1.toggle("Price listed", value=rules["price_listed"],
-                          help="Filter events whose cost shows a price, like $15 or Varies.")
-        tickets = c2.toggle("Tickets required", value=rules["tickets"],
-                            help="Filter events with ticket language, or marked ticketed by the extractor.")
-        price_text = c3.toggle("Price in description", value=rules["price_in_text"],
-                               help="Filter events with a dollar amount in the title or description.")
-        ticket_terms = st.text_area("Ticket words (one per line)", "\n".join(rules["ticket_terms"]), height=140)
-
-        st.markdown("**Topics to keep off the list**")
-        topic_edits, remove = {}, set()
-        for topic, terms in rules["topics"].items():
-            a, b = st.columns([5, 1], vertical_alignment="bottom")
-            topic_edits[topic] = a.text_area(f"{topic} (one word or phrase per line)", "\n".join(terms),
-                                             height=120, key=f"topic-{topic}")
-            if b.checkbox("Remove", key=f"rm-topic-{topic}"):
-                remove.add(topic)
-        a, b = st.columns([2, 5])
-        new_name = a.text_input("New topic", placeholder="e.g. Fundraisers")
-        new_terms = b.text_input("Words for the new topic, comma separated", placeholder="gala, fundraiser, donate")
-
-        if st.form_submit_button("Save rules", type="primary"):
-            lines = lambda txt: [t.strip() for t in txt.replace(",", "\n").splitlines() if t.strip()]
-            rules.update(price_listed=price, tickets=tickets, price_in_text=price_text,
-                         ticket_terms=lines(ticket_terms))
-            rules["topics"] = {t: lines(v) for t, v in topic_edits.items() if t not in remove}
-            if new_name.strip() and new_terms.strip():
-                rules["topics"][new_name.strip()] = lines(new_terms)
-            filters.save(rules)
-            st.rerun()
-
-    if rules["allow"]:
-        with st.expander(f"Allowed events · {len(rules['allow'])}"):
-            keep = st.multiselect("Allowed (remove to filter them again)", rules["allow"], default=rules["allow"])
-            if st.button("Update allowed list") and set(keep) != set(rules["allow"]):
-                rules["allow"] = keep
-                filters.save(rules)
-                st.rerun()
-    if st.button("Reset all rules to defaults"):
-        filters.reset()
-        st.rerun()
-
-
 # ---------- navigation ----------
 labels = [f"{m:%B %Y}" for m in months]
 in_range = {(m.year, m.month) for m in months}
@@ -1211,7 +1100,9 @@ if mine:
     views.append(("Added by you", len(mine)))
 
 state = st.session_state
-state.setdefault("section", "events")
+state.setdefault("section", "curation")
+if state.section not in ("curation", "ontology", "events"):
+    state.section = "curation"
 if state.get("view") not in [v for v, _ in views]:
     state.view = labels[0]
 
@@ -1223,30 +1114,21 @@ def go_to(section: str, view: str | None = None) -> None:
 
 
 with nav_box:
-    st.button("Events", key="nav-events", width="stretch", on_click=go_to, args=("events",),
+    st.button("How it works", key="nav-curation", width="stretch", on_click=go_to, args=("curation",),
+              type="primary" if state.section == "curation" else "secondary")
+    st.button("Ontology of events", key="nav-onto", width="stretch", on_click=go_to, args=("ontology",),
+              type="primary" if state.section == "ontology" else "secondary")
+    st.button("End result", key="nav-events", width="stretch", on_click=go_to, args=("events",),
               type="primary" if state.section == "events" else "secondary")
     if state.section == "events":
         with st.container(key="nav-months"):
             for v, n in views:
                 st.button(f"{v}  ·  {n}", key=f"nav-{v}", width="stretch", on_click=go_to, args=("events", v),
                           type="primary" if state.view == v else "tertiary")
-    st.button("Ontology of events", key="nav-onto", width="stretch", on_click=go_to, args=("ontology",),
-              type="primary" if state.section == "ontology" else "secondary")
-    st.button("AI curation", key="nav-curation", width="stretch", on_click=go_to, args=("curation",),
-              type="primary" if state.section == "curation" else "secondary")
-    st.button("Clients", key="nav-clients", width="stretch", on_click=go_to, args=("clients",),
-              type="primary" if state.section == "clients" else "secondary")
-    st.button(f"Filters  ·  {int((trace['status'] == FILTERED).sum())}", key="nav-filters", width="stretch",
-              on_click=go_to, args=("filters",),
-              type="primary" if state.section == "filters" else "secondary")
 
 # ---------- page ----------
 if state.section == "curation":
     render_curation_page()
-elif state.section == "clients":
-    crm_view.render(team)
-elif state.section == "filters":
-    render_filters_page()
 elif state.section == "ontology":
     st.markdown("<div class='ob ob-title'><h1>Ontology of events</h1>"
                 "<p>How Seattle's free events connect: categories, neighborhoods, venues, and sources.</p></div>",
@@ -1254,8 +1136,8 @@ elif state.section == "ontology":
     render_ontology(res["trace"], labels)
 else:
     render_breaker()
-    st.markdown("<div class='ob ob-title'><h1>Seattle Free Events</h1><p>Free things worth leaving the house for, "
-                "picked for outgoing, community-minded Seattleites. No sales pitches.</p></div>",
+    st.markdown("<div class='ob ob-title'><h1>End result</h1><p>The list we post: free things worth leaving the house for, "
+                "picked for outgoing, community-minded Seattleites.</p></div>",
                 unsafe_allow_html=True)
     v = state.view
     if v in labels:

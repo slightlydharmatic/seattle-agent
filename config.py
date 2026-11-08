@@ -40,6 +40,12 @@ OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")  # low-cost: reads pages
 # The curator judges meaning, so it can use a stronger model. Set CURATOR_MODEL to upgrade;
 # until then it uses the same low-cost model.
 CURATOR_MODEL = os.getenv("CURATOR_MODEL", OPENAI_MODEL)
+# List prices in USD per 1M tokens (input, output), as of when this was built.
+# Used only for the cost estimate on the How it works page. Update if prices change.
+MODEL_PRICES = {
+    "gpt-4o-mini": (0.15, 0.60),
+}
+
 OUTPUT_DIR = PROJECT_DIR / "output"
 
 
