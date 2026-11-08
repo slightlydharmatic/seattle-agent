@@ -6,7 +6,7 @@ Hovering a node shows what it does, what it costs, and a real screen when we hav
 """
 import json
 
-from story import _b64, _font
+from ui.story import _b64, _font
 
 HEIGHT = 640
 

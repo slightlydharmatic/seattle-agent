@@ -9,7 +9,7 @@ import html
 import json
 from datetime import date
 
-from story import ASSETS, _b64, _font
+from ui.story import ASSETS, _b64, _font
 
 HEIGHT = 720
 POST_COLORS = ["#C9D4F7", "#F5D3E3", "#CFE6F7", "#F6E7C8", "#D9D2F3", "#E3EEDF"]
