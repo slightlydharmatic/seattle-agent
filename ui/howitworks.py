@@ -112,7 +112,7 @@ def money(v) -> str:
     return f"${v:.2f}" if v >= 0.1 else f"{v * 100:.1f}¢"
 
 
-def top(n_sites: int, est: dict, views: str) -> str:
+def top(n_sites: int, est: dict, views: str, found: int, picks: int) -> str:
     return f"""
 <div class='hw'><div class='hw-top'>
   <div class='h1'>How it <em>works</em></div>
@@ -123,7 +123,7 @@ def top(n_sites: int, est: dict, views: str) -> str:
     <span class='hw-dot'>·</span><span><b>{e(views)}</b> views</span>
   </div>
 </div>
-<div class='hw-h'><div class='h2'>The <em>system</em></div><span>Hover a step for what it does, what it costs, and the real screen.</span></div></div>"""
+<div class='hw-h'><div class='h2'>From {found:,} listings to <em>{picks} picks</em></div><span>Two models, one feedback loop. Hover any step for the real screen.</span></div></div>"""
 
 
 def cost_panel(est: dict) -> str:

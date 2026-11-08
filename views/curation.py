@@ -10,7 +10,7 @@ import costs
 import feedback
 import filters
 from agents.curator import INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
-from agents.synthesizer import MERGED, PICK, PUBLISH
+from agents.synthesizer import FILTERED, MERGED, PICK, PUBLISH, REVIEW
 from config import CURATOR_MODEL, MONTHLY_PAGES, OPENAI_MODEL, SOURCE_PAGES
 from ui import flow, hero, howitworks
 from ui.nav import go_to
@@ -51,49 +51,67 @@ def render(ctx) -> None:
     posts = hero.load_posts()
     views = hero.short(sum(p.get("views", 0) for p in posts)) if posts else "80k"
     est = costs.estimate(len((raw or {}).get("source_urls") or []) or 20, len(trace), OPENAI_MODEL, CURATOR_MODEL)
-    st.markdown(howitworks.CSS + howitworks.top(n_sites, est, views), unsafe_allow_html=True)
 
     def m(v):
         return howitworks.money(v)
+    rule_cats = ["AI: low relevance", "Downvoted by team"]
+    found = len(raw_events)
+    clean = int((decided["status"] != FILTERED).sum()
+                + ((decided["status"] == FILTERED) & decided["filter_category"].isin(rule_cats)).sum())
+    on_list = int(decided["status"].isin([PICK, PUBLISH]).sum())
+    to_people = int((decided["status"] == REVIEW).sum())
+    n_picks = int((decided["status"] == PICK).sum())
+    judged = not scored.empty
+
+    def pct(x):
+        return f"{x:.0%}" if isinstance(x, (int, float)) else "—"
     green, amber, red = ("#E6F2EC", "#2F6B53"), ("#F8EDD6", "#7A5A16"), ("#F8E4E1", "#A8423A")
     nodes = [
-        {"id": "find", "col": 1, "row": 1, "step": "01", "title": "Find", "sub": f"{n_sites} Seattle sites + month pages",
-         "tag": "Tavily", "more": "Searches and reads pages, only from sites we trust. Runs every Monday.", "cost": "~1 search credit per page"},
-        {"id": "read", "col": 2, "row": 1, "step": "02", "title": "Read", "sub": "Pages into clean events, in chunks",
-         "tag": OPENAI_MODEL, "tagc": "cheap", "img": "steps/s2.png",
-         "more": "A low-cost model does the high-volume work: title, date, place, cost, link. Repeats across sites are merged.",
-         "cost": f"{m(est['extract']['usd'])} per run · {est['pages']} pages"},
-        {"id": "rules", "col": 3, "row": 1, "step": "03", "title": "Rules", "sub": "Free only, no tickets, no real estate",
-         "tag": "no model · $0", "tagc": "free", "more": "Cheap, predictable checks run first so a paid model never sees an obvious no."},
-        {"id": "judge", "col": 4, "row": 1, "step": "04", "title": "Judge", "sub": "Intent, 0 to 100 score, one-line reason",
-         "tag": CURATOR_MODEL, "tagc": "strong", "img": "steps/s3.png",
-         "more": "Reads what each event is for, not its keywords. Batches of 20, cached per prompt version."
-                 + ("" if CURATOR_MODEL != OPENAI_MODEL else " Set up to swap in a stronger model."),
-         "cost": f"{m(est['curate']['usd'])} per run · {est['calls']} calls"},
-        {"id": "decide", "col": 5, "row": 1, "step": "05", "title": "Decide", "sub": "The operating point",
-         "band": [[f"{hi}+ live", *green], [f"{lo}–{hi - 1} team", *amber], [f"<{lo} out", *red]],
-         "more": "Tuned for precision. The middle band goes to people, so borderline events aren't lost."},
-        {"id": "publish", "col": 6, "row": 1, "step": "06", "title": "Publish", "sub": "Weekly snapshot for the list",
-         "tag": "GitHub Actions · $0", "tagc": "free", "img": "steps/s1.png",
-         "more": "Readers load a saved snapshot, so the public page never calls a paid API."},
-        {"id": "validate", "col": 2, "row": 2, "lane": "guard", "title": "Validate", "sub": "No date or place? Held, with a reason",
-         "tag": "no model", "tagc": "free"},
-        {"id": "memory", "col": 4, "row": 2, "lane": "guard", "title": "Memory", "sub": "Latest 12 votes become examples",
-         "tag": PROMPT_VERSION, "more": "8 recent downvotes and 4 upvotes are added to the judge's instructions every run."},
-        {"id": "breaker", "col": 6, "row": 2, "lane": "guard", "title": "Circuit breaker", "sub": "Holds a run that looks broken",
-         "tag": "no model", "tagc": "free",
-         "more": "Trips if events halve, most pages fail, sources go quiet, or the AI drops 60%+. Readers keep last week's list."},
-        {"id": "evals", "col": 3, "row": 3, "lane": "guard", "title": "Evals", "sub": "Precision and recall vs. our votes",
-         "tag": "golden set next", "more": "Every vote is a label. Prompt changes will have to pass a hand-labeled test set."},
-        {"id": "team", "col": 5, "row": 3, "lane": "human", "title": "Team review", "sub": "Close calls, thumbs up or down",
-         "tag": "people", "tagc": "ppl", "img": "steps/s4.png", "more": "A vote overrides the model right away."},
-        {"id": "post", "col": 6, "row": 3, "lane": "human", "title": "Post", "sub": "Our template, then Instagram",
+        {"id": "find", "col": 1, "row": 1, "step": "01", "title": "Find", "count": f"{found} found", "sub": f"{n_sites} trusted Seattle sites, weekly",
+         "specs": [["tool", "search"], ["cost", "~1 credit/pg"]],
+         "more": "An agent searches and reads each listing page, only from sites we trust."},
+        {"id": "read", "col": 2, "row": 1, "step": "02", "title": "Read", "count": f"{len(decided)}", "sub": "Messy pages into clean events", "ai": True,
+         "specs": [["model", OPENAI_MODEL], ["cost", f"{m(est['extract']['usd'])}/run"], ["speed", "batch"],
+                   ["why", "volume"]], "img": "steps/s2.png",
+         "more": "Cheapest model that's good enough: it only pulls out title, date, place, cost, and link. Repeats are merged."},
+        {"id": "rules", "col": 3, "row": 1, "step": "03", "title": "Rules", "count": f"{clean}", "sub": "Free only. No tickets or real estate.",
+         "specs": [["model", "none"], ["cost", "$0"]],
+         "more": "Simple rules run before any AI, so we never pay a model to look at an obvious no."},
+        {"id": "judge", "col": 4, "row": 1, "step": "04", "title": "Judge", "sub": "Is this worth our readers' time?", "ai": True,
+         "specs": [["model", CURATOR_MODEL], ["cost", f"{m(est['curate']['usd'])}/run"], ["speed", "batch, cached"],
+                   ["why", "quality"]], "img": "steps/s3.png",
+         "more": "Reads what each event is for, not its keywords. Returns an intent, a 0 to 100 score, and one line on why. "
+                 "This is the step worth a stronger model; it's set up to swap one in."
+                 + ("" if judged else " (This snapshot hasn't been scored yet.)")},
+        {"id": "decide", "col": 5, "row": 1, "step": "05", "title": "Decide", "count": f"{on_list} live", "sub": "Where we set the bar",
+         "band": [[f"{hi}+ live", *green], [f"{lo}–{hi - 1} us", *amber], [f"<{lo} out", *red]],
+         "specs": [["precision", f"{hi}+ live"], ["recall", f"{lo}–{hi - 1} → us"]],
+         "more": "Tuned for precision: one spammy pick costs more trust than a missed event. "
+                 "The middle band goes to people, so good borderline events aren't lost (that protects recall)."},
+        {"id": "publish", "col": 6, "row": 1, "step": "06", "title": "Publish", "sub": "The weekly list", "img": "steps/s1.png",
+         "specs": [["cost", "$0"], ["speed", "instant"]],
+         "more": "Readers load a saved snapshot, so the public page is instant and never calls a paid API."},
+        {"id": "validate", "col": 2, "row": 2, "lane": "guard", "title": "Validate", "sub": "No date or place? Held, never guessed.",
+         "tag": "no AI", "tagc": "free"},
+        {"id": "memory", "col": 4, "row": 2, "lane": "guard", "title": "Memory", "sub": "Our latest votes, as examples",
+         "tag": f"12 votes · {PROMPT_VERSION}", "more": "8 recent thumbs down and 4 thumbs up are added to the judge's instructions every run."},
+        {"id": "breaker", "col": 6, "row": 2, "lane": "guard", "title": "Circuit breaker", "sub": "A broken run never goes live",
+         "tag": "no AI", "tagc": "free",
+         "more": "Holds a run if events halve, most pages fail, sources go quiet, or the AI drops 60%+. Readers keep last week's list."},
+        {"id": "evals", "col": 3, "row": 3, "lane": "guard", "title": "Evals", "sub": "Graded on our votes, from vote 10",
+         "specs": [["precision", pct(cs_metrics.get("precision"))], ["recall", pct(cs_metrics.get("recall"))]],
+         "more": "Every vote is a label. Next: a hand-labeled test set every prompt change has to pass."},
+        {"id": "team", "col": 5, "row": 3, "lane": "human", "title": "Team review", "count": f"{to_people}", "sub": "Close calls, thumbs up or down",
+         "tag": "overrides the AI", "tagc": "ppl", "img": "steps/s4.png", "more": "A vote overrides the AI right away."},
+        {"id": "post", "col": 6, "row": 3, "lane": "human", "title": "Post", "count": f"{n_picks} picks", "sub": "Our template, our voice",
          "tag": "Instagram", "tagc": "ppl", "img": "posts/01-january.jpg" if posts else None,
-         "more": "The graphic and caption stay human. That's our voice."},
+         "more": "The AI never posts. People design and publish the list."},
     ]
     edges = [("find", "read"), ("read", "rules"), ("rules", "judge"), ("judge", "decide"), ("decide", "publish"),
-             ("read", "validate"), ("memory", "judge"), ("decide", "team"), ("publish", "breaker"), ("breaker", "post")]
-    loops = [("team", "memory", "votes → examples"), ("team", "evals", "votes → labels")]
+             ("read", "validate"), ("memory", "judge"), ("decide", "team", "close calls"), ("publish", "breaker"),
+             ("breaker", "post")]
+    loops = [("team", "memory", "votes become examples"), ("team", "evals", "votes grade the AI")]
+    st.markdown(howitworks.CSS + howitworks.top(n_sites, est, views, found, n_picks), unsafe_allow_html=True)
     components.html(flow.render(nodes, edges, loops), height=flow.HEIGHT)
 
     examples = [("Free AI Webinar: Grow Your Business 10x", "Sales pitch", 14, False),

@@ -8,11 +8,12 @@ import json
 
 from ui.story import _b64, _font
 
-HEIGHT = 640
+HEIGHT = 720
 
 
 def render(nodes: list[dict], edges: list[tuple], loops: list[tuple]) -> str:
-    """nodes: {id, col, row, lane, title, sub, tag, cost?, img?}; edges/loops: (from_id, to_id, label?)."""
+    """nodes: {id, col, row, lane, title, sub, tag?, specs?: [[label, value]], band?, cost?, img?};
+    edges: (from_id, to_id[, count label]); loops: (from_id, to_id, label)."""
     for n in nodes:
         if n.get("img"):
             n["img"] = f"data:image/png;base64,{_b64(n['img'])}"
@@ -28,27 +29,35 @@ def render(nodes: list[dict], edges: list[tuple], loops: list[tuple]) -> str:
 html,body{{background:transparent;font-family:var(--sans);color:var(--ink)}}
 .wrap{{position:relative;background:var(--bg);border-radius:20px;padding:22px 22px 18px;height:{HEIGHT - 8}px;overflow:hidden;
   background-image:radial-gradient(rgba(30,42,71,.09) 1px,transparent 1px);background-size:18px 18px}}
-.lanes{{position:absolute;left:22px;top:22px;bottom:46px;width:86px;display:grid;grid-template-rows:1.25fr 1fr 1fr;pointer-events:none}}
-.lanes div{{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);padding-top:8px}}
-.grid{{position:absolute;left:108px;right:22px;top:22px;bottom:46px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
-  grid-template-rows:1.25fr 1fr 1fr;gap:18px 22px}}
-.node{{position:relative;z-index:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 12px;
+.lanes{{position:absolute;left:18px;top:22px;bottom:46px;width:70px;display:grid;grid-template-rows:1.55fr 1fr 1fr;pointer-events:none}}
+.lanes div{{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);padding-top:8px}}
+.grid{{position:absolute;left:92px;right:18px;top:22px;bottom:46px;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
+  grid-template-rows:1.55fr 1fr 1fr;gap:20px 24px}}
+.node{{position:relative;z-index:2;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 10px;
   display:flex;flex-direction:column;gap:4px;align-self:center;cursor:default;
   transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s}}
 .node:hover,.node.hot{{transform:translateY(-3px);box-shadow:0 16px 34px rgba(30,50,110,.14);border-color:var(--ink)}}
 .node.guard{{border-style:dashed;border-color:#9DAAE0;background:#F9FAFF}}
 .node.human{{background:#FDF6F9;border-color:#E6C3D3}}
-.node .n{{font-size:10.5px;color:var(--soft);letter-spacing:.06em}}
+.node .n{{font-size:10.5px;color:var(--soft);letter-spacing:.06em;display:flex;justify-content:space-between;gap:6px}}
+.node .n em{{font:500 10.5px var(--mono);font-style:normal;color:var(--ink);background:#EEF1FA;border-radius:999px;padding:0 6px}}
 .node b{{font:400 18px/1.1 var(--serif)}}
 .node p{{font-size:12px;line-height:1.35;color:var(--dim)}}
 .tag{{align-self:flex-start;font:500 10.5px var(--mono);padding:3px 7px;border-radius:6px;background:#EEF1FA;color:var(--ink);margin-top:2px}}
 .tag.cheap{{background:#E6F2EC;color:#2F6B53}}.tag.strong{{background:#EEE9FB;color:#4B3FA6}}.tag.free{{background:#F1F1F1;color:#555}}
 .tag.ppl{{background:#F8E3EC;color:#8A3E62}}
+.specs{{display:grid;grid-template-columns:auto 1fr;gap:2px 6px;margin-top:4px;padding-top:6px;border-top:1px solid #EEF1F6}}
+.specs dt{{font:500 9px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--soft);padding-top:1px}}
+.specs dd{{margin:0;font:500 10px var(--mono);color:var(--ink);overflow-wrap:anywhere}}
+.node.ai{{border-color:#B9B0EE;box-shadow:0 0 0 3px rgba(84,105,196,.07)}}
+.cnt{{position:absolute;z-index:3;transform:translate(-50%,-100%);font:500 10.5px var(--mono);color:var(--ink);background:#fff;
+  border:1px solid var(--line);border-radius:999px;padding:1px 7px;white-space:nowrap}}
 .band{{display:flex;gap:4px;margin-top:3px}}
 .band span{{flex:1;font:500 10px var(--mono);text-align:center;padding:4px 0;border-radius:5px}}
 svg{{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible}}
-.lbl{{font:500 10.5px var(--sans);fill:var(--rose)}}
-.legend{{position:absolute;left:108px;right:22px;bottom:14px;display:flex;gap:18px;flex-wrap:wrap;font-size:11.5px;color:var(--soft)}}
+.lbl{{font:500 12px var(--sans);fill:var(--rose)}}
+.lblbg{{fill:#F4F7FC}}
+.legend{{position:absolute;left:92px;right:22px;bottom:14px;display:flex;gap:18px;flex-wrap:wrap;font-size:11.5px;color:var(--soft)}}
 .legend i{{display:inline-block;width:20px;height:0;border-top:1.5px solid var(--ink);vertical-align:middle;margin-right:6px}}
 .legend .lp i{{border-top:1.5px dashed var(--rose)}}
 .peek{{position:absolute;z-index:5;width:320px;background:#fff;border-radius:14px;box-shadow:0 24px 60px rgba(20,30,70,.22);
@@ -61,14 +70,14 @@ svg{{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:n
 @media (prefers-reduced-motion:reduce){{*{{transition:none!important}}}}
 </style></head><body>
 <div class="wrap" id="wrap">
-  <div class="lanes"><div>Agent</div><div>Guardrails</div><div>People</div></div>
+  <div class="lanes"><div>AI pipeline</div><div>Safety checks</div><div>Our team</div></div>
   <div class="grid" id="grid"></div>
   <svg id="svg"><defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10z" fill="#1E2A47"/></marker>
     <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10z" fill="#B5658A"/></marker>
   </defs></svg>
-  <div class="legend"><span><i></i>data flow</span><span class="lp"><i></i>feedback loop</span>
-    <span>green tag = low-cost model · purple = judgment model · grey = no model</span><span>hover any step</span></div>
+  <div class="legend"><span><i></i>events flowing through</span><span class="lp"><i></i>our feedback loop</span>
+    <span>purple outline = an AI model</span><span>hover any step for the real screen</span></div>
   <div class="peek" id="peek"></div>
 </div>
 <script>
@@ -76,12 +85,16 @@ const N = {json.dumps(nodes)}, E = {json.dumps(edges)}, L = {json.dumps(loops)};
 const grid = document.getElementById('grid'), svg = document.getElementById('svg'), wrap = document.getElementById('wrap'), peek = document.getElementById('peek');
 const el = {{}};
 N.forEach((n, i) => {{
-  const d = document.createElement('div'); d.className = 'node ' + (n.lane || ''); d.id = 'n-' + n.id;
+  const d = document.createElement('div'); d.className = 'node ' + (n.lane || '') + (n.ai ? ' ai' : ''); d.id = 'n-' + n.id;
   d.style.gridColumn = n.col; d.style.gridRow = n.row;
   d.innerHTML = '<span class="n"></span><b></b><p></p>' + (n.band ? '<div class="band"></div>' : '<span class="tag"></span>');
-  d.querySelector('.n').textContent = n.step || ''; d.querySelector('b').textContent = n.title; d.querySelector('p').textContent = n.sub;
+  d.querySelector('.n').textContent = n.step || ''; if (n.count) {{ const c = document.createElement('em'); c.textContent = n.count; d.querySelector('.n').appendChild(c); }} d.querySelector('b').textContent = n.title; d.querySelector('p').textContent = n.sub;
   if (n.band) d.querySelector('.band').innerHTML = n.band.map(b => `<span style="background:${{b[1]}};color:${{b[2]}}">${{b[0]}}</span>`).join('');
-  else {{ const t = d.querySelector('.tag'); t.textContent = n.tag; if (n.tagc) t.classList.add(n.tagc); }}
+  else if (n.tag) {{ const t = d.querySelector('.tag'); t.textContent = n.tag; if (n.tagc) t.classList.add(n.tagc); }}
+  else d.querySelector('.tag').remove();
+  if (n.specs) {{ const dl = document.createElement('dl'); dl.className = 'specs';
+    n.specs.forEach(([k, v]) => {{ const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; dl.append(dt, dd); }});
+    d.appendChild(dl); }}
   grid.appendChild(d); el[n.id] = d;
   d.addEventListener('mouseenter', () => show(n, d)); d.addEventListener('mouseleave', () => peek.classList.remove('on'));
 }});
@@ -98,20 +111,24 @@ function show(n, d) {{
 function box(id) {{ const w = wrap.getBoundingClientRect(), r = el[id].getBoundingClientRect();
   return {{l: r.left - w.left, r: r.right - w.left, t: r.top - w.top, b: r.bottom - w.top, cx: r.left - w.left + r.width / 2, cy: r.top - w.top + r.height / 2}}; }}
 function draw() {{
-  [...svg.querySelectorAll('path.e, text, path.l')].forEach(x => x.remove());
+  [...svg.querySelectorAll('path.e, text, path.l, rect')].forEach(x => x.remove()); [...wrap.querySelectorAll('.cnt')].forEach(x => x.remove());
+  const pill = (x, y, t) => {{ const c = document.createElement('div'); c.className = 'cnt'; c.textContent = t; c.style.left = x + 'px'; c.style.top = y + 'px'; wrap.appendChild(c); }};
   const add = (d, cls, mk) => {{ const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); p.setAttribute('class', cls);
     p.setAttribute('fill', 'none'); p.setAttribute('stroke', cls === 'l' ? '#B5658A' : '#1E2A47'); p.setAttribute('stroke-width', '1.4');
     if (cls === 'l') p.setAttribute('stroke-dasharray', '5 5'); p.setAttribute('marker-end', 'url(#' + mk + ')'); svg.appendChild(p); return p; }};
-  E.forEach(([a, b]) => {{ const A = box(a), B = box(b);
-    if (Math.abs(A.cy - B.cy) < 30) add(`M${{A.r}},${{A.cy}} L${{B.l - 2}},${{A.cy}}`, 'e', 'a');
-    else if (B.t > A.b) add(`M${{A.cx}},${{A.b}} L${{A.cx}},${{B.t - 2}}`, 'e', 'a');
+  E.forEach(([a, b, cnt]) => {{ const A = box(a), B = box(b);
+    if (Math.abs(A.cy - B.cy) < 30) {{ add(`M${{A.r}},${{A.cy}} L${{B.l - 2}},${{A.cy}}`, 'e', 'a'); if (cnt) pill((A.r + B.l) / 2, A.cy - 5, cnt); }}
+    else if (B.t > A.b) {{ add(`M${{A.cx}},${{A.b}} L${{A.cx}},${{B.t - 2}}`, 'e', 'a'); if (cnt) pill(A.cx, (A.b + B.t) / 2 + 9, cnt); }}
     else add(`M${{A.cx}},${{A.t}} L${{A.cx}},${{B.b + 2}}`, 'e', 'a'); }});
   L.forEach(([a, b, label]) => {{ const A = box(a), B = box(b); let d, lx, ly, anchor = 'middle';
     if (Math.abs(A.cy - B.cy) < 30) {{ d = `M${{A.l}},${{A.cy}} L${{B.r + 2}},${{B.cy}}`; lx = (A.l + B.r) / 2; ly = A.cy + 16; }}
-    else {{ d = `M${{A.l}},${{A.cy}} C${{B.cx}},${{A.cy}} ${{B.cx}},${{A.cy}} ${{B.cx}},${{B.b + 2}}`; lx = B.cx - 8; ly = (A.cy + B.b) / 2; anchor = 'end'; }}
+    else {{ d = `M${{A.l}},${{A.cy}} C${{B.cx}},${{A.cy}} ${{B.cx}},${{A.cy}} ${{B.cx}},${{B.b + 2}}`; lx = B.cx + 8; ly = B.b + 18; anchor = 'start'; }}
     add(d, 'l', 'ar');
     if (label) {{ const t = document.createElementNS('http://www.w3.org/2000/svg', 'text'); t.setAttribute('class', 'lbl');
-      t.setAttribute('x', lx); t.setAttribute('y', ly); t.setAttribute('text-anchor', anchor); t.textContent = label; svg.appendChild(t); }} }});
+      t.setAttribute('x', lx); t.setAttribute('y', ly); t.setAttribute('text-anchor', anchor); t.textContent = label; svg.appendChild(t);
+      const bb = t.getBBox(); const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); r.setAttribute('class', 'lblbg');
+      r.setAttribute('x', bb.x - 4); r.setAttribute('y', bb.y - 2); r.setAttribute('width', bb.width + 8); r.setAttribute('height', bb.height + 4); r.setAttribute('rx', 4);
+      svg.insertBefore(r, t); }} }});
 }}
 draw(); window.addEventListener('resize', draw); document.fonts && document.fonts.ready.then(draw);
 </script></body></html>"""
