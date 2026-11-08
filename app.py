@@ -2,7 +2,6 @@
 
     streamlit run app.py
 """
-import hmac
 from collections import Counter
 from datetime import date
 from urllib.parse import urlparse
@@ -22,10 +21,9 @@ import howitworks
 import filters
 from agents.curator import INTENTS, LOW_VALUE, PROMPT_VERSION, build_messages
 import snapshot
-from agents.reasoner import CATEGORIES
 from agents.synthesizer import FILTERED, MERGED, PICK, PUBLISH, REVIEW, SHEET_COLUMNS
-from ui import data, theme
-from ui.components import day_label, esc, event_row, filtered_row, sheet_rows, site
+from ui import data, nav, sidebar, theme
+from ui.components import day_label, esc, event_row, filtered_row, sheet_rows
 from views import ontology as ontology_view
 
 st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
@@ -33,65 +31,12 @@ st.set_page_config(page_title="Seattle Unlocked · Event Desk", layout="wide")
 theme.inject()
 
 
-CATEGORY_OPTIONS = ["Auto"] + list(CATEGORIES) + ["Community"]
-
-
 # ---------- data ----------
 
 
-@st.dialog("Add an event")
-def add_event_dialog() -> None:
-    with st.form("add_event", border=False):
-        title = st.text_input("Event name *")
-        c1, c2 = st.columns(2)
-        day = c1.date_input("Date *", value=date.today(), format="MM/DD/YYYY")
-        time = c2.text_input("Time", placeholder="7pm")
-        c3, c4 = st.columns(2)
-        venue = c3.text_input("Venue *")
-        hood = c4.text_input("Neighborhood", placeholder="Capitol Hill")
-        c5, c6 = st.columns(2)
-        category = c5.selectbox("Category", CATEGORY_OPTIONS)
-        cost = c6.text_input("Cost", value="Free")
-        desc = st.text_area("Description", height=80)
-        link = st.text_input("Link", placeholder="https://")
-        feature = st.checkbox("Feature it as a pick")
-        if st.form_submit_button("Add event", type="primary", width="stretch"):
-            if not title.strip() or not venue.strip():
-                st.error("Add an event name and a venue.")
-                return
-            custom_events.add({
-                "title": title.strip(), "date": day.isoformat(), "time": time.strip(),
-                "venue": venue.strip(), "neighborhood": hood.strip(),
-                "category": "" if category == "Auto" else category,
-                "cost": cost.strip() or "Free", "description": desc.strip(),
-                "link": link.strip(), "feature": feature,
-            })
-            st.rerun()
-
-
-# ---------- sidebar ----------
 team = st.session_state.get("team", False)
 snap = snapshot.load()
-
-with st.sidebar:
-    st.markdown("<div class='ob ob-brand'><i></i>Seattle Unlocked</div>", unsafe_allow_html=True)
-    nav_box = st.container(key="nav")  # filled in once the months are known
-    st.divider()
-
-    if team:
-        use_sample = st.checkbox("Show sample data", value=snap is None)
-        query = st.text_input("Search", "free events in Seattle")
-        n_months = st.select_slider("Months", options=[1, 2, 3, 4], value=3)
-        picks = st.slider("Picks per month", 0, 12, 6)
-        include_paid = st.checkbox("Include paid events")
-        go = st.button("Run live search", type="primary", width="stretch")
-        if st.button("Re-curate with AI", width="stretch",
-                     help="Score every event again using the latest thumbs up and down. Costs a few cents."):
-            st.session_state.curate_now, st.session_state.curate_mode = True, "all"
-        if st.button("Add an event", width="stretch"):
-            add_event_dialog()
-    else:
-        use_sample, query, n_months, picks, include_paid, go = snap is None, "", 3, 6, False, False
+nav_box, (use_sample, query, n_months, picks, include_paid, go) = sidebar.start(team, snap)
 
 if go:
     snap, use_sample = data.run_live_search(query), False
@@ -102,35 +47,7 @@ raw, as_of, is_sample, months, mine = ctx.raw, ctx.as_of, ctx.is_sample, ctx.mon
 fb_rows, res, votes, trace, titles_by_id = ctx.fb_rows, ctx.res, ctx.votes, ctx.trace, ctx.titles_by_id
 labels, other, views = ctx.labels, ctx.other, ctx.month_views
 
-with st.sidebar:
-    pages = res.get("pages") or []
-    ok = sum(p["status"] == "read" for p in pages)
-    with st.expander(f"Pages read · {ok}/{len(pages)}"):
-        for p in pages:
-            st.write(f"{site(p['url'])} · {p['events'] if p['status'] == 'read' else p['status']}")
-    st.caption("Sample data" if is_sample else f"Updated {as_of:%b} {as_of.day}, {as_of.year}" if as_of else "")
-    if team:
-        import kvstore
-        if kvstore.is_connected():
-            st.caption(":material/cloud_done: Team work saved to Supabase")
-        else:
-            st.caption(":material/warning: Votes and filter edits are saved on this server only "
-                       "and reset when the app restarts. Connect Supabase to keep them.")
-
-    st.divider()
-    if team:
-        if st.button("Sign out", width="stretch"):
-            st.session_state.team = False
-            st.rerun()
-    else:
-        with st.expander("Team sign in"):
-            pw = st.text_input("Password", type="password", key="pw")
-            if st.button("Sign in", width="stretch"):
-                expected = data.team_password()
-                if expected and hmac.compare_digest(pw, expected):
-                    st.session_state.team = True
-                    st.rerun()
-                st.error("That password didn't work." if expected else "Sign in isn't set up yet.")
+sidebar.status(ctx)
 
 if is_sample:
     st.markdown("<div class='ob ob-note'>Sample data. These are example events, not live listings.</div>",
@@ -523,33 +440,10 @@ def render_curation_page() -> None:
         st.code(build_messages([], shots)[0]["content"], language=None, wrap_lines=True)
 
 
-# ---------- navigation ----------
+nav.init(ctx.labels, ctx.month_views)
+nav.render(nav_box, ctx.month_views)
 state = st.session_state
-state.setdefault("section", "curation")
-if state.section not in ("curation", "ontology", "events"):
-    state.section = "curation"
-if state.get("view") not in [v for v, _ in views]:
-    state.view = labels[0]
-
-
-def go_to(section: str, view: str | None = None) -> None:
-    state.section = section
-    if view:
-        state.view = view
-
-
-with nav_box:
-    st.button("How it works", key="nav-curation", width="stretch", on_click=go_to, args=("curation",),
-              type="primary" if state.section == "curation" else "secondary")
-    st.button("Ontology of events", key="nav-onto", width="stretch", on_click=go_to, args=("ontology",),
-              type="primary" if state.section == "ontology" else "secondary")
-    st.button("End result", key="nav-events", width="stretch", on_click=go_to, args=("events",),
-              type="primary" if state.section == "events" else "secondary")
-    if state.section == "events":
-        with st.container(key="nav-months"):
-            for v, n in views:
-                st.button(f"{v}  ·  {n}", key=f"nav-{v}", width="stretch", on_click=go_to, args=("events", v),
-                          type="primary" if state.view == v else "tertiary")
+go_to = nav.go_to
 
 # ---------- page ----------
 if state.section == "curation":
