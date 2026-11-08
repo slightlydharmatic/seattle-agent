@@ -146,14 +146,14 @@ def cost_panel(est: dict) -> str:
 
 def calls(keep_at: int, drop_below: int, metrics: dict, examples: list[tuple]) -> str:
     items = [
-        ("Precision over recall", f"{keep_at}+ goes live. A bad pick costs more trust than a missed event."),
-        ("People own the gray zone", f"Scores {drop_below} to {keep_at - 1} go to the team, not the model."),
-        ("Feedback is the product", "Every thumb overrides instantly, becomes a few-shot example, and is an eval label."),
-        ("Explain every decision", "Each event gets an intent, a score, and a one-line reason. Nothing drops silently."),
-        ("Policy as code", "No sales funnels, religious services, or partisan events. Cultural festivals stay in."),
-        ("Version the prompt", "A new prompt version re-scores everything, so results are comparable."),
-        ("Fail safe", "If a run looks broken, it's held. Readers keep last week's list."),
-        ("Keep the brand human", "The AI never posts. The graphic and caption are ours."),
+        ("Quality over quantity", f"Only events scoring {keep_at}+ go live. One bad pick costs more trust than a missed one."),
+        ("People make the close calls", f"Events scoring {drop_below} to {keep_at - 1} go to our team, not the AI."),
+        ("Every vote teaches the AI", "A team thumbs up or down overrides the AI and shapes its next run."),
+        ("No silent decisions", "Every event gets a score and a one-line reason, even the ones we drop."),
+        ("Our values, written as rules", "No sales pitches, religious services, or partisan events. Cultural festivals stay."),
+        ("Fair before-and-after tests", "When we change the AI's instructions, every event is re-scored."),
+        ("Broken runs never go live", "If a run looks wrong, readers keep last week's list."),
+        ("People post, not the AI", "We design every graphic and write every caption."),
     ]
     c = "".join(f"<div><i>{i + 1:02d}</i><span><b>{e(t)}</b><p>{e(d)}</p></span></div>" for i, (t, d) in enumerate(items))
 
@@ -182,7 +182,7 @@ def calls(keep_at: int, drop_below: int, metrics: dict, examples: list[tuple]) -
     return f"""
 <div class='hw'><div class='hw-h'><div class='h2'>Our AI <em>product calls</em></div></div>
 <div class='hw-calls'>{c}</div>
-<div class='hw-h'><div class='h2'>Why a model, <em>not keywords</em></div><span>Four real test events, sorted two ways</span></div>
+<div class='hw-h'><div class='h2'>Why a model, <em>not keywords</em></div><span>See how we sort real events</span></div>
 <div class='kv'>
   <div class='kv-col'><span class='kv-k'>A keyword filter</span><p class='kv-sub'>All four are free with no banned words, so it lets every one through.</p>{left}</div>
   <div class='kv-mid'><span>reads what each<br>event is for</span><i>→</i></div>
@@ -207,5 +207,4 @@ def broke() -> str:
                     for a, b in items)
     return f"""
 <div class='hw'><div class='hw-h'><div class='h2'>What <em>broke</em></div><span>and how we fixed it</span></div>
-<div class='hw-broke'>{cards}</div>
-<div class='hw-next'><b>Next:</b> a hand-labeled golden set every prompt change must pass, real token logging, and click tracking to see which picks people actually go to.</div></div>"""
+<div class='hw-broke'>{cards}</div></div>"""
