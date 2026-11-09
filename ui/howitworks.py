@@ -116,7 +116,7 @@ def top(n_sites: int, est: dict, views: str, found: int, picks: int) -> str:
     return f"""
 <div class='hw'><div class='hw-top'>
   <div class='h1'>How it <em>works</em></div>
-  <p>The AI workflow that turns unstructured data into a list with taste, generating 1M+ views a month.</p>
+  <p>The AI workflow that turns unstructured data into a list with taste, generating 1M+ views a month and growing to 80K followers in under 18 months.</p>
   <div class='hw-line'>
     <span><b>5+ hrs</b> by hand</span><span class='hw-arr'>→</span>
     <span class='hw-cost' tabindex='0'><b>~{money(est['total'])}</b> by agent{cost_panel(est)}</span>
