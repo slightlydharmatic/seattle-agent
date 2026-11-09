@@ -81,7 +81,7 @@ def test_press_logo_falls_back_to_name():
     from views import press
     assert press.slug("The Westin") == "the-westin" and press.slug("KING 5") == "king-5"
     assert press.logo("Nobody Inc") == "Nobody Inc"
-    assert "105+" in press.clients_html() and "NPR" in press.featured_html(press.PRESS_OUTLETS)
+    assert "105+" in press.clients_html() and "VoyageLA" in press.featured_html(press.PRESS_OUTLETS)
 
 
 def test_press_logos_load_with_balanced_size():

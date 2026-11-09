@@ -16,7 +16,7 @@ CLIENTS = [
     "Junction FC", "aT Center LA", "Clockout", "Great Big Game Show", "Short Run Comix Festival", "Keiro Northwest",
     "Baila District", "MUZ Fest Seattle", "Formosound", "Juice Time", "Goldvine Coffee",
 ]
-PRESS_OUTLETS = ["KING 5", "VoyageLA", "NPR"]
+PRESS_OUTLETS = ["KING 5", "VoyageLA"]
 LOGOS = PROJECT_DIR / "assets" / "logos"
 PRESS_FILE = PROJECT_DIR / "assets" / "press.json"   # [{"outlet": "...", "title": "...", "url": "...", "date": "..."}]
 MIME = {".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".webp": "image/webp"}
