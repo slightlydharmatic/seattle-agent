@@ -2,6 +2,7 @@
 import base64
 import json
 import re
+import struct
 
 import streamlit as st
 
@@ -31,8 +32,10 @@ CSS = """<style>
 .pc-wall div:hover{background:#F3F5FC;color:#5469C4}
 .pc-big{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));margin-bottom:14px}
 .pc-big div{min-height:132px;padding:22px 26px;font-size:21px;font-weight:700}
-.pc-big img{max-height:56px;max-width:78%;object-fit:contain;filter:grayscale(1);opacity:.85;transition:filter .2s,opacity .2s}
-.pc-big div:hover img{filter:none;opacity:1}
+.pc-big div{min-height:150px}
+.pc-big img{max-width:72%;object-fit:contain;transition:transform .25s}
+.pc-big div:hover{background:#fff}
+.pc-big div:hover img{transform:scale(1.05)}
 .pc-small{display:flex;flex-wrap:wrap;gap:10px;background:none;border:none;border-radius:0;overflow:visible;margin-bottom:14px}
 .pc-small div{padding:10px 18px;border:1px solid var(--line);border-radius:999px;box-shadow:none;font-size:15px;font-weight:600}
 .pc-more{font-size:14px;color:var(--dim);margin:0 0 48px}
@@ -75,9 +78,18 @@ def logo(name: str) -> str:
     for ext, mime in MIME.items():
         path = LOGOS / f"{slug(name)}{ext}"
         if path.exists():
-            data = base64.b64encode(path.read_bytes()).decode()
-            return f"<img src='data:{mime};base64,{data}' alt='{esc(name)}'>"
+            raw = path.read_bytes()
+            data = base64.b64encode(raw).decode()
+            return f"<img src='data:{mime};base64,{data}' alt='{esc(name)}'{size(raw)}>"
     return esc(name)
+
+
+def size(raw: bytes) -> str:
+    """Give every logo about the same visual weight: wide wordmarks shorter, tall crests taller."""
+    if raw[:8] != b"\x89PNG\r\n\x1a\n":
+        return ""
+    w, h = struct.unpack(">II", raw[16:24])
+    return f" style='height:{min(max((7000 * h / w) ** .5, 34), 96):.0f}px'"
 
 
 def clients_html() -> str:
