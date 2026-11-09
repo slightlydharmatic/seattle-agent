@@ -42,7 +42,8 @@ CSS = """<style>
 .pc-feat{display:flex;flex-wrap:wrap;align-items:center;gap:14px 56px;padding:26px 30px;background:#fff;
          border:1px solid var(--line);border-radius:14px;margin-bottom:40px}
 .pc-feat span{font-size:28px;font-weight:700;color:#1E2A47;letter-spacing:-.02em;opacity:.8}
-.pc-feat img{max-height:44px;max-width:160px;object-fit:contain;filter:grayscale(1);opacity:.85}
+.pc-feat{justify-content:space-around;padding:30px 30px}
+.pc-feat img{max-height:52px;max-width:200px;object-fit:contain}
 .pc-press a{display:grid;grid-template-columns:150px 1fr auto;gap:16px;align-items:baseline;padding:16px 4px;
             border-top:1px solid var(--line);text-decoration:none;color:#1E2A47}
 .pc-press a:last-child{border-bottom:1px solid var(--line)}
