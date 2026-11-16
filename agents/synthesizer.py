@@ -57,7 +57,7 @@ def _trace_entry(e: dict, status: str, why: str) -> dict:
         "merged_into": e.get("merged_into", ""),
         "custom": bool(e.get("custom")),
         "filter_category": e.get("filter_category", ""),
-        "key": e.get("key", ""),
+        "key": e.get("key") or _event_key(e),
         "ai_intent": (e.get("ai") or {}).get("intent", ""),
         "ai_score": (e.get("ai") or {}).get("score"),
         "ai_reason": (e.get("ai") or {}).get("reason", ""),
@@ -65,6 +65,12 @@ def _trace_entry(e: dict, status: str, why: str) -> dict:
         "filter_key": e.get("filter_key", ""),
         "custom_id": e.get("custom_id", ""),
     }
+
+
+def _event_key(e: dict) -> str:
+    """Held events skip the curator, so they arrive without a key; without one they all share "" and one vote hits all."""
+    import filters
+    return filters.event_key(e)
 
 
 def build_trace(state: dict) -> list[dict]:
