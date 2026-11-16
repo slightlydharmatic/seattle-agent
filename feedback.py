@@ -38,6 +38,15 @@ def _save_local(rows: list[dict]) -> None:
     PATH.write_text(json.dumps(rows, indent=1, default=str))
 
 
+def _int_or_none(x):
+    """Scores arrive from a pandas row as floats (72.0) or NaN; the column is smallint."""
+    try:
+        f = float(x)
+    except (TypeError, ValueError):
+        return None
+    return None if f != f else int(round(f))
+
+
 def vote(event: dict, value: int, curation: dict | None = None, note: str = "") -> None:
     """Record +1 or -1 for an event. A new vote on the same event replaces the old one."""
     assert value in (1, -1)
@@ -46,7 +55,7 @@ def vote(event: dict, value: int, curation: dict | None = None, note: str = "") 
         "vote": value,
         "note": note,
         **{f: str(event.get(f) or "")[:500] for f in FIELDS},
-        "model_score": (curation or {}).get("score"),
+        "model_score": _int_or_none((curation or {}).get("score")),
         "model_intent": (curation or {}).get("intent"),
         "created_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
